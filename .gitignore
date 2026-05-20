@@ -1,0 +1,73 @@
+# ROMs and binary game files — NEVER commit
+roms/
+mame_roms/
+*.ic[0-9]*
+*.bin
+*.zip
+*.rom
+*.ipl
+fpr-*
+epr-*
+sp50*
+develop*
+zukin*
+317-*
+315-*
+main_eeprom*
+x76f100*
+dcnaodev*
+aicadrv.bin
+bios_aicadrv.bin
+
+# MAME runtime state
+nvram/
+cfg/
+snap/
+mame_stdout.log
+mame_stderr.log
+mame_err.log
+mame.log
+build.log
+cmake.log
+
+# Flycast build & runtime
+flycast-src/
+~/Library/Application Support/Flycast/
+aica_writes.log
+
+# Captured audio (large + game-derived)
+*.wav
+audio/sequences/
+audio/samples/
+
+# Build outputs from the decomp/analysis scripts
+build/
+*.o
+*.obj
+
+# Editor / OS junk
+.DS_Store
+*~
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Reverse-engineered output that contains potentially copyrighted melodies
+rhytngk_*.mid
+rhytngk_*.wav
+
+# Internal lock files / logs from this session
+.claude/
+aica_stderr.log
+error.log
+ffmpeg.log
+flycast_out.log
+patched.log
+patched_flycast.log
+mame_stdout.log
+
+# ROM-derived sample data
+audio/

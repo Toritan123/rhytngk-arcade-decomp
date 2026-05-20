@@ -1,0 +1,79 @@
+# Game mapping between Rhythm Tengoku Arcade and GBA versions
+# Based on string analysis and known game content.
+# Reference GBA decomp: https://github.com/arthurtilly/rhythmtengoku
+
+arcade_to_gba:
+  aim: marching_orders
+  batter: spaceball
+  bigband: null  # arcade-only
+  bondance: rhythm_toys
+  bonodori: bon_odori
+  boxing: null  # arcade-only
+  conveyer: mannequin_factory
+  cosmodance: space_dance
+  credit: staff_credit
+  drumboys: drum_studio
+  drumgirls: drum_studio
+  drumko: drum_studio
+  drumko2: drum_studio
+  drumko3: drum_studio
+  drumko4: drum_studio
+  drumosu: drum_studio
+  drumtech: drum_studio
+  esa: null  # arcade-only
+  even: null  # arcade-only
+  gyrotest: null  # arcade-only
+  hair: power_calligraphy
+  hair_extra: power_calligraphy
+  hanabi: fireworks
+  handclap: clappy_trio
+  handclap_bari: clappy_trio
+  handclap_earth: clappy_trio
+  iai: samurai_slice
+  kanji: null  # arcade-only
+  machine: mechanical_horse
+  marcher: marching_orders
+  marcher2: marching_orders
+  marcher_extra: marching_orders
+  metronome: metronome
+  music_image: null  # arcade-only
+  option: null  # arcade-only
+  polyrythm: polyrhythm
+  poster: null  # arcade-only
+  quiz: quiz_show
+  rabbit: bunny_hop
+  rapman: rap_men
+  rapwoman: rap_men
+  rat: rat_race
+  samurai: samurai_slice
+  spacedance: space_dance
+  spaceusagi: null  # arcade-only
+  tanuki: null  # arcade-only
+  tap: tap_trial
+  tap_china: tap_trial
+  tap_dress: tap_trial
+  tap_remix: tap_trial
+  tap_ska: tap_trial
+  tossboys: toss_boys
+  tossboys2: toss_boys
+  tossboys_remix: toss_boys
+  trampoline: null  # arcade-only
+  trampoline_show: null  # arcade-only
+  uma: mechanical_horse
+  virus: sick_beats
+  warning: null  # arcade-only
+  witch: wizards_waltz
+  yankee: ninja_bodyguard
+
+gba_only:
+  - bouncy_road
+  - drum_intro
+  - drum_live
+  - karate_man
+  - mr_upbeat
+  - night_walk
+  - rhythm_test
+  - rhythm_tweezers
+  - showtime
+  - sneaky_spirits
+  - tram_and_pauline

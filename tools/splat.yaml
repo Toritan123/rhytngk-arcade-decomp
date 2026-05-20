@@ -1,0 +1,48 @@
+# Rhythm Tengoku Arcade ROM split configuration
+# Follows the splat (https://github.com/ethteck/splat) convention.
+
+name: rhytngk-arcade
+target_path: roms/fpr-24423_decrypted.bin
+platform: naomi
+basename: rhytngk_arcade
+
+options:
+  base_path: ..
+  platform: naomi
+  arch: sh4
+  endian: little
+  asm_path: asm/sh4
+  src_path: src
+  data_path: data
+  ld_script: rhytngk_arcade.ld
+
+# Program ROM (fpr-24423.ic8) layout
+# After PIC decryption (subkey1=0xf5e4, subkey2=0x9c6a), this is plain SH-4 code.
+# NAOMI mounts cart at 0x0c000000 (cached) / 0xa0000000 (uncached).
+segments:
+  - { start: 0x000000, type: header, name: cart_header }
+  - { start: 0x000800, type: bin,    name: boot_stub }
+  - { start: 0x010000, type: asm,    name: main_code, vram: 0x0c010000 }
+
+# Data ROMs - tracked separately as DTPK packages
+data_roms:
+  - file: fpr-24424.ic9.bin
+    cart_offset: 0x02000000
+    sections:
+      - { start: 0x00033eb7, type: strings,  name: music_image_table }
+      - { start: 0x00043e80, type: marker,   name: wht_marker }
+      - { start: 0x00051100, type: dtpk,     name: title }
+      - { start: 0x00128100, type: dtpk,     name: stage1_1 }
+      # full DTPK list in tools/dtpk_index.yaml
+
+  - file: fpr-24425.ic10.bin
+    cart_offset: 0x06000000
+    sections:
+      - { start: 0x02419100, type: dtpk,     name: SE }
+
+  - file: fpr-24426.ic11.bin
+    cart_offset: 0x0a000000
+    sections:
+      - { start: 0x00069100, type: dtpk,     name: s_select1 }
+      - { start: 0x0248b100, type: dtpk,     name: jingle01 }
+      - { start: 0x00DBC000, type: aica_drv, name: aicadrv }

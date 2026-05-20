@@ -1,0 +1,6 @@
+dofile("/tmp/cmds.lua")
+dofile("/tmp/probe.lua")
+dofile("/tmp/run.lua")
+dofile("/tmp/run3.lua")
+dofile("/tmp/run4.lua")
+manager.machine:exit()
