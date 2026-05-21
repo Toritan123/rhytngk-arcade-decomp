@@ -1,0 +1,548 @@
+# String references in SH-4 ROM
+# Format: <vram_addr_of_string>  <code_locations...>  <string>
+
+## Source filenames
+0x0c0a0ddd  [  0 refs]  nB.c
+0x0c0ce4e5  [  0 refs]  aR.c
+0x0c238920  [  0 refs]  src/idle_rh/idle_rh_bsd.c
+0x0c238948  [  0 refs]  src/idle_rh/idle_rh_init.c
+0x0c238964  [  0 refs]  src/seqsel/seqsel_bsd.c
+0x0c2389bc  [  0 refs]  src/seqsel/seqsel_init.c
+0x0c2389d8  [  0 refs]  src/start/start_proc.c
+0x0c238a10  [  0 refs]  src/riq/riq_toy/init.c
+0x0c238a28  [  0 refs]  src/riq/riq_title/riq_title_bsd.c
+0x0c238a68  [  0 refs]  src/riq/riq_title/riq_title_init.c
+0x0c238a8c  [  0 refs]  src/riq/riq_studio/init.c
+0x0c238d28  [  0 refs]  src/riq/riq_studio/bsd.c
+0x0c238d64  [  0 refs]  src/riq/riq_result4/bsd.c
+0x0c238da0  [  0 refs]  src/riq/riq_result4/init.c
+0x0c239290  [  0 refs]  src/riq/riq_result/riq_result_bsd_3.c
+0x0c2392d8  [  0 refs]  src/riq/riq_result/riq_result_init_3.c
+0x0c23936c  [  0 refs]  src/riq/riq_result/riq_result_bsd_2.c
+0x0c2393a4  [  0 refs]  src/riq/riq_result/riq_result_init_2.c
+0x0c2393cc  [  0 refs]  src/riq/riq_reading/novel/bsd.c
+0x0c239420  [  0 refs]  src/riq/riq_reading/novel/init.c
+0x0c23efb4  [  0 refs]  src/riq/riq_play/scene/witch/data.c
+0x0c23efe4  [  0 refs]  src/riq/riq_play/scene/voice/data.c
+0x0c23f078  [  0 refs]  src/riq/riq_play/scene/trampoline/data.c
+0x0c23f0b4  [  0 refs]  src/riq/riq_play/scene/tossboys/data.c
+0x0c23f0e8  [  0 refs]  src/riq/riq_play/scene/tap2p/data.c
+0x0c23f118  [  0 refs]  src/riq/riq_play/scene/tap/data.c
+0x0c23f18c  [  0 refs]  src/riq/riq_play/scene/spacedance/data.c
+0x0c23f248  [  0 refs]  src/riq/riq_play/scene/rat2p/data.c
+0x0c23f278  [  0 refs]  src/riq/riq_play/scene/rat/data.c
+0x0c23f2a4  [  0 refs]  src/riq/riq_play/scene/rapman/data.c
+0x0c23f314  [  0 refs]  src/riq/riq_play/scene/rabbit/data.c
+0x0c23f348  [  0 refs]  src/riq/riq_play/scene/quiz/data.c
+0x0c23f488  [  0 refs]  src/riq/riq_play/scene/marcher/data.c
+0x0c23f4f8  [  0 refs]  src/riq/riq_play/scene/kanji/data.c
+0x0c23f528  [  0 refs]  src/riq/riq_play/scene/iai/iai_data.c
+0x0c23f558  [  0 refs]  src/riq/riq_play/scene/iai/iai_init.c
+0x0c23f664  [  0 refs]  src/riq/riq_play/scene/hanabi/data.c
+0x0c23f698  [  0 refs]  src/riq/riq_play/scene/hanabi/init.c
+0x0c23f7f4  [  0 refs]  src/riq/riq_play/scene/hair/hair_data.c
+0x0c23f824  [  0 refs]  src/riq/riq_play/scene/hair/hair_init.c
+0x0c23f84c  [  0 refs]  src/riq/riq_play/scene/even/even_data.c
+0x0c23f87c  [  0 refs]  src/riq/riq_play/scene/even/even_init.c
+0x0c23f8a4  [  0 refs]  src/riq/riq_play/scene/esa/data.c
+0x0c23f8d0  [  0 refs]  src/riq/riq_play/scene/esa/init.c
+0x0c23f98c  [  0 refs]  src/riq/riq_play/scene/drumdr/data.c
+0x0c23f9c0  [  0 refs]  src/riq/riq_play/scene/drumdr/init.c
+0x0c23fadc  [  0 refs]  src/riq/riq_play/scene/bonodori2p/data.c
+0x0c23fb18  [  0 refs]  src/riq/riq_play/scene/bonodori2p/main.c
+0x0c23fb44  [  0 refs]  src/riq/riq_play/scene/bonodori2p/init.c
+0x0c23fb70  [  0 refs]  src/riq/riq_play/scene/bonodori/data.c
+0x0c23fba4  [  0 refs]  src/riq/riq_play/scene/bonodori/main.c
+0x0c23fbcc  [  0 refs]  src/riq/riq_play/scene/bonodori/init.c
+0x0c23fe38  [  0 refs]  src/riq/riq_play/scene/aim/aim_data.c
+0x0c23fe68  [  0 refs]  src/riq/riq_play/scene/aim/aim_item.c
+0x0c23fe90  [  0 refs]  src/riq/riq_play/scene/aim/aim_init.c
+0x0c23feb8  [  0 refs]  src/riq/riq_play/riq_play_sample.c
+0x0c241b1c  [  0 refs]  src/riq/riq_mode/bsd.c
+0x0c241b4c  [  0 refs]  src/riq/riq_mode/init.c
+0x0c241b64  [  0 refs]  src/riq/riq_menu/riq_menu_init.c
+0x0c244774  [  0 refs]  src/riq/riq_menu/riq_menu_bsd.c
+0x0c2447ac  [  0 refs]  src/riq/riq_library/bsd.c
+0x0c2447ec  [  0 refs]  src/riq/riq_library/init.c
+0x0c244808  [  0 refs]  src/riq/riq_counselor/bsd.c
+0x0c244848  [  0 refs]  src/riq/riq_counselor/init.c
+0x0c2469bc  [  0 refs]  src/riq/riq_arrival/bsd.c
+0x0c246a80  [  0 refs]  src/riq/riq_arrival/init.c
+0x0c246abc  [  0 refs]  aim/Caim.c
+0x0c246ac8  [  0 refs]  aim/Caim_bg.c
+0x0c246ad8  [  0 refs]  batter/Cbatter.c
+0x0c246aec  [  0 refs]  batter/Cbatter_bg1.c
+0x0c246b04  [  0 refs]  batter_extra/Cbatter_extra.c
+0x0c246b24  [  0 refs]  batter_extra/Cbatter_extra_bg1.c
+0x0c246b48  [  0 refs]  bigband/Cbigband.c
+0x0c246b5c  [  0 refs]  bigband/Cbigband_bg.c
+0x0c246b74  [  0 refs]  bondance/Cbondance.c
+0x0c246b8c  [  0 refs]  bondance/Cbondance_bg.c
+0x0c246ba4  [  0 refs]  bonodori/Cbonodori.c
+0x0c246bbc  [  0 refs]  bonodori/Cbonodori_bg.c
+0x0c246bd4  [  0 refs]  bonodori/Cbonodori_mask.c
+0x0c246bf0  [  0 refs]  boxing/Cboxing_bg.c
+0x0c246c04  [  0 refs]  boxing/Cboxing_bg_2.c
+0x0c246c1c  [  0 refs]  boxing/Cboxing_bg_3.c
+0x0c246c34  [  0 refs]  boxing_extra/Cboxing_extra_bg.c
+0x0c246c54  [  0 refs]  boxing/Cboxing_etc_00_cut.c
+0x0c246c70  [  0 refs]  boxing/Cboxing_etc_01_cut.c
+0x0c246c8c  [  0 refs]  boxing/Cboxing_etc_02_cut.c
+0x0c246ca8  [  0 refs]  boxing/Cboxing_obj.c
+0x0c246cc0  [  0 refs]  boxing_extra/Cboxing_extra_obj.c
+0x0c246ce4  [  0 refs]  chapter/aim/Cc_aim.c
+0x0c246cfc  [  0 refs]  chapter/aim/Cc_aim_bg.c
+0x0c246d14  [  0 refs]  chapter/batter/Cc_batter.c
+0x0c246d30  [  0 refs]  chapter/batter/Cc_batter_bg.c
+0x0c246d50  [  0 refs]  chapter/bondance/Cc_bondance.c
+0x0c246d70  [  0 refs]  chapter/bondance/Cc_bondance_bg.c
+0x0c246d94  [  0 refs]  chapter/bonodori/Cc_bonodori.c
+0x0c246db4  [  0 refs]  chapter/bonodori/Cc_bonodori_bg.c
+0x0c246dd8  [  0 refs]  chapter/boxing/Cc_boxing.c
+0x0c246df4  [  0 refs]  chapter/boxing/Cc_boxing_bg.c
+0x0c246e14  [  0 refs]  chapter/cosmodance/Cc_cosmodance.c
+0x0c246e38  [  0 refs]  chapter/cosmodance/Cc_cosmodance_bg.c
+0x0c246e60  [  0 refs]  chapter/drumtech/Cc_drumtech.c
+0x0c246e80  [  0 refs]  chapter/drumtech/Cc_drumtech_bg.c
+0x0c246ea4  [  0 refs]  chapter/esa/Cc_esa.c
+0x0c246ebc  [  0 refs]  chapter/esa/Cc_esa_bg.c
+0x0c246ed4  [  0 refs]  chapter/even/Cc_even.c
+0x0c246eec  [  0 refs]  chapter/even/Cc_even_bg.c
+0x0c246f08  [  0 refs]  chapter/hair/Cc_hair.c
+0x0c246f20  [  0 refs]  chapter/hair/Cc_hair_bg.c
+0x0c246f3c  [  0 refs]  chapter/hanabi/Cc_hanabi.c
+0x0c246f58  [  0 refs]  chapter/hanabi/Cc_hanabi_bg.c
+0x0c246f78  [  0 refs]  chapter/handclap/Cc_handclap.c
+0x0c246f98  [  0 refs]  chapter/handclap_bari/Cc_handclap_bari.c
+0x0c246ff0  [  0 refs]  chapter/handclap/Cc_handclap_bg.c
+0x0c247014  [  0 refs]  chapter/iai/Cc_iai.c
+0x0c24702c  [  0 refs]  chapter/iai/Cc_iai_bg.c
+0x0c247044  [  0 refs]  chapter/kanji/Cc_kanji.c
+0x0c247060  [  0 refs]  chapter/kanji/Cc_kanji_bg.c
+0x0c24707c  [  0 refs]  chapter/marcher2/Cc_marcher2.c
+0x0c24709c  [  0 refs]  chapter/marcher2/Cc_marcher2_bg.c
+0x0c2470c0  [  0 refs]  chapter/marcher/Cc_marcher.c
+0x0c2470e0  [  0 refs]  chapter/marcher/Cc_marcher_bg.c
+0x0c247100  [  0 refs]  chapter/polyrythm/Cc_polyrythm.c
+0x0c247124  [  0 refs]  chapter/polyrythm/Cc_polyrythm_bg.c
+0x0c247148  [  0 refs]  chapter/quiz/Cc_quiz.c
+0x0c247160  [  0 refs]  chapter/quiz/Cc_quiz_bg.c
+0x0c24717c  [  0 refs]  chapter/rabbit/Cc_rabbit.c
+0x0c247198  [  0 refs]  chapter/rabbit/Cc_rabbit_bg.c
+0x0c2471b8  [  0 refs]  chapter/rapman/Cc_rapman.c
+0x0c2471d4  [  0 refs]  chapter/rapman/Cc_rapman_bg.c
+0x0c2471f4  [  0 refs]  chapter/rapwoman/Cc_rapwoman.c
+0x0c247214  [  0 refs]  chapter/rapwoman/Cc_rapwoman_bg.c
+0x0c247238  [  0 refs]  chapter/rat/Cc_rat.c
+0x0c247250  [  0 refs]  chapter/rat/Cc_rat_bg.c
+0x0c247268  [  0 refs]  chapter/remix01/Cc_remix01.c
+0x0c247288  [  0 refs]  chapter/remix01/Cc_remix01_bg.c
+0x0c2472a8  [  0 refs]  chapter/remix02/Cc_remix02.c
+0x0c2472c8  [  0 refs]  chapter/remix02/Cc_remix02_bg.c
+0x0c2472e8  [  0 refs]  chapter/remix03/Cc_remix03.c
+0x0c247308  [  0 refs]  chapter/remix03/Cc_remix03_bg.c
+0x0c247328  [  0 refs]  chapter/remix04/Cc_remix04.c
+0x0c247348  [  0 refs]  chapter/remix04/Cc_remix04_bg.c
+0x0c247368  [  0 refs]  chapter/remix05/Cc_remix05.c
+0x0c247388  [  0 refs]  chapter/remix05/Cc_remix05_bg.c
+0x0c2473a8  [  0 refs]  chapter/remix06/Cc_remix06.c
+0x0c2473c8  [  0 refs]  chapter/remix06/Cc_remix06_bg.c
+0x0c2473e8  [  0 refs]  chapter/remix07/Cc_remix07.c
+0x0c247408  [  0 refs]  chapter/remix07/Cc_remix07_bg.c
+0x0c247428  [  0 refs]  chapter/remix08/Cc_remix08.c
+0x0c247448  [  0 refs]  chapter/remix08/Cc_remix08_bg.c
+0x0c247468  [  0 refs]  chapter/samurai2/Cc_samurai2.c
+0x0c247488  [  0 refs]  chapter/samurai2/Cc_samurai2_bg.c
+0x0c2474ac  [  0 refs]  chapter/samurai/Cc_samurai.c
+0x0c2474cc  [  0 refs]  chapter/samurai/Cc_samurai_bg.c
+0x0c2474ec  [  0 refs]  chapter/spacedance/Cc_spacedance.c
+0x0c247510  [  0 refs]  chapter/spacedance/Cc_spacedance_bg.c
+0x0c247538  [  0 refs]  chapter/tap/Cc_tap.c
+0x0c247550  [  0 refs]  chapter/tap/Cc_tap_bg.c
+0x0c247568  [  0 refs]  chapter/tap_ska/Cc_tap_ska.c
+0x0c247588  [  0 refs]  chapter/tap_ska/Cc_tap_ska_bg.c
+0x0c2475a8  [  0 refs]  chapter/tossboys2/Cc_tossboys2.c
+0x0c2475cc  [  0 refs]  chapter/tossboys2/Cc_tossboys2_bg.c
+0x0c2475f0  [  0 refs]  chapter/tossboys/Cc_tossboys.c
+0x0c247610  [  0 refs]  chapter/tossboys/Cc_tossboys_bg.c
+0x0c247634  [  0 refs]  chapter/trampoline/Cc_trampoline.c
+0x0c247658  [  0 refs]  chapter/trampoline/Cc_trampoline_bg.c
+0x0c247680  [  0 refs]  chapter/virus/Cc_virus.c
+0x0c24769c  [  0 refs]  chapter/virus/Cc_virus_bg.c
+0x0c2476b8  [  0 refs]  chapter/witch/Cc_witch.c
+0x0c2476d4  [  0 refs]  chapter/witch/Cc_witch_bg.c
+0x0c2476f0  [  0 refs]  riq/riq_reading/campaign/Ccampaign.c
+0x0c247718  [  0 refs]  riq/riq_reading/comic/Ccomic.c
+0x0c247738  [  0 refs]  conveyer/Cconveyer_bg.c
+0x0c247750  [  0 refs]  conveyer/Cconveyer_obj.c
+0x0c24776c  [  0 refs]  riq/riq_reading/cook/Ccook.c
+0x0c24778c  [  0 refs]  cosmodance/Ccosmodance.c
+0x0c2477a8  [  0 refs]  cosmodance/Ccosmodance_bg.c
+0x0c2477c4  [  0 refs]  credit/Ccredit_bg_00.c
+0x0c2477dc  [  0 refs]  credit/Ccredit_bg_01.c
+0x0c2477f4  [  0 refs]  credit/Ccredit_bg_02.c
+0x0c24780c  [  0 refs]  credit/Ccredit_bg_03.c
+0x0c247824  [  0 refs]  credit/Ccredit_bg_04.c
+0x0c24783c  [  0 refs]  credit/Ccredit_bg_05.c
+0x0c247854  [  0 refs]  credit/Ccredit_bg_06.c
+0x0c24786c  [  0 refs]  credit/Ccredit_bg_09.c
+0x0c247884  [  0 refs]  drumboys/Cdrumboys.c
+0x0c24789c  [  0 refs]  drumboys/Cdrumboys_bg.c
+0x0c2478b4  [  0 refs]  drumgirls/Cdrumgirls.c
+0x0c2478cc  [  0 refs]  drumgirls/Cdrumgirls_bg.c
+0x0c2478e8  [  0 refs]  drumgirls/Cdrumgirls_fan.c
+0x0c247904  [  0 refs]  drumko2/Cdrumko2.c
+0x0c247918  [  0 refs]  drumko2/Cdrumko2_bg.c
+0x0c247930  [  0 refs]  drumko2/Cdrumko2_spot.c
+0x0c247948  [  0 refs]  drumko3/Cdrumko3.c
+0x0c24795c  [  0 refs]  drumko3/Cdrumko3_spot.c
+0x0c247974  [  0 refs]  drumko4/Cdrumko4.c
+0x0c247988  [  0 refs]  drumko4/Cdrumko4_bg.c
+0x0c2479a0  [  0 refs]  drumko/Cdrumko_bg_00.c
+0x0c2479b8  [  0 refs]  drumko/Cdrumko_bg_01.c
+0x0c2479d0  [  0 refs]  drumko/Cdrumko_bg_02.c
+0x0c2479e8  [  0 refs]  drumko/Cdrumko_bg_03.c
+0x0c247a00  [  0 refs]  drumko/Cdrumko_obj_00.c
+0x0c247a18  [  0 refs]  drumosu/Cdrumosu.c
+0x0c247a2c  [  0 refs]  drumosu/Cdrumosu_90.c
+0x0c247a44  [  0 refs]  drumosu/Cdrumosu_bg.c
+0x0c247a5c  [  0 refs]  drumosu/Cdrumosu_lesson.c
+0x0c247a78  [  0 refs]  drumosu/Cdrumosu_mini.c
+0x0c247a90  [  0 refs]  drumtech/Cdrumtech.c
+0x0c247aa8  [  0 refs]  riq/riq_reading/erotic/Cerotic.c
+0x0c247acc  [  0 refs]  esa/Cesa.c
+0x0c247ad8  [  0 refs]  esa/Cesa_bg.c
+0x0c247ae8  [  0 refs]  esa/Cesa_bg_ex.c
+0x0c247afc  [  0 refs]  even/Ceven.c
+0x0c247b0c  [  0 refs]  even/Ceven_ex.c
+0x0c247b1c  [  0 refs]  gyrotest/Cgyrotest.c
+0x0c247b34  [  0 refs]  riq/riq_reading/haiku/Chaiku.c
+0x0c247b54  [  0 refs]  hair/Chair.c
+0x0c247b64  [  0 refs]  hair/Chair_bg.c
+0x0c247b74  [  0 refs]  hair/Chair_mask.c
+0x0c247b88  [  0 refs]  hair_extra/Chair_extra.c
+0x0c247ba4  [  0 refs]  hair_extra/Chair_extra_bg.c
+0x0c247bc0  [  0 refs]  hair_extra/Chair_extra_mask.c
+0x0c247be0  [  0 refs]  hanabi/Chanabi.c
+0x0c247bf4  [  0 refs]  hanabi/Chanabibg2.c
+0x0c247c08  [  0 refs]  hanabi/Chanabibg3.c
+0x0c247c1c  [  0 refs]  hanabi/Chanabibg4.c
+0x0c247c30  [  0 refs]  hanabi/Chanabibg.c
+0x0c247c44  [  0 refs]  handclap/Chandclap.c
+0x0c247c5c  [  0 refs]  handclap_bari/Chandclap_bari.c
+0x0c247c7c  [  0 refs]  handclap_bari/Chandclap_bari_bg.c
+0x0c247ca0  [  0 refs]  handclap/Chandclap_bg.c
+0x0c247cb8  [  0 refs]  handclap_earth/Chandclap_earth.c
+0x0c247cdc  [  0 refs]  handclap_earth/Chandclap_earth_bg.c
+0x0c247d00  [  0 refs]  iai/Ciai.c
+0x0c247d0c  [  0 refs]  iai/Ciaibg.c
+0x0c247d1c  [  0 refs]  kanji/Ckanji.c
+0x0c247d2c  [  0 refs]  kanji/Ckanji_bg.c
+0x0c247d40  [  0 refs]  kanji/Ckanji_ex.c
+0x0c247d54  [  0 refs]  machine/Cmachine.c
+0x0c247d68  [  0 refs]  machine/Cmachine_bg.c
+0x0c247d80  [  0 refs]  marcher2/Cmarcher2.c
+0x0c247d98  [  0 refs]  marcher2/Cmarcher2_bg.c
+0x0c247db0  [  0 refs]  marcher/Cmarcher.c
+0x0c247dc4  [  0 refs]  marcher/Cmarcher_bg.c
+0x0c247ddc  [  0 refs]  marcher_extra/Cmarcher_extra.c
+0x0c247dfc  [  0 refs]  marcher_extra/Cmarcher_extra_bg.c
+0x0c247e20  [  0 refs]  riq/riq_reading/math/Cmath.c
+0x0c247e40  [  0 refs]  metronome/Cmetronome.c
+0x0c247e58  [  0 refs]  music_image/Cmusic_image_00.c
+0x0c247e78  [  0 refs]  music_image/Cmusic_image_01.c
+0x0c247e98  [  0 refs]  music_image/Cmusic_image_02.c
+0x0c247eb8  [  0 refs]  music_image/Cmusic_image_03.c
+0x0c247ed8  [  0 refs]  music_image/Cmusic_image_04.c
+0x0c247ef8  [  0 refs]  music_image/Cmusic_image_05.c
+0x0c247f18  [  0 refs]  music_image/Cmusic_image_06.c
+0x0c247f38  [  0 refs]  music_image/Cmusic_image_07.c
+0x0c247f58  [  0 refs]  music_image/Cmusic_image_08.c
+0x0c247f78  [  0 refs]  music_image/Cmusic_image_09.c
+0x0c247f98  [  0 refs]  music_image/Cmusic_image_10.c
+0x0c247fb8  [  0 refs]  music_image/Cmusic_image_11.c
+0x0c247fd8  [  0 refs]  music_image/Cmusic_image_12.c
+0x0c247ff8  [  0 refs]  music_image/Cmusic_image_13.c
+0x0c248018  [  0 refs]  music_image/Cmusic_image_14.c
+0x0c248038  [  0 refs]  riq/riq_reading/news/Cnews.c
+0x0c248058  [  0 refs]  riq/riq_reading/novel/Cnovel.c
+0x0c248078  [  0 refs]  option/Coption.c
+0x0c24808c  [  0 refs]  option/Coption_bg.c
+0x0c2480a0  [  0 refs]  bomber/demo/Cpause.c
+0x0c2480b8  [  0 refs]  riq/riq_reading/poem/Cpoem.c
+0x0c2480d8  [  0 refs]  polyrythm/Cpolyrythm.c
+0x0c2480f0  [  0 refs]  poster/Cposter.c
+0x0c248104  [  0 refs]  quiz/Cquiz.c
+0x0c248114  [  0 refs]  quiz/Cquiz_bg.c
+0x0c248124  [  0 refs]  result/aim/Cr_aim.c
+0x0c248138  [  0 refs]  result/batter/Cr_batter.c
+0x0c248154  [  0 refs]  result/bondance/Cr_bondance.c
+0x0c248174  [  0 refs]  result/bonodori/Cr_bonodori.c
+0x0c248194  [  0 refs]  result/boxing/Cr_boxing.c
+0x0c2481b0  [  0 refs]  result/cosmodance/Cr_cosmodance.c
+0x0c2481d4  [  0 refs]  result/drumgirls/Cr_drumgirls.c
+0x0c2481f4  [  0 refs]  result/drumtech/Cr_drumtech.c
+0x0c248214  [  0 refs]  result/esa/Cr_esa.c
+0x0c248228  [  0 refs]  result/even/Cr_even.c
+0x0c248240  [  0 refs]  result/hair/Cr_hair.c
+0x0c248258  [  0 refs]  result/hanabi/Cr_hanabi.c
+0x0c248274  [  0 refs]  result/handclap/Cr_handclap.c
+0x0c248294  [  0 refs]  result/handclap_bari/Cr_handclap_bari.c
+0x0c2482bc  [  0 refs]  result/iai/Cr_iai.c
+0x0c2482d0  [  0 refs]  result/kanji/Cr_kanji.c
+0x0c2482e8  [  0 refs]  result/marcher2/Cr_marcher2.c
+0x0c248308  [  0 refs]  result/marcher/Cr_marcher.c
+0x0c248324  [  0 refs]  result/polyrythm/Cr_polyrythm.c
+0x0c248344  [  0 refs]  result/quiz/Cr_quiz.c
+0x0c24835c  [  0 refs]  result/rabbit/Cr_rabbit.c
+0x0c248378  [  0 refs]  result/rapman/Cr_rapman.c
+0x0c248394  [  0 refs]  result/rapwoman/Cr_rapwoman.c
+0x0c2483b4  [  0 refs]  result/rat/Cr_rat.c
+0x0c2483c8  [  0 refs]  result/remix01/Cr_remix01.c
+0x0c2483e4  [  0 refs]  result/remix02/Cr_remix02.c
+0x0c248400  [  0 refs]  result/remix03/Cr_remix03.c
+0x0c24841c  [  0 refs]  result/remix04/Cr_remix04.c
+0x0c248438  [  0 refs]  result/remix05/Cr_remix05.c
+0x0c248454  [  0 refs]  result/remix06/Cr_remix06.c
+0x0c248470  [  0 refs]  result/remix07/Cr_remix07.c
+0x0c24848c  [  0 refs]  result/remix08/Cr_remix08.c
+0x0c2484a8  [  0 refs]  result/samurai2/Cr_samurai2.c
+0x0c2484c8  [  0 refs]  result/samurai/Cr_samurai.c
+0x0c2484e4  [  0 refs]  result/spacedance/Cr_spacedance.c
+0x0c248508  [  0 refs]  result/tap/Cr_tap.c
+0x0c24851c  [  0 refs]  result/tap_ska/Cr_tap_ska.c
+0x0c248538  [  0 refs]  result/tossboys2/Cr_tossboys2.c
+0x0c248558  [  0 refs]  result/tossboys/Cr_tossboys.c
+0x0c248578  [  0 refs]  result/trampoline/Cr_trampoline.c
+0x0c24859c  [  0 refs]  result/virus/Cr_virus.c
+0x0c2485b4  [  0 refs]  result/witch/Cr_witch.c
+0x0c2485cc  [  0 refs]  result/xxx/Cr_xxx.c
+0x0c2485e0  [  0 refs]  rabbit/Crabbit.c
+0x0c2485f4  [  0 refs]  rabbit/Crabbitbg.c
+0x0c248608  [  0 refs]  rapman/Crapman.c
+0x0c24861c  [  0 refs]  rapman/Crapman_bg.c
+0x0c248630  [  0 refs]  rapwoman/Crapwoman.c
+0x0c248648  [  0 refs]  rapwoman/Crapwoman_bg.c
+0x0c248660  [  0 refs]  rat/Crat.c
+0x0c24866c  [  0 refs]  rat/Crat_bg.c
+0x0c24867c  [  0 refs]  riq/riq_reading/Creading.c
+0x0c248698  [  0 refs]  riq/riq_arrival/Criq_arrival.c
+0x0c2486b8  [  0 refs]  riq/riq_counselor/Criq_counselor.c
+0x0c2486dc  [  0 refs]  riq/riq_counselor/Criq_counselor_bg.c
+0x0c248704  [  0 refs]  riq/riq_game/Criq_game.c
+0x0c248720  [  0 refs]  riq/riq_game/Criq_game_bg.c
+0x0c24873c  [  0 refs]  riq/riq_keymem/Criq_keymem.c
+0x0c24875c  [  0 refs]  riq/riq_lesson/Criq_lesson.c
+0x0c24877c  [  0 refs]  riq/riq_lesson/Criq_lesson_bg.c
+0x0c24879c  [  0 refs]  riq/riq_library/Criq_library.c
+0x0c2487bc  [  0 refs]  riq/riq_library/Criq_library_bg.c
+0x0c2487e0  [  0 refs]  riq/riq_menu/Criq_menu.c
+0x0c2487fc  [  0 refs]  riq/riq_menu/Criq_menu_bg.c
+0x0c248818  [  0 refs]  riq/riq_mode/Criq_mode.c
+0x0c248834  [  0 refs]  riq/riq_mode/Criq_mode_bg.c
+0x0c248850  [  0 refs]  riq/riq_perfect/Criq_perfect.c
+0x0c248870  [  0 refs]  riq/riq_play/Criq_play.c
+0x0c24888c  [  0 refs]  riq/riq_result2/Criq_result2.c
+0x0c2488ac  [  0 refs]  riq/riq_result3/Criq_result3.c
+0x0c2488cc  [  0 refs]  riq/riq_studio/Criq_studio.c
+0x0c2488ec  [  0 refs]  riq/riq_studio/Criq_studio_bg.c
+0x0c24890c  [  0 refs]  riq/riq_title/Criq_title.c
+0x0c248928  [  0 refs]  riq/riq_title/Criq_title_obj.c
+0x0c248948  [  0 refs]  riq/riq_toy/Criq_toy.c
+0x0c248960  [  0 refs]  riq/riq_toy/Criq_toy_bg.c
+0x0c24897c  [  0 refs]  riq/riq_toy/cat/Criq_toy_cat.c
+0x0c24899c  [  0 refs]  riq/riq_toy/cat/Criq_toy_cat_bg.c
+0x0c2489c0  [  0 refs]  riq/riq_toy/Criq_toy_common.c
+0x0c2489e0  [  0 refs]  riq/riq_toy/rap/Criq_toy_rap.c
+0x0c248a00  [  0 refs]  riq/riq_toy/rap/Criq_toy_rap_bg.c
+0x0c248a24  [  0 refs]  riq/riq_toy/woman/Criq_toy_woman.c
+0x0c248a48  [  0 refs]  riq/riq_toy/woman/Criq_toy_woman_bg.c
+0x0c248a70  [  0 refs]  samurai/Csamurai_bg_00.c
+0x0c248a8c  [  0 refs]  samurai/Csamurai_bg_03.c
+0x0c248aa8  [  0 refs]  samurai/Csamurai_obj_00.c
+0x0c248ac4  [  0 refs]  spacedance/Cspacedance.c
+0x0c248ae0  [  0 refs]  spacedance/Cspacedance_bg.c
+0x0c248afc  [  0 refs]  spacedance/Cspacedance_bg_02.c
+0x0c248b1c  [  0 refs]  spaceusagi/Cspaceusagi.c
+0x0c248b38  [  0 refs]  spaceusagi/Cspaceusagi_bg.c
+0x0c248b54  [  0 refs]  tanuki/Ctanuki.c
+0x0c248b68  [  0 refs]  tanuki/Ctanuki_bg.c
+0x0c248b7c  [  0 refs]  tap/Ctap.c
+0x0c248b88  [  0 refs]  tap/Ctap_bg.c
+0x0c248b98  [  0 refs]  tap_remix/Ctap_bg_remix.c
+0x0c248bb4  [  0 refs]  tap_china/Ctap_china.c
+0x0c248bcc  [  0 refs]  tap_china/Ctap_china_bg.c
+0x0c248be8  [  0 refs]  tap_dress/Ctap_dress.c
+0x0c248c00  [  0 refs]  tap_dress/Ctap_dress_bg.c
+0x0c248c1c  [  0 refs]  tap_remix/Ctap_remix.c
+0x0c248c34  [  0 refs]  tap_ska/Ctap_ska.c
+0x0c248c48  [  0 refs]  tap_ska/Ctap_ska_bg.c
+0x0c248c60  [  0 refs]  tossboys2/Ctossboys2.c
+0x0c248c78  [  0 refs]  tossboys2/Ctossboys2_bg.c
+0x0c248c94  [  0 refs]  tossboys2/Ctossboys2_bg_2.c
+0x0c248cb0  [  0 refs]  tossboys/Ctossboys.c
+0x0c248cc8  [  0 refs]  tossboys/Ctossboys_bg.c
+0x0c248ce0  [  0 refs]  tossboys/Ctossboys_bg_2.c
+0x0c248cfc  [  0 refs]  tossboys_remix/Ctossboys_bg_remix.c
+0x0c248d20  [  0 refs]  tossboys_remix/Ctossboys_remix.c
+0x0c248d44  [  0 refs]  trampoline/Ctrampoline.c
+0x0c248d60  [  0 refs]  trampoline/Ctrampoline_bg_love.c
+0x0c248d84  [  0 refs]  trampoline_show/Ctrampoline_show.c
+0x0c248da8  [  0 refs]  trampoline_show/Ctrampoline_show_bg.c
+0x0c248dd0  [  0 refs]  trampoline/Ctrampolinebg.c
+0x0c248dec  [  0 refs]  uma/Cuma.c
+0x0c248df8  [  0 refs]  uma/Cuma_ex_00.c
+0x0c248e0c  [  0 refs]  uma/Cuma_ex_01.c
+0x0c248e20  [  0 refs]  uma/Cuma_ex_02.c
+0x0c248e34  [  0 refs]  uma/Cuma_ex_03.c
+0x0c248e48  [  0 refs]  uma/Cuma_ex_04.c
+0x0c248e5c  [  0 refs]  uma/Cuma_ex_05.c
+0x0c248e70  [  0 refs]  uma/Cumabg.c
+0x0c248e80  [  0 refs]  virus/Cvirus_1.c
+0x0c248e94  [  0 refs]  virus/Cvirus_1_bg.c
+0x0c248ea8  [  0 refs]  warning/Cwarning.c
+0x0c248ebc  [  0 refs]  witch/Cwitch.c
+0x0c248ecc  [  0 refs]  witch/Cwitch_bg.c
+0x0c248ee0  [  0 refs]  yankee/Cyankee_bg_01.c
+0x0c248ef8  [  0 refs]  yankee/Cyankee_obj_01.c
+0x0c249bfc  [  0 refs]  src/start/start_init.c
+0x0c249d80  [  0 refs]  src/riq/riq_toy/bsd.c
+0x0c24a0ec  [  0 refs]  src/riq/riq_result/riq_result_bsd.c
+0x0c24a154  [  0 refs]  src/riq/riq_result/riq_result_init.c
+0x0c2525cc  [  0 refs]  src/riq/riq_play/scene/witch/init.c
+0x0c2525f0  [  0 refs]  src/riq/riq_play/scene/voice/init.c
+0x0c252640  [  0 refs]  src/riq/riq_play/scene/uma/uma_data.c
+0x0c252670  [  0 refs]  src/riq/riq_play/scene/trampoline/init.c
+0x0c25269c  [  0 refs]  src/riq/riq_play/scene/tossboys/init.c
+0x0c252738  [  0 refs]  src/riq/riq_play/scene/tap2p/init.c
+0x0c25275c  [  0 refs]  src/riq/riq_play/scene/tap/init.c
+0x0c2527b8  [  0 refs]  src/riq/riq_play/scene/spacedance/init.c
+0x0c252848  [  0 refs]  src/riq/riq_play/scene/rat2p/init.c
+0x0c25286c  [  0 refs]  src/riq/riq_play/scene/rat/init.c
+0x0c252890  [  0 refs]  src/riq/riq_play/scene/rapman/init.c
+0x0c2528e8  [  0 refs]  src/riq/riq_play/scene/rabbit/init.c
+0x0c252910  [  0 refs]  src/riq/riq_play/scene/quiz/init.c
+0x0c252934  [  0 refs]  src/riq/riq_play/scene/poster/data.c
+0x0c25299c  [  0 refs]  src/riq/riq_play/scene/metronome/data.c
+0x0c2529d4  [  0 refs]  src/riq/riq_play/scene/metroman/data.c
+0x0c252aa8  [  0 refs]  src/riq/riq_play/scene/marcher/init.c
+0x0c252ad0  [  0 refs]  src/riq/riq_play/scene/machine/data.c
+0x0c252b34  [  0 refs]  src/riq/riq_play/scene/kanji/init.c
+0x0c252b58  [  0 refs]  src/riq/riq_play/scene/drumosu/data.c
+0x0c252bd0  [  0 refs]  src/riq/riq_play/scene/drumosu/init.c
+0x0c252bf8  [  0 refs]  src/riq/riq_play/scene/drumosu/image.c
+0x0c252c9c  [  0 refs]  src/riq/riq_play/scene/drumgirls/data.c
+0x0c252cd4  [  0 refs]  src/riq/riq_play/scene/drumgirls/init.c
+0x0c252cfc  [  0 refs]  src/riq/riq_play/scene/credit/data.c
+0x0c252d30  [  0 refs]  src/riq/riq_play/scene/credit/main.c
+0x0c252d58  [  0 refs]  src/riq/riq_play/scene/credit/init.c
+0x0c252d80  [  0 refs]  src/riq/riq_play/scene/conveyer/data.c
+0x0c252db4  [  0 refs]  src/riq/riq_play/scene/conveyer/init.c
+0x0c252e9c  [  0 refs]  src/riq/riq_perfect/bsd.c
+0x0c252ff8  [  0 refs]  src/riq/riq_perfect/init.c
+0x0c253094  [  0 refs]  src/riq/riq_option/bsd.c
+0x0c253268  [  0 refs]  src/riq/riq_option/init.c
+0x0c2532d4  [  0 refs]  src/riq/riq_datacheck/bsd.c
+0x0c2533c0  [  0 refs]  src/riq/riq_datacheck/init.c
+0x0c2533e0  [  0 refs]  src/bomber/bomber_bsc.c
+0x0c2533f8  [  0 refs]  src/backupclear/bsd.c
+0x0c253430  [  0 refs]  src/backupclear/init.c
+0x0c2534e8  [  0 refs]  src/riq/riq_play/scene/uma/uma_init.c
+0x0c253510  [  0 refs]  src/riq/riq_play/scene/uma/image.c
+0x0c25377c  [  0 refs]  src/riq/riq_play/scene/poster/init.c
+0x0c2537a4  [  0 refs]  src/riq/riq_play/scene/metronome/init.c
+0x0c25386c  [  0 refs]  src/riq/riq_play/scene/metroman/init.c
+0x0c253894  [  0 refs]  src/riq/riq_play/scene/machine/init.c
+
+## Probable function/variable names
+0x0c0c8438  [ 15 refs]  BUAVCW  -> 0x0c37dd38 0x0c37ddd8 0x0c37de78
+0x0c257bf8  [  9 refs]  basic_iostream  -> 0x0c1af54c 0x0c1af714 0x0c1af8dc
+0x0c2571cc  [  7 refs]  November  -> 0x0c1addf4 0x0c299308 0x0c2ac54c
+0x0c257ba4  [  6 refs]  basic_ostream  -> 0x0c1af4b4 0x0c1b012c 0x0c1b02f4
+0x0c257e24  [  6 refs]  wchar_t  -> 0x0c1acab8 0x0c1ad514 0x0c1e042c
+0x0c257d54  [  5 refs]  bool  -> 0x0c1af844 0x0c1afc20 0x0c1afde8
+0x0c231b24  [  4 refs]  ranking_double_2p_position3  -> 0x0c212328 0x0c212358 0x0c2124a8
+0x0c231bcc  [  4 refs]  ranking_double_2p_position9  -> 0x0c212370 0x0c212390 0x0c2124f8
+0x0c254268  [  4 refs]  NSt8ios_base7failureE  -> 0x0c0335a0 0x0c1ac9e8 0x0c1acbe8
+0x0c257dcc  [  4 refs]  long  -> 0x0c1af9e4 0x0c2a7528 0x0c2af470
+0x0c17b020  [  3 refs]  CPBR  -> 0x0c25524c 0x0c25529c 0x0c276300
+0x0c241968  [  3 refs]  riq_play_sample_77_bsd  -> 0x0c0bcc3c 0x0c0bccd4 0x0c0bcdb8
+0x0c2542f0  [  3 refs]  NSt6locale5facetE  -> 0x0c1ac9e0 0x0c1acb48 0x0c1ad094
+0x0c254334  [  3 refs]  St13runtime_error  -> 0x0c1aca74 0x0c1acd60 0x0c1acda0
+0x0c05729c  [  2 refs]  ifof  -> 0x0c1386c4 0x0c269390
+0x0c072f18  [  2 refs]  scfssahq1b  -> 0x0c053b94 0x0c0b451c
+0x0c124a08  [  2 refs]  Cg4w  -> 0x0c126ba0 0x0c1405e4
+0x0c1541c0  [  2 refs]  RaCb  -> 0x0c236314 0x0c26aa20
+0x0c2316fc  [  2 refs]  rank_plate1p_mov  -> 0x0c37c5e0 0x0c37c5e8
+0x0c231ea8  [  2 refs]  stage_05  -> 0x0c1e11a4 0x0c1e1280
+0x0c23616c  [  2 refs]  LEFT  -> 0x0c216eb4 0x0c216ecc
+0x0c236f64  [  2 refs]  riq_play_sample_21  -> 0x0c219290 0x0c2194f0
+0x0c2377bc  [  2 refs]  riq_play_sample_23_22p  -> 0x0c219358 0x0c219688
+0x0c2377ec  [  2 refs]  riq_play_sample_09_22p  -> 0x0c219360 0x0c219690
+0x0c240588  [  2 refs]  riq_play_sample_68_6  -> 0x0c221890 0x0c221b78
+0x0c241360  [  2 refs]  riq_play_sample_48_bsd  -> 0x0c0b1fac 0x0c0b37a8
+0x0c2414e8  [  2 refs]  riq_play_sample_63_2_bsd  -> 0x0c0b12f4 0x0c0b2cc0
+0x0c241620  [  2 refs]  riq_play_sample_68_4_bsd  -> 0x0c0b26f0 0x0c0b3e04
+0x0c2419b4  [  2 refs]  riq_play_sample_78_skip_bsd  -> 0x0c0bde78 0x0c0be05c
+0x0c241b34  [  2 refs]  Riq_modeBSD  -> 0x0c3aed3c 0x0c3aed48
+0x0c255920  [  2 refs]  St12ctype_bynameIcE  -> 0x0c038544 0x0c2360c0
+0x0c256ab8  [  2 refs]  St17moneypunct_bynameIwLb0EE  -> 0x0c1ada34 0x0c299c2c
+0x0c256b4c  [  2 refs]  St10moneypunctIwLb1EE  -> 0x0c1ada60 0x0c1ade70
+0x0c256b84  [  2 refs]  St11__timepunctIwE  -> 0x0c1ada84 0x0c299ac4
+0x0c256be8  [  2 refs]  St8numpunctIwE  -> 0x0c1adab0 0x0c1ade5c
+0x0c256cf0  [  2 refs]  digit  -> 0x0c1adb24 0x0c299cbc
+0x0c256d18  [  2 refs]  true  -> 0x0c1adb38 0x0c2991e8
+0x0c25728c  [  2 refs]  LC_MONETARY  -> 0x0c1ade94 0x0c299d04
+0x0c2572ec  [  2 refs]  St9exception  -> 0x0c1adee4 0x0c299404
+0x0c257e60  [  2 refs]  fmodf  -> 0x0c1afb88 0x0c1b0094
+0x0c0ddbfc  [  1 refs]  AR8Q  -> 0x0c3aee98
+0x0c0e5e84  [  1 refs]  rbtU  -> 0x0c044a54
+0x0c170280  [  1 refs]  BRCQ  -> 0x0c2733b0
+0x0c173760  [  1 refs]  BaWe  -> 0x0c2744bc
+0x0c17afa0  [  1 refs]  CSBQ  -> 0x0c276270
+0x0c17b4e0  [  1 refs]  CRBP  -> 0x0c2766c8
+0x0c17b560  [  1 refs]  CPBR  -> 0x0c276758
+0x0c182300  [  1 refs]  BbRa  -> 0x0c278c10
+0x0c22f270  [  1 refs]  fREe  -> 0x0c210694
+0x0c22f2f4  [  1 refs]  N3prj11HeapManagerE  -> 0x0c21069c
+0x0c230db0  [  1 refs]  MEMC_SYS  -> 0x0c211ba4
+0x0c232044  [  1 refs]  stage_7  -> 0x0c215628
+0x0c232224  [  1 refs]  gam_icon_clear_position_2_d  -> 0x0c215668
+0x0c2323c8  [  1 refs]  N4game12TaskTutorialE  -> 0x0c2156a0
+0x0c23244c  [  1 refs]  lv_00_1p  -> 0x0c215800
+0x0c232464  [  1 refs]  lv_01_1p  -> 0x0c215808
+0x0c2324c4  [  1 refs]  lv_02_2p  -> 0x0c2156c0
+0x0c232698  [  1 refs]  shourai1p  -> 0x0c2156f0
+0x0c232734  [  1 refs]  badplus_L  -> 0x0c215700
+0x0c232860  [  1 refs]  count_2  -> 0x0c215838
+0x0c232938  [  1 refs]  gam_over_message_03  -> 0x0c215730
+0x0c235cbc  [  1 refs]  N9test_mode12TaskTestModeE  -> 0x0c216dcc
+0x0c235f5c  [  1 refs]  BOOKKEEPING  -> 0x0c216e1c
+0x0c2360a0  [  1 refs]  N9test_mode13MenuSatelliteE  -> 0x0c216e8c
+0x0c236748  [  1 refs]  N9test_mode11MenuGameAsgE  -> 0x0c217324
+0x0c236f14  [  1 refs]  riq_play_sample_31_2  -> 0x0c1e1974
+0x0c236f3c  [  1 refs]  riq_play_sample_20  -> 0x0c1e1978
+0x0c237324  [  1 refs]  riq_play_sample_34  -> 0x0c219878
+0x0c23772c  [  1 refs]  riq_play_sample_352p  -> 0x0c219340
+0x0c23775c  [  1 refs]  riq_play_sample_702p  -> 0x0c219348
+0x0c23778c  [  1 refs]  riq_play_sample_382p  -> 0x0c219350
+0x0c237834  [  1 refs]  riq_play_sample_20_22p  -> 0x0c219380
+0x0c237864  [  1 refs]  riq_play_sample_22_42p  -> 0x0c2194b8
+0x0c23787c  [  1 refs]  riq_play_sample_712p  -> 0x0c219100
+0x0c2378ac  [  1 refs]  riq_play_sample_09ex2p  -> 0x0c219108
+0x0c238d80  [  1 refs]  Riq_result4BSD  -> 0x0c0a83d4
+0x0c23f33c  [  1 refs]  psdRabbit  -> 0x0c21fbdc
+0x0c240390  [  1 refs]  riq_play_sample_49_2  -> 0x0c221950
+0x0c240438  [  1 refs]  riq_play_sample_63  -> 0x0c221958
+0x0c241194  [  1 refs]  riq_play_sample_352p_bsd  -> 0x0c221aa8
+0x0c241738  [  1 refs]  riq_play_sample_68_14_bsd  -> 0x0c0ba82c
+0x0c2417a8  [  1 refs]  riq_play_sample_68_18_bsd  -> 0x0c0bb1c4
+0x0c241848  [  1 refs]  riq_play_sample_70_skip_bsd  -> 0x0c0bbe94
+0x0c25417c  [  1 refs]  St16invalid_argument  -> 0x0c1ac988
+0x0c2541b4  [  1 refs]  St12domain_error  -> 0x0c1ac998
+0x0c254354  [  1 refs]  St11logic_error  -> 0x0c1acad8
+0x0c25670c  [  1 refs]  St16__numpunct_cacheIwE  -> 0x0c236bfc
+0x0c256a8c  [  1 refs]  St17moneypunct_bynameIwLb1EE  -> 0x0c1ada28
+0x0c257194  [  1 refs]  April  -> 0x0c1addbc
+0x0c2575c4  [  1 refs]  St7codecvtIcc13tag_mbstate_tE  -> 0x0c147e30
+0x0c2579d0  [  1 refs]  operator  -> 0x0c1af28c

@@ -1,0 +1,624 @@
+{
+  "name": "dr_lesson",
+  "description": "Sample bank for dr_lesson (from arcade DTPK)",
+  "arcade_rom": "ic10",
+  "arcade_offset": 33730816,
+  "samples": [
+    {
+      "id": "dr_lesson_s000",
+      "wav": "audio/samples/sample_6476.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 8158,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s001",
+      "wav": "audio/samples/sample_6477.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 34878,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s002",
+      "wav": "audio/samples/sample_6478.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6764,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s003",
+      "wav": "audio/samples/sample_6479.wav",
+      "pitch": "C5",
+      "loop_start": 4367,
+      "loop_end": 6933,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s004",
+      "wav": "audio/samples/sample_6480.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 14755,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s005",
+      "wav": "audio/samples/sample_6481.wav",
+      "pitch": "C5",
+      "loop_start": 1605,
+      "loop_end": 1707,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s006",
+      "wav": "audio/samples/sample_6482.wav",
+      "pitch": "C5",
+      "loop_start": 5141,
+      "loop_end": 9147,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s007",
+      "wav": "audio/samples/sample_6483.wav",
+      "pitch": "C5",
+      "loop_start": 2968,
+      "loop_end": 3121,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s008",
+      "wav": "audio/samples/sample_6484.wav",
+      "pitch": "C5",
+      "loop_start": 848,
+      "loop_end": 899,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s009",
+      "wav": "audio/samples/sample_6485.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1574,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s010",
+      "wav": "audio/samples/sample_6486.wav",
+      "pitch": "C5",
+      "loop_start": 619,
+      "loop_end": 721,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s011",
+      "wav": "audio/samples/sample_6487.wav",
+      "pitch": "C5",
+      "loop_start": 833,
+      "loop_end": 962,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s012",
+      "wav": "audio/samples/sample_6488.wav",
+      "pitch": "C5",
+      "loop_start": 1400,
+      "loop_end": 5713,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s013",
+      "wav": "audio/samples/sample_6489.wav",
+      "pitch": "C5",
+      "loop_start": 3544,
+      "loop_end": 5085,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s014",
+      "wav": "audio/samples/sample_6490.wav",
+      "pitch": "C5",
+      "loop_start": 5464,
+      "loop_end": 9106,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s015",
+      "wav": "audio/samples/sample_6491.wav",
+      "pitch": "C5",
+      "loop_start": 459,
+      "loop_end": 2779,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s016",
+      "wav": "audio/samples/sample_6492.wav",
+      "pitch": "C5",
+      "loop_start": 2814,
+      "loop_end": 2997,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s017",
+      "wav": "audio/samples/sample_6493.wav",
+      "pitch": "C5",
+      "loop_start": 5257,
+      "loop_end": 7591,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s018",
+      "wav": "audio/samples/sample_6494.wav",
+      "pitch": "C5",
+      "loop_start": 494,
+      "loop_end": 735,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s019",
+      "wav": "audio/samples/sample_6495.wav",
+      "pitch": "C5",
+      "loop_start": 1207,
+      "loop_end": 8214,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s020",
+      "wav": "audio/samples/sample_6496.wav",
+      "pitch": "C5",
+      "loop_start": 83,
+      "loop_end": 205,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s021",
+      "wav": "audio/samples/sample_6497.wav",
+      "pitch": "C5",
+      "loop_start": 1680,
+      "loop_end": 2979,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s022",
+      "wav": "audio/samples/sample_6498.wav",
+      "pitch": "C5",
+      "loop_start": 7034,
+      "loop_end": 9628,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s023",
+      "wav": "audio/samples/sample_6499.wav",
+      "pitch": "C5",
+      "loop_start": 5120,
+      "loop_end": 5248,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s024",
+      "wav": "audio/samples/sample_6500.wav",
+      "pitch": "C5",
+      "loop_start": 4,
+      "loop_end": 2006,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s025",
+      "wav": "audio/samples/sample_6501.wav",
+      "pitch": "C5",
+      "loop_start": 1183,
+      "loop_end": 2859,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s026",
+      "wav": "audio/samples/sample_6502.wav",
+      "pitch": "C5",
+      "loop_start": 1407,
+      "loop_end": 1458,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s027",
+      "wav": "audio/samples/sample_6503.wav",
+      "pitch": "C5",
+      "loop_start": 2572,
+      "loop_end": 3481,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s028",
+      "wav": "audio/samples/sample_6504.wav",
+      "pitch": "C5",
+      "loop_start": 2112,
+      "loop_end": 2163,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s029",
+      "wav": "audio/samples/sample_6505.wav",
+      "pitch": "C5",
+      "loop_start": 1668,
+      "loop_end": 1821,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s030",
+      "wav": "audio/samples/sample_6506.wav",
+      "pitch": "C5",
+      "loop_start": 2576,
+      "loop_end": 8811,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s031",
+      "wav": "audio/samples/sample_6507.wav",
+      "pitch": "C5",
+      "loop_start": 2223,
+      "loop_end": 2325,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s032",
+      "wav": "audio/samples/sample_6508.wav",
+      "pitch": "C5",
+      "loop_start": 2171,
+      "loop_end": 2222,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s033",
+      "wav": "audio/samples/sample_6509.wav",
+      "pitch": "C5",
+      "loop_start": 4065,
+      "loop_end": 4156,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s034",
+      "wav": "audio/samples/sample_6510.wav",
+      "pitch": "C5",
+      "loop_start": 1767,
+      "loop_end": 2099,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s035",
+      "wav": "audio/samples/sample_6511.wav",
+      "pitch": "C5",
+      "loop_start": 2192,
+      "loop_end": 2436,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s036",
+      "wav": "audio/samples/sample_6512.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 11161,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s037",
+      "wav": "audio/samples/sample_6513.wav",
+      "pitch": "C5",
+      "loop_start": 1958,
+      "loop_end": 2039,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s038",
+      "wav": "audio/samples/sample_6514.wav",
+      "pitch": "C5",
+      "loop_start": 4736,
+      "loop_end": 9576,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s039",
+      "wav": "audio/samples/sample_6515.wav",
+      "pitch": "C5",
+      "loop_start": 2660,
+      "loop_end": 2711,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s040",
+      "wav": "audio/samples/sample_6516.wav",
+      "pitch": "C5",
+      "loop_start": 20,
+      "loop_end": 44,
+      "format": "adpcm"
+    },
+    {
+      "id": "dr_lesson_s041",
+      "wav": "audio/samples/sample_6517.wav",
+      "pitch": "C5",
+      "loop_start": 1062,
+      "loop_end": 2844,
+      "format": "8bit"
+    },
+    {
+      "id": "dr_lesson_s042",
+      "wav": "audio/samples/sample_6518.wav",
+      "pitch": "C5",
+      "loop_start": 81,
+      "loop_end": 1354,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s043",
+      "wav": "audio/samples/sample_6519.wav",
+      "pitch": "C5",
+      "loop_start": 1162,
+      "loop_end": 1500,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s044",
+      "wav": "audio/samples/sample_6520.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4539,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s045",
+      "wav": "audio/samples/sample_6521.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6443,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s046",
+      "wav": "audio/samples/sample_6522.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 9642,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s047",
+      "wav": "audio/samples/sample_6523.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 8006,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s048",
+      "wav": "audio/samples/sample_6524.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6983,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s049",
+      "wav": "audio/samples/sample_6525.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6427,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s050",
+      "wav": "audio/samples/sample_6526.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 10123,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s051",
+      "wav": "audio/samples/sample_6527.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4491,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s052",
+      "wav": "audio/samples/sample_6528.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 15189,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s053",
+      "wav": "audio/samples/sample_6529.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 10760,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s054",
+      "wav": "audio/samples/sample_6530.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6202,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s055",
+      "wav": "audio/samples/sample_6531.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 14871,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s056",
+      "wav": "audio/samples/sample_6532.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 10505,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s057",
+      "wav": "audio/samples/sample_6533.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 7991,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s058",
+      "wav": "audio/samples/sample_6534.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 5156,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s059",
+      "wav": "audio/samples/sample_6535.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 5809,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s060",
+      "wav": "audio/samples/sample_6536.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 7861,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s061",
+      "wav": "audio/samples/sample_6537.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6153,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s062",
+      "wav": "audio/samples/sample_6538.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 7473,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s063",
+      "wav": "audio/samples/sample_6539.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 9155,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s064",
+      "wav": "audio/samples/sample_6540.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 11075,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s065",
+      "wav": "audio/samples/sample_6541.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3941,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s066",
+      "wav": "audio/samples/sample_6542.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6567,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s067",
+      "wav": "audio/samples/sample_6543.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 25105,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s068",
+      "wav": "audio/samples/sample_6544.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 18484,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s069",
+      "wav": "audio/samples/sample_6545.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 21984,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s070",
+      "wav": "audio/samples/sample_6546.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 19424,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s071",
+      "wav": "audio/samples/sample_6547.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 14207,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s072",
+      "wav": "audio/samples/sample_6548.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4884,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s073",
+      "wav": "audio/samples/sample_6549.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 33846,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s074",
+      "wav": "audio/samples/sample_6550.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 16777,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s075",
+      "wav": "audio/samples/sample_6551.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 7206,
+      "format": "16bit"
+    },
+    {
+      "id": "dr_lesson_s076",
+      "wav": "audio/samples/sample_6552.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 7748,
+      "format": "16bit"
+    }
+  ]
+}

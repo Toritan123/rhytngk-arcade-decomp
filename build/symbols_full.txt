@@ -1,0 +1,903 @@
+# Symbol map auto-generated from fpr-24423_decrypted.bin
+# VRAM base: 0x0c01fb00
+# 425 source files, 469 function names
+
+## SOURCE FILES (in order of reference frequency)
+# Format: <vaddr_of_string>  <ref_count>  <filename>
+0x0c258f20      3  src/riq/riq_reading/novel/init.c
+0x0c273010      3  src/riq/riq_play/scene/uma/image.c
+0x0c258448      2  src/idle_rh/idle_rh_init.c
+0x0c2584bc      2  src/seqsel/seqsel_init.c
+0x0c258510      2  src/riq/riq_toy/init.c
+0x0c258568      2  src/riq/riq_title/riq_title_init.c
+0x0c25858c      2  src/riq/riq_studio/init.c
+0x0c2588a0      2  src/riq/riq_result4/init.c
+0x0c258dd8      2  src/riq/riq_result/riq_result_init_3.c
+0x0c258ea4      2  src/riq/riq_result/riq_result_init_2.c
+0x0c25f058      2  src/riq/riq_play/scene/iai/iai_init.c
+0x0c25f0c4      2  src/riq/riq_play/scene/handclapex/handclapex_init.c
+0x0c25f134      2  src/riq/riq_play/scene/handclap/handclap_init.c
+0x0c25f198      2  src/riq/riq_play/scene/hanabi/init.c
+0x0c25f1fc      2  src/riq/riq_play/scene/hairex2p/hairex2p_init.c
+0x0c25f264      2  src/riq/riq_play/scene/hairex/hairex_init.c
+0x0c25f2c8      2  src/riq/riq_play/scene/hair2p/hair2p_init.c
+0x0c25f324      2  src/riq/riq_play/scene/hair/hair_init.c
+0x0c25f37c      2  src/riq/riq_play/scene/even/even_init.c
+0x0c25f3d0      2  src/riq/riq_play/scene/esa/init.c
+0x0c25f430      2  src/riq/riq_play/scene/drumtech/drumtech_init.c
+0x0c25f4c0      2  src/riq/riq_play/scene/drumdr/init.c
+0x0c25f644      2  src/riq/riq_play/scene/bonodori2p/init.c
+0x0c25f6cc      2  src/riq/riq_play/scene/bonodori/init.c
+0x0c25f738      2  src/riq/riq_play/scene/batterex2p/batterex2p_init.c
+0x0c25f7a8      2  src/riq/riq_play/scene/batter2p/batter2p_init.c
+0x0c25f814      2  src/riq/riq_play/scene/batterex/batterex_init.c
+0x0c25f87c      2  src/riq/riq_play/scene/batter/batter_init.c
+0x0c25f90c      2  src/riq/riq_play/scene/aim2p/aim2p_init.c
+0x0c25f990      2  src/riq/riq_play/scene/aim/aim_init.c
+0x0c26164c      2  src/riq/riq_mode/init.c
+0x0c261664      2  src/riq/riq_menu/riq_menu_init.c
+0x0c2642ec      2  src/riq/riq_library/init.c
+0x0c264348      2  src/riq/riq_counselor/init.c
+0x0c266580      2  src/riq/riq_arrival/init.c
+0x0c269c54      2  src/riq/riq_result/riq_result_init.c
+0x0c2720cc      2  src/riq/riq_play/scene/witch/init.c
+0x0c2720f0      2  src/riq/riq_play/scene/voice/init.c
+0x0c272114      2  src/riq/riq_play/scene/virus/virus_init.c
+0x0c272170      2  src/riq/riq_play/scene/trampoline/init.c
+0x0c27219c      2  src/riq/riq_play/scene/tossboys/init.c
+0x0c272238      2  src/riq/riq_play/scene/tap2p/init.c
+0x0c27225c      2  src/riq/riq_play/scene/tap/init.c
+0x0c272280      2  src/riq/riq_play/scene/spacedance2p/spacedance2p_init.c
+0x0c2722b8      2  src/riq/riq_play/scene/spacedance/init.c
+0x0c2722e4      2  src/riq/riq_play/scene/samurai2p/samurai2p_init.c
+0x0c272318      2  src/riq/riq_play/scene/samurai/samurai_init.c
+0x0c272348      2  src/riq/riq_play/scene/rat2p/init.c
+0x0c27236c      2  src/riq/riq_play/scene/rat/init.c
+0x0c272390      2  src/riq/riq_play/scene/rapman/init.c
+0x0c2723b8      2  src/riq/riq_play/scene/rabbit2p/rabbit2p_init.c
+0x0c2723e8      2  src/riq/riq_play/scene/rabbit/init.c
+0x0c272410      2  src/riq/riq_play/scene/quiz/init.c
+0x0c272468      2  src/riq/riq_play/scene/polyrythm/polyrythm_init.c
+0x0c272508      2  src/riq/riq_play/scene/marcherex2p/marcherex2p_init.c
+0x0c272540      2  src/riq/riq_play/scene/marcherex/marcherex_init.c
+0x0c272574      2  src/riq/riq_play/scene/marcher2p/marcher2p_init.c
+0x0c2725a8      2  src/riq/riq_play/scene/marcher/init.c
+0x0c272604      2  src/riq/riq_play/scene/kanji2p/kanji2p_init.c
+0x0c272634      2  src/riq/riq_play/scene/kanji/init.c
+0x0c2726d0      2  src/riq/riq_play/scene/drumosu/init.c
+0x0c2726f8      2  src/riq/riq_play/scene/drumosu/image.c
+0x0c2727d4      2  src/riq/riq_play/scene/drumgirls/init.c
+0x0c272858      2  src/riq/riq_play/scene/credit/init.c
+0x0c2728b4      2  src/riq/riq_play/scene/conveyer/init.c
+0x0c2728dc      2  src/riq/riq_play/scene/boxingex2p/boxingex2p_init.c
+0x0c272910      2  src/riq/riq_play/scene/boxingex/boxingex_init.c
+0x0c272940      2  src/riq/riq_play/scene/boxing2p/boxing2p_init.c
+0x0c272970      2  src/riq/riq_play/scene/boxing/boxing_init.c
+0x0c272af8      2  src/riq/riq_perfect/init.c
+0x0c272d68      2  src/riq/riq_option/init.c
+0x0c272ec0      2  src/riq/riq_datacheck/init.c
+0x0c272f30      2  src/backupclear/init.c
+0x0c272fe8      2  src/riq/riq_play/scene/uma/uma_init.c
+0x0c27327c      2  src/riq/riq_play/scene/poster/init.c
+0x0c2732a4      2  src/riq/riq_play/scene/metronome/init.c
+0x0c27336c      2  src/riq/riq_play/scene/metroman/init.c
+0x0c273394      2  src/riq/riq_play/scene/machine/init.c
+0x0c266734      2  boxing_extra/Cboxing_extra_bg.c
+0x0c25eb4c      1  src/riq/riq_play/scene/virus/virus_bonus.c
+0x0c25f460      1  src/riq/riq_play/scene/drumgirls/effect.c
+0x0c25f618      1  src/riq/riq_play/scene/bonodori2p/main.c
+0x0c25f6a4      1  src/riq/riq_play/scene/bonodori/main.c
+0x0c25f8e0      1  src/riq/riq_play/scene/aim2p/aim2p_item.c
+0x0c25f968      1  src/riq/riq_play/scene/aim/aim_item.c
+0x0c2696fc      1  src/start/start_init.c
+0x0c272830      1  src/riq/riq_play/scene/credit/main.c
+0x0c272ee0      1  src/bomber/bomber_bsc.c
+0x0c2665bc      1  aim/Caim.c
+0x0c2665c8      1  aim/Caim_bg.c
+0x0c2665d8      1  batter/Cbatter.c
+0x0c2665ec      1  batter/Cbatter_bg1.c
+0x0c266604      1  batter_extra/Cbatter_extra.c
+0x0c266624      1  batter_extra/Cbatter_extra_bg1.c
+0x0c266648      1  bigband/Cbigband.c
+0x0c26665c      1  bigband/Cbigband_bg.c
+0x0c266674      1  bondance/Cbondance.c
+0x0c26668c      1  bondance/Cbondance_bg.c
+0x0c2666a4      1  bonodori/Cbonodori.c
+0x0c2666bc      1  bonodori/Cbonodori_bg.c
+0x0c2666d4      1  bonodori/Cbonodori_mask.c
+0x0c2666f0      1  boxing/Cboxing_bg.c
+0x0c266704      1  boxing/Cboxing_bg_2.c
+0x0c26671c      1  boxing/Cboxing_bg_3.c
+0x0c266754      1  boxing/Cboxing_etc_00_cut.c
+0x0c266770      1  boxing/Cboxing_etc_01_cut.c
+0x0c26678c      1  boxing/Cboxing_etc_02_cut.c
+0x0c2667a8      1  boxing/Cboxing_obj.c
+0x0c2667c0      1  boxing_extra/Cboxing_extra_obj.c
+0x0c2667e4      1  chapter/aim/Cc_aim.c
+0x0c2667fc      1  chapter/aim/Cc_aim_bg.c
+0x0c266814      1  chapter/batter/Cc_batter.c
+0x0c266830      1  chapter/batter/Cc_batter_bg.c
+0x0c266850      1  chapter/bondance/Cc_bondance.c
+0x0c266870      1  chapter/bondance/Cc_bondance_bg.c
+0x0c266894      1  chapter/bonodori/Cc_bonodori.c
+0x0c2668b4      1  chapter/bonodori/Cc_bonodori_bg.c
+0x0c2668d8      1  chapter/boxing/Cc_boxing.c
+0x0c2668f4      1  chapter/boxing/Cc_boxing_bg.c
+0x0c266914      1  chapter/cosmodance/Cc_cosmodance.c
+0x0c266938      1  chapter/cosmodance/Cc_cosmodance_bg.c
+0x0c266960      1  chapter/drumtech/Cc_drumtech.c
+0x0c266980      1  chapter/drumtech/Cc_drumtech_bg.c
+0x0c2669a4      1  chapter/esa/Cc_esa.c
+0x0c2669bc      1  chapter/esa/Cc_esa_bg.c
+0x0c2669d4      1  chapter/even/Cc_even.c
+0x0c2669ec      1  chapter/even/Cc_even_bg.c
+0x0c266a08      1  chapter/hair/Cc_hair.c
+0x0c266a20      1  chapter/hair/Cc_hair_bg.c
+0x0c266a3c      1  chapter/hanabi/Cc_hanabi.c
+0x0c266a58      1  chapter/hanabi/Cc_hanabi_bg.c
+0x0c266a78      1  chapter/handclap/Cc_handclap.c
+0x0c266a98      1  chapter/handclap_bari/Cc_handclap_bari.c
+0x0c266ac4      1  chapter/handclap_bari/Cc_handclap_bari_bg.c
+0x0c266af0      1  chapter/handclap/Cc_handclap_bg.c
+0x0c266b14      1  chapter/iai/Cc_iai.c
+0x0c266b2c      1  chapter/iai/Cc_iai_bg.c
+0x0c266b44      1  chapter/kanji/Cc_kanji.c
+0x0c266b60      1  chapter/kanji/Cc_kanji_bg.c
+0x0c266b7c      1  chapter/marcher2/Cc_marcher2.c
+0x0c266b9c      1  chapter/marcher2/Cc_marcher2_bg.c
+0x0c266bc0      1  chapter/marcher/Cc_marcher.c
+0x0c266be0      1  chapter/marcher/Cc_marcher_bg.c
+0x0c266c00      1  chapter/polyrythm/Cc_polyrythm.c
+0x0c266c24      1  chapter/polyrythm/Cc_polyrythm_bg.c
+0x0c266c48      1  chapter/quiz/Cc_quiz.c
+0x0c266c60      1  chapter/quiz/Cc_quiz_bg.c
+0x0c266c7c      1  chapter/rabbit/Cc_rabbit.c
+0x0c266c98      1  chapter/rabbit/Cc_rabbit_bg.c
+0x0c266cb8      1  chapter/rapman/Cc_rapman.c
+0x0c266cd4      1  chapter/rapman/Cc_rapman_bg.c
+0x0c266cf4      1  chapter/rapwoman/Cc_rapwoman.c
+0x0c266d14      1  chapter/rapwoman/Cc_rapwoman_bg.c
+0x0c266d38      1  chapter/rat/Cc_rat.c
+0x0c266d50      1  chapter/rat/Cc_rat_bg.c
+0x0c266d68      1  chapter/remix01/Cc_remix01.c
+0x0c266d88      1  chapter/remix01/Cc_remix01_bg.c
+0x0c266da8      1  chapter/remix02/Cc_remix02.c
+0x0c266dc8      1  chapter/remix02/Cc_remix02_bg.c
+0x0c266de8      1  chapter/remix03/Cc_remix03.c
+0x0c266e08      1  chapter/remix03/Cc_remix03_bg.c
+0x0c266e28      1  chapter/remix04/Cc_remix04.c
+0x0c266e48      1  chapter/remix04/Cc_remix04_bg.c
+0x0c266e68      1  chapter/remix05/Cc_remix05.c
+0x0c266e88      1  chapter/remix05/Cc_remix05_bg.c
+0x0c266ea8      1  chapter/remix06/Cc_remix06.c
+0x0c266ec8      1  chapter/remix06/Cc_remix06_bg.c
+0x0c266ee8      1  chapter/remix07/Cc_remix07.c
+0x0c266f08      1  chapter/remix07/Cc_remix07_bg.c
+0x0c266f28      1  chapter/remix08/Cc_remix08.c
+0x0c266f48      1  chapter/remix08/Cc_remix08_bg.c
+0x0c266f68      1  chapter/samurai2/Cc_samurai2.c
+0x0c266f88      1  chapter/samurai2/Cc_samurai2_bg.c
+0x0c266fac      1  chapter/samurai/Cc_samurai.c
+0x0c266fcc      1  chapter/samurai/Cc_samurai_bg.c
+0x0c266fec      1  chapter/spacedance/Cc_spacedance.c
+0x0c267010      1  chapter/spacedance/Cc_spacedance_bg.c
+0x0c267038      1  chapter/tap/Cc_tap.c
+0x0c267050      1  chapter/tap/Cc_tap_bg.c
+0x0c267068      1  chapter/tap_ska/Cc_tap_ska.c
+0x0c267088      1  chapter/tap_ska/Cc_tap_ska_bg.c
+0x0c2670a8      1  chapter/tossboys2/Cc_tossboys2.c
+0x0c2670cc      1  chapter/tossboys2/Cc_tossboys2_bg.c
+0x0c2670f0      1  chapter/tossboys/Cc_tossboys.c
+0x0c267110      1  chapter/tossboys/Cc_tossboys_bg.c
+0x0c267134      1  chapter/trampoline/Cc_trampoline.c
+0x0c267158      1  chapter/trampoline/Cc_trampoline_bg.c
+0x0c267180      1  chapter/virus/Cc_virus.c
+0x0c26719c      1  chapter/virus/Cc_virus_bg.c
+0x0c2671b8      1  chapter/witch/Cc_witch.c
+0x0c2671d4      1  chapter/witch/Cc_witch_bg.c
+0x0c2671f0      1  riq/riq_reading/campaign/Ccampaign.c
+0x0c267218      1  riq/riq_reading/comic/Ccomic.c
+0x0c267238      1  conveyer/Cconveyer_bg.c
+0x0c267250      1  conveyer/Cconveyer_obj.c
+0x0c26726c      1  riq/riq_reading/cook/Ccook.c
+0x0c26728c      1  cosmodance/Ccosmodance.c
+0x0c2672a8      1  cosmodance/Ccosmodance_bg.c
+0x0c2672c4      1  credit/Ccredit_bg_00.c
+0x0c2672dc      1  credit/Ccredit_bg_01.c
+0x0c2672f4      1  credit/Ccredit_bg_02.c
+0x0c26730c      1  credit/Ccredit_bg_03.c
+0x0c267324      1  credit/Ccredit_bg_04.c
+0x0c26733c      1  credit/Ccredit_bg_05.c
+0x0c267354      1  credit/Ccredit_bg_06.c
+0x0c26736c      1  credit/Ccredit_bg_09.c
+0x0c267384      1  drumboys/Cdrumboys.c
+0x0c26739c      1  drumboys/Cdrumboys_bg.c
+0x0c2673b4      1  drumgirls/Cdrumgirls.c
+0x0c2673cc      1  drumgirls/Cdrumgirls_bg.c
+0x0c2673e8      1  drumgirls/Cdrumgirls_fan.c
+0x0c267404      1  drumko2/Cdrumko2.c
+0x0c267418      1  drumko2/Cdrumko2_bg.c
+0x0c267430      1  drumko2/Cdrumko2_spot.c
+0x0c267448      1  drumko3/Cdrumko3.c
+0x0c26745c      1  drumko3/Cdrumko3_spot.c
+0x0c267474      1  drumko4/Cdrumko4.c
+0x0c267488      1  drumko4/Cdrumko4_bg.c
+0x0c2674a0      1  drumko/Cdrumko_bg_00.c
+0x0c2674b8      1  drumko/Cdrumko_bg_01.c
+0x0c2674d0      1  drumko/Cdrumko_bg_02.c
+0x0c2674e8      1  drumko/Cdrumko_bg_03.c
+0x0c267500      1  drumko/Cdrumko_obj_00.c
+0x0c267518      1  drumosu/Cdrumosu.c
+0x0c26752c      1  drumosu/Cdrumosu_90.c
+0x0c267544      1  drumosu/Cdrumosu_bg.c
+0x0c26755c      1  drumosu/Cdrumosu_lesson.c
+0x0c267578      1  drumosu/Cdrumosu_mini.c
+0x0c267590      1  drumtech/Cdrumtech.c
+0x0c2675a8      1  riq/riq_reading/erotic/Cerotic.c
+0x0c2675cc      1  esa/Cesa.c
+0x0c2675d8      1  esa/Cesa_bg.c
+0x0c2675e8      1  esa/Cesa_bg_ex.c
+0x0c2675fc      1  even/Ceven.c
+0x0c26760c      1  even/Ceven_ex.c
+0x0c26761c      1  gyrotest/Cgyrotest.c
+0x0c267634      1  riq/riq_reading/haiku/Chaiku.c
+0x0c267654      1  hair/Chair.c
+0x0c267664      1  hair/Chair_bg.c
+0x0c267674      1  hair/Chair_mask.c
+0x0c267688      1  hair_extra/Chair_extra.c
+0x0c2676a4      1  hair_extra/Chair_extra_bg.c
+0x0c2676c0      1  hair_extra/Chair_extra_mask.c
+0x0c2676e0      1  hanabi/Chanabi.c
+0x0c2676f4      1  hanabi/Chanabibg2.c
+0x0c267708      1  hanabi/Chanabibg3.c
+0x0c26771c      1  hanabi/Chanabibg4.c
+0x0c267730      1  hanabi/Chanabibg.c
+0x0c267744      1  handclap/Chandclap.c
+0x0c26775c      1  handclap_bari/Chandclap_bari.c
+0x0c26777c      1  handclap_bari/Chandclap_bari_bg.c
+0x0c2677a0      1  handclap/Chandclap_bg.c
+0x0c2677b8      1  handclap_earth/Chandclap_earth.c
+0x0c2677dc      1  handclap_earth/Chandclap_earth_bg.c
+0x0c267800      1  iai/Ciai.c
+0x0c26780c      1  iai/Ciaibg.c
+0x0c26781c      1  kanji/Ckanji.c
+0x0c26782c      1  kanji/Ckanji_bg.c
+0x0c267840      1  kanji/Ckanji_ex.c
+0x0c267854      1  machine/Cmachine.c
+0x0c267868      1  machine/Cmachine_bg.c
+0x0c267880      1  marcher2/Cmarcher2.c
+0x0c267898      1  marcher2/Cmarcher2_bg.c
+0x0c2678b0      1  marcher/Cmarcher.c
+0x0c2678c4      1  marcher/Cmarcher_bg.c
+0x0c2678dc      1  marcher_extra/Cmarcher_extra.c
+0x0c2678fc      1  marcher_extra/Cmarcher_extra_bg.c
+0x0c267920      1  riq/riq_reading/math/Cmath.c
+0x0c267940      1  metronome/Cmetronome.c
+0x0c267958      1  music_image/Cmusic_image_00.c
+0x0c267978      1  music_image/Cmusic_image_01.c
+0x0c267998      1  music_image/Cmusic_image_02.c
+0x0c2679b8      1  music_image/Cmusic_image_03.c
+0x0c2679d8      1  music_image/Cmusic_image_04.c
+0x0c2679f8      1  music_image/Cmusic_image_05.c
+0x0c267a18      1  music_image/Cmusic_image_06.c
+0x0c267a38      1  music_image/Cmusic_image_07.c
+0x0c267a58      1  music_image/Cmusic_image_08.c
+0x0c267a78      1  music_image/Cmusic_image_09.c
+0x0c267a98      1  music_image/Cmusic_image_10.c
+0x0c267ab8      1  music_image/Cmusic_image_11.c
+0x0c267ad8      1  music_image/Cmusic_image_12.c
+0x0c267af8      1  music_image/Cmusic_image_13.c
+0x0c267b18      1  music_image/Cmusic_image_14.c
+0x0c267b38      1  riq/riq_reading/news/Cnews.c
+0x0c267b58      1  riq/riq_reading/novel/Cnovel.c
+0x0c267b78      1  option/Coption.c
+0x0c267b8c      1  option/Coption_bg.c
+0x0c267ba0      1  bomber/demo/Cpause.c
+0x0c267bb8      1  riq/riq_reading/poem/Cpoem.c
+0x0c267bd8      1  polyrythm/Cpolyrythm.c
+0x0c267bf0      1  poster/Cposter.c
+0x0c267c04      1  quiz/Cquiz.c
+0x0c267c14      1  quiz/Cquiz_bg.c
+0x0c267c24      1  result/aim/Cr_aim.c
+0x0c267c38      1  result/batter/Cr_batter.c
+0x0c267c54      1  result/bondance/Cr_bondance.c
+0x0c267c74      1  result/bonodori/Cr_bonodori.c
+0x0c267c94      1  result/boxing/Cr_boxing.c
+0x0c267cb0      1  result/cosmodance/Cr_cosmodance.c
+0x0c267cd4      1  result/drumgirls/Cr_drumgirls.c
+0x0c267cf4      1  result/drumtech/Cr_drumtech.c
+0x0c267d14      1  result/esa/Cr_esa.c
+0x0c267d28      1  result/even/Cr_even.c
+0x0c267d40      1  result/hair/Cr_hair.c
+0x0c267d58      1  result/hanabi/Cr_hanabi.c
+0x0c267d74      1  result/handclap/Cr_handclap.c
+0x0c267d94      1  result/handclap_bari/Cr_handclap_bari.c
+0x0c267dbc      1  result/iai/Cr_iai.c
+0x0c267dd0      1  result/kanji/Cr_kanji.c
+0x0c267de8      1  result/marcher2/Cr_marcher2.c
+0x0c267e08      1  result/marcher/Cr_marcher.c
+0x0c267e24      1  result/polyrythm/Cr_polyrythm.c
+0x0c267e44      1  result/quiz/Cr_quiz.c
+0x0c267e5c      1  result/rabbit/Cr_rabbit.c
+0x0c267e78      1  result/rapman/Cr_rapman.c
+0x0c267e94      1  result/rapwoman/Cr_rapwoman.c
+0x0c267eb4      1  result/rat/Cr_rat.c
+0x0c267ec8      1  result/remix01/Cr_remix01.c
+0x0c267ee4      1  result/remix02/Cr_remix02.c
+0x0c267f00      1  result/remix03/Cr_remix03.c
+0x0c267f1c      1  result/remix04/Cr_remix04.c
+0x0c267f38      1  result/remix05/Cr_remix05.c
+0x0c267f54      1  result/remix06/Cr_remix06.c
+0x0c267f70      1  result/remix07/Cr_remix07.c
+0x0c267f8c      1  result/remix08/Cr_remix08.c
+0x0c267fa8      1  result/samurai2/Cr_samurai2.c
+0x0c267fc8      1  result/samurai/Cr_samurai.c
+0x0c267fe4      1  result/spacedance/Cr_spacedance.c
+0x0c268008      1  result/tap/Cr_tap.c
+0x0c26801c      1  result/tap_ska/Cr_tap_ska.c
+0x0c268038      1  result/tossboys2/Cr_tossboys2.c
+0x0c268058      1  result/tossboys/Cr_tossboys.c
+0x0c268078      1  result/trampoline/Cr_trampoline.c
+0x0c26809c      1  result/virus/Cr_virus.c
+0x0c2680b4      1  result/witch/Cr_witch.c
+0x0c2680cc      1  result/xxx/Cr_xxx.c
+0x0c2680e0      1  rabbit/Crabbit.c
+0x0c2680f4      1  rabbit/Crabbitbg.c
+0x0c268108      1  rapman/Crapman.c
+0x0c26811c      1  rapman/Crapman_bg.c
+0x0c268130      1  rapwoman/Crapwoman.c
+0x0c268148      1  rapwoman/Crapwoman_bg.c
+0x0c268160      1  rat/Crat.c
+0x0c26816c      1  rat/Crat_bg.c
+0x0c26817c      1  riq/riq_reading/Creading.c
+0x0c268198      1  riq/riq_arrival/Criq_arrival.c
+0x0c2681b8      1  riq/riq_counselor/Criq_counselor.c
+0x0c2681dc      1  riq/riq_counselor/Criq_counselor_bg.c
+0x0c268204      1  riq/riq_game/Criq_game.c
+0x0c268220      1  riq/riq_game/Criq_game_bg.c
+0x0c26823c      1  riq/riq_keymem/Criq_keymem.c
+0x0c26825c      1  riq/riq_lesson/Criq_lesson.c
+0x0c26827c      1  riq/riq_lesson/Criq_lesson_bg.c
+0x0c26829c      1  riq/riq_library/Criq_library.c
+0x0c2682bc      1  riq/riq_library/Criq_library_bg.c
+0x0c2682e0      1  riq/riq_menu/Criq_menu.c
+0x0c2682fc      1  riq/riq_menu/Criq_menu_bg.c
+0x0c268318      1  riq/riq_mode/Criq_mode.c
+0x0c268334      1  riq/riq_mode/Criq_mode_bg.c
+0x0c268350      1  riq/riq_perfect/Criq_perfect.c
+0x0c268370      1  riq/riq_play/Criq_play.c
+0x0c26838c      1  riq/riq_result2/Criq_result2.c
+0x0c2683ac      1  riq/riq_result3/Criq_result3.c
+0x0c2683cc      1  riq/riq_studio/Criq_studio.c
+0x0c2683ec      1  riq/riq_studio/Criq_studio_bg.c
+0x0c26840c      1  riq/riq_title/Criq_title.c
+0x0c268428      1  riq/riq_title/Criq_title_obj.c
+0x0c268448      1  riq/riq_toy/Criq_toy.c
+0x0c268460      1  riq/riq_toy/Criq_toy_bg.c
+0x0c26847c      1  riq/riq_toy/cat/Criq_toy_cat.c
+0x0c26849c      1  riq/riq_toy/cat/Criq_toy_cat_bg.c
+0x0c2684c0      1  riq/riq_toy/Criq_toy_common.c
+0x0c2684e0      1  riq/riq_toy/rap/Criq_toy_rap.c
+0x0c268500      1  riq/riq_toy/rap/Criq_toy_rap_bg.c
+0x0c268524      1  riq/riq_toy/woman/Criq_toy_woman.c
+0x0c268548      1  riq/riq_toy/woman/Criq_toy_woman_bg.c
+0x0c268570      1  samurai/Csamurai_bg_00.c
+0x0c26858c      1  samurai/Csamurai_bg_03.c
+0x0c2685a8      1  samurai/Csamurai_obj_00.c
+0x0c2685c4      1  spacedance/Cspacedance.c
+0x0c2685e0      1  spacedance/Cspacedance_bg.c
+0x0c2685fc      1  spacedance/Cspacedance_bg_02.c
+0x0c26861c      1  spaceusagi/Cspaceusagi.c
+0x0c268638      1  spaceusagi/Cspaceusagi_bg.c
+0x0c268654      1  tanuki/Ctanuki.c
+0x0c268668      1  tanuki/Ctanuki_bg.c
+0x0c26867c      1  tap/Ctap.c
+0x0c268688      1  tap/Ctap_bg.c
+0x0c268698      1  tap_remix/Ctap_bg_remix.c
+0x0c2686b4      1  tap_china/Ctap_china.c
+0x0c2686cc      1  tap_china/Ctap_china_bg.c
+0x0c2686e8      1  tap_dress/Ctap_dress.c
+0x0c268700      1  tap_dress/Ctap_dress_bg.c
+0x0c26871c      1  tap_remix/Ctap_remix.c
+0x0c268734      1  tap_ska/Ctap_ska.c
+0x0c268748      1  tap_ska/Ctap_ska_bg.c
+0x0c268760      1  tossboys2/Ctossboys2.c
+0x0c268778      1  tossboys2/Ctossboys2_bg.c
+0x0c268794      1  tossboys2/Ctossboys2_bg_2.c
+0x0c2687b0      1  tossboys/Ctossboys.c
+0x0c2687c8      1  tossboys/Ctossboys_bg.c
+0x0c2687e0      1  tossboys/Ctossboys_bg_2.c
+0x0c2687fc      1  tossboys_remix/Ctossboys_bg_remix.c
+0x0c268820      1  tossboys_remix/Ctossboys_remix.c
+0x0c268844      1  trampoline/Ctrampoline.c
+0x0c268860      1  trampoline/Ctrampoline_bg_love.c
+0x0c268884      1  trampoline_show/Ctrampoline_show.c
+0x0c2688a8      1  trampoline_show/Ctrampoline_show_bg.c
+0x0c2688d0      1  trampoline/Ctrampolinebg.c
+0x0c2688ec      1  uma/Cuma.c
+0x0c2688f8      1  uma/Cuma_ex_00.c
+0x0c26890c      1  uma/Cuma_ex_01.c
+0x0c268920      1  uma/Cuma_ex_02.c
+0x0c268934      1  uma/Cuma_ex_03.c
+0x0c268948      1  uma/Cuma_ex_04.c
+0x0c26895c      1  uma/Cuma_ex_05.c
+0x0c268970      1  uma/Cumabg.c
+0x0c268980      1  virus/Cvirus_1.c
+0x0c268994      1  virus/Cvirus_1_bg.c
+0x0c2689a8      1  warning/Cwarning.c
+0x0c2689bc      1  witch/Cwitch.c
+0x0c2689cc      1  witch/Cwitch_bg.c
+0x0c2689e0      1  yankee/Cyankee_bg_01.c
+0x0c2689f8      1  yankee/Cyankee_obj_01.c
+
+## FUNCTION/VAR NAMES
+# Format: <vaddr_of_string>  <ref_count>  <name>  <code_locations>
+0x0c24e8a4     31  GLIBCXX_FORCE_NEW                        0x0c13374c 0x0c13449c 0x0c134588 0x0c134d1c 0x0c134e00
+0x0c274ab0     28  POSIX                                    0x0c119980 0x0c119a40 0x0c11f440 0x0c11f500 0x0c17d520
+0x0c173f60     10  RaCb                                     0x0c16e9d4 0x0c170254 0x0c170418 0x0c19c5f0 0x0c19d610
+0x0c173cc0      8  RaCb                                     0x0c171038 0x0c19c6d0 0x0c19caf0 0x0c19cbd0 0x0c19cc48
+0x0c251f0c      7  sta_e                                    0x0c048b0c 0x0c04d4c0 0x0c04fe34 0x0c0500bc 0x0c0502a8
+0x0c24ed70      5  fREe                                     0x0c0215a4 0x0c021674 0x0c0218c8 0x0c021ae0 0x0c021e70
+0x0c250d5c      5  mpIdle_rh                                0x0c040a3c 0x0c040be8 0x0c0412e4 0x0c0427a8 0x0c042b60
+0x0c251814      5  timer_01                                 0x0c0447c8 0x0c045344 0x0c0465b4 0x0c050f20 0x0c053684
+0x0c25571c      5  EXIT                                     0x0c0588d0 0x0c05a1f4 0x0c05bb98 0x0c05bdf0 0x0c15213c
+0x0c251ef8      4  bg_01                                    0x0c04885c 0x0c048b04 0x0c04d4c8 0x0c14e9e4
+0x0c252738      4  sta_s                                    0x0c04fad0 0x0c04fe30 0x0c0500b8 0x0c0502b0
+0x0c251c38      4  norikan_suji_position                    0x0c14e27c 0x0c1cb940 0x0c1cc3ec 0x0c1cc454
+0x0c251098      3  fade_out                                 0x0c0425ac 0x0c050608 0x0c14e6b0
+0x0c251830      3  sel_timer_animation                      0x0c0449e4 0x0c045530 0x0c046874
+0x0c251f00      3  separate                                 0x0c048a24 0x0c04d4d4 0x0c14e9ec
+0x0c252728      3  percent_waku                             0x0c04fadc 0x0c0500c8 0x0c0502b4
+0x0c276818      3  true                                     0x0c11a6fc 0x0c122f44 0x0c12358c
+0x0c24ed78      2  internal                                 0x0c021ae8 0x0c021e78
+0x0c250a74      2  unknown                                  0x0c038e90 0x0c038edc
+0x0c252158      2  norinori2p                               0x0c04b568 0x0c04b744
+0x0c252184      2  sense2p                                  0x0c04b93c 0x0c04bb2c
+0x0c252410      2  gam_over_message_01                      0x0c04cba8 0x0c14dec0
+0x0c252424      2  gam_over_message_02                      0x0c04cbb0 0x0c14dec4
+0x0c252438      2  gam_over_message_03                      0x0c04cbb4 0x0c14dec8
+0x0c2524d4      2  your_turn_1p                             0x0c04d684 0x0c14f1e4
+0x0c2524e4      2  your_turn_2p                             0x0c04d68c 0x0c14f1ec
+0x0c2524f4      2  zanki                                    0x0c04dac0 0x0c14f520
+0x0c252798      2  rslt_waku                                0x0c0500c4 0x0c0502ac
+0x0c255ef4      2  SINGLES                                  0x0c05bb6c 0x0c05bdc4
+0x0c255f30      2  DOUBLES                                  0x0c05bb80 0x0c05bdd8
+0x0c245290      2  DTPK                                     0x0c0e7a1c 0x0c0e9afc
+0x0c24522c      2  DTPK                                     0x0c0e7ae4 0x0c0e8454
+0x0c276820      2  false                                    0x0c11a700 0x0c123590
+0x0c2774d0      2  operator                                 0x0c1225fc 0x0c122f34
+0x0c112da0      2  BbAQ                                     0x0c14979c 0x0c14a79c
+0x0c252478      2  fade_in                                  0x0c14e4fc 0x0c14e6ac
+0x0c2559e4      2  COMPLETED                                0x0c151ffc 0x0c1546e0
+0x0c251160      2  bg01                                     0x0c1cb670 0x0c1cb734
+0x0c251168      2  wave                                     0x0c1cb674 0x0c1cb738
+0x0c251170      2  star                                     0x0c1cb678 0x0c1cb73c
+0x0c25132c      2  ranking_number_position1                 0x0c1cb6f4 0x0c1cb7b8
+0x0c251348      2  ranking_number_position2                 0x0c1cb6f8 0x0c1cb7bc
+0x0c251364      2  ranking_number_position3                 0x0c1cb6fc 0x0c1cb7c0
+0x0c251380      2  ranking_number_position4                 0x0c1cb700 0x0c1cb7c4
+0x0c25139c      2  ranking_number_position5                 0x0c1cb704 0x0c1cb7c8
+0x0c2513b8      2  ranking_number_position6                 0x0c1cb708 0x0c1cb7cc
+0x0c2513d4      2  ranking_number_position7                 0x0c1cb70c 0x0c1cb7d0
+0x0c2513f0      2  ranking_number_position8                 0x0c1cb710 0x0c1cb7d4
+0x0c25140c      2  ranking_number_position9                 0x0c1cb714 0x0c1cb7d8
+0x0c251428      2  ranking_number_position10                0x0c1cb718 0x0c1cb7dc
+0x0c251978      2  stage_01                                 0x0c1cb82c 0x0c1cb874
+0x0c251984      2  stage_02                                 0x0c1cb830 0x0c1cb878
+0x0c251990      2  stage_03                                 0x0c1cb834 0x0c1cb87c
+0x0c25199c      2  stage_04                                 0x0c1cb838 0x0c1cb880
+0x0c2519a8      2  stage_05                                 0x0c1cb83c 0x0c1cb884
+0x0c2519b4      2  stage_06                                 0x0c1cb840 0x0c1cb888
+0x0c2519e4      2  window_stage_attention                   0x0c1cb850 0x0c1cb898
+0x0c2522ac      2  good                                     0x0c1cbb40 0x0c1cbb44
+0x0c2522b4      2  normal                                   0x0c1cbb48 0x0c1cbb4c
+0x0c254090      2  order_suji_position                      0x0c1cc3e8 0x0c1cc450
+0x0c24e954      1  check                                    0x0c020e9c
+0x0c1c3a70      1  MemoryManagerTest                        0x0c03200c
+0x0c25090c      1  PrimaryData                              0x0c03705c
+0x0c250918      1  MiscData                                 0x0c03707c
+0x0c250af0      1  DATA_INITIALIZE                          0x0c03959c
+0x0c250b70      1  pack                                     0x0c03b8bc
+0x0c250b98      1  song                                     0x0c03bcd8
+0x0c250c14      1  FREEPLAY                                 0x0c03d2f8
+0x0c250cb0      1  SYSTEM_STARTUP                           0x0c03f13c
+0x0c250d50      1  LAMP_CTRL                                0x0c03f984
+0x0c250e84      1  TASK_MODE_APP_ERROR                      0x0c040f4c
+0x0c250edc      1  TITLE                                    0x0c0414cc
+0x0c250ee4      1  RATING                                   0x0c0414f4
+0x0c250eec      1  LOGO                                     0x0c041540
+0x0c250ef4      1  WARNING                                  0x0c04158c
+0x0c251044      1  DEMO                                     0x0c041df0
+0x0c251140      1  RANKING                                  0x0c042c7c
+0x0c2517a8      1  TASK_SELECTOR                            0x0c044240
+0x0c2517fc      1  TASK_SEL_NUMBER                          0x0c044418
+0x0c251820      1  sel_player_op                            0x0c0449d8
+0x0c251844      1  sel_player_loop                          0x0c044a00
+0x0c251908      1  TASK_SEL_STAGE                           0x0c044ff0
+0x0c251aa0      1  TASK_SEL_GAME                            0x0c045c34
+0x0c251e40      1  TASK_CHAPTER                             0x0c047824
+0x0c251e98      1  TUTORIAL                                 0x0c047a44
+0x0c251eec      1  TASK_LIVE                                0x0c0481dc
+0x0c2520a8      1  RESULT                                   0x0c0498ec
+0x0c252100      1  txt_point1l                              0x0c04a51c
+0x0c25210c      1  txt_point1m                              0x0c04a520
+0x0c252118      1  txt_point1s                              0x0c04a524
+0x0c252124      1  txt_point2all                            0x0c04a638
+0x0c252134      1  saiko                                    0x0c04b218
+0x0c25213c      1  thanx1p                                  0x0c04b37c
+0x0c252144      1  thanx2p                                  0x0c04b398
+0x0c25214c      1  norinori1p                               0x0c04b550
+0x0c252164      1  donmai2p                                 0x0c04b570
+0x0c252170      1  donmai1p                                 0x0c04b73c
+0x0c25217c      1  sense1p                                  0x0c04b92c
+0x0c25218c      1  shourai2p                                0x0c04bb0c
+0x0c252198      1  shourai1p                                0x0c04bb28
+0x0c252304      1  continue                                 0x0c04c264
+0x0c252310      1  res_congra                               0x0c04c470
+0x0c25231c      1  retry_thanx                              0x0c04c474
+0x0c252338      1  go_HiLevel                               0x0c04c478
+0x0c252328      1  go_remix                                 0x0c04c47c
+0x0c252344      1  CONTINUE                                 0x0c04c4b4
+0x0c252460      1  TASK_GAMEOVER                            0x0c04cb9c
+0x0c2524cc      1  INFO                                     0x0c04ce64
+0x0c2526c4      1  COMPATIBILITY                            0x0c04e848
+0x0c2526f0      1  norikan_suji_position_1p                 0x0c04f1d4
+0x0c25270c      1  norikan_suji_position_2p                 0x0c04f1ec
+0x0c252740      1  maku                                     0x0c04fae0
+0x0c252748      1  base                                     0x0c04faf0
+0x0c252750      1  base02_nml                               0x0c04faf4
+0x0c25275c      1  neon_move                                0x0c04fc78
+0x0c252768      1  neu_s                                    0x0c04fe44
+0x0c252770      1  meter_0_100                              0x0c04ffb0
+0x0c25277c      1  neon_tenmetu                             0x0c04ffbc
+0x0c25278c      1  neon_kettei                              0x0c04ffc0
+0x0c2527a4      1  base02_rslt                              0x0c05029c
+0x0c2527b0      1  neon_tenmetu02                           0x0c0502a0
+0x0c2527c0      1  percent_suji01_position                  0x0c0504c8
+0x0c2527d8      1  percent_suji02_position                  0x0c0504e0
+0x0c253ff8      1  TASK_NAME_ENTRY                          0x0c050720
+0x0c25404c      1  TASK_NAME_ENTRY_GENDER                   0x0c050a6c
+0x0c2542c8      1  TASK_NAME_ENTRY_EDIT                     0x0c055438
+0x0c25573c      1  TEST_MODE_TASK                           0x0c0597a4
+0x0c255a5c      1  BOOKKEEPING                              0x0c05a1ec
+0x0c2568c8      1  TASK_AGB                                 0x0c0696e8
+0x0c2574d0      1  DATA_TEST_MAIN_TASK                      0x0c06ce50
+0x0c257564      1  DATA_TEST_MISC_TASK                      0x0c06cf8c
+0x0c2575d4      1  DATA_TEST_SPRITE_TASK                    0x0c06d0b4
+0x0c257674      1  DATA_TEST_AET_TASK                       0x0c06d1dc
+0x0c257788      1  SimpleFlashFS                            0x0c06e63c
+0x0c26659c      1  NotActive                                0x0c097d70
+0x0c2451cc      1  SPSD                                     0x0c0e7ca4
+0x0c2767f0      1  digit                                    0x0c1197e8
+0x0c276808      1  alnum                                    0x0c1197ec
+0x0c276800      1  xdigit                                   0x0c1197f4
+0x0c2767d8      1  upper                                    0x0c1197f8
+0x0c276810      1  graph                                    0x0c1197fc
+0x0c2767e0      1  lower                                    0x0c119800
+0x0c2767d0      1  cntrl                                    0x0c119804
+0x0c2767e8      1  alpha                                    0x0c119808
+0x0c2767c8      1  print                                    0x0c11980c
+0x0c2767c0      1  space                                    0x0c119810
+0x0c2767f8      1  punct                                    0x0c119814
+0x0c276c18      1  Sunday                                   0x0c11aabc
+0x0c276c48      1  Friday                                   0x0c11aac0
+0x0c276c20      1  Monday                                   0x0c11aac4
+0x0c276c28      1  Tuesday                                  0x0c11aacc
+0x0c276c30      1  Wednesday                                0x0c11aad0
+0x0c276c3c      1  Thursday                                 0x0c11aad4
+0x0c276c50      1  Saturday                                 0x0c11aad8
+0x0c276c78      1  January                                  0x0c11aaf8
+0x0c276c80      1  February                                 0x0c11aafc
+0x0c276c8c      1  March                                    0x0c11ab00
+0x0c276c94      1  April                                    0x0c11ab04
+0x0c276ca0      1  June                                     0x0c11ab08
+0x0c276ca8      1  July                                     0x0c11ab0c
+0x0c276cb0      1  August                                   0x0c11ab10
+0x0c276cb8      1  September                                0x0c11ab14
+0x0c276cc4      1  October                                  0x0c11ab18
+0x0c276ccc      1  November                                 0x0c11ab1c
+0x0c276cd8      1  December                                 0x0c11ab20
+0x0c277950      1  acosf                                    0x0c1247cc
+0x0c277958      1  atan2f                                   0x0c12487c
+0x0c277960      1  fmodf                                    0x0c12493c
+0x0c2779e4      1  tolower                                  0x0c131ddc
+0x0c2779ec      1  toupper                                  0x0c131de4
+0x0c24f3d8      1  abcdefghi                                0x0c139e1c
+0x0c2524c4      1  miss                                     0x0c14eccc
+0x0c255c38      1  TEST                                     0x0c15372c
+0x0c255c40      1  SERVICE                                  0x0c153730
+0x0c255c4c      1  PLAYER                                   0x0c153744
+0x0c256608      1  led_speaker                              0x0c162578
+0x0c256614      1  led_1p_a                                 0x0c162584
+0x0c256620      1  led_1p_b                                 0x0c16258c
+0x0c25662c      1  led_1p_up                                0x0c162590
+0x0c256638      1  led_1p_down                              0x0c162594
+0x0c256644      1  led_1p_left                              0x0c162598
+0x0c256650      1  led_1p_right                             0x0c16259c
+0x0c256660      1  led_2p_a                                 0x0c1625a0
+0x0c25666c      1  led_2p_b                                 0x0c1625a4
+0x0c256678      1  led_2p_up                                0x0c1625a8
+0x0c256684      1  led_2p_down                              0x0c1625ac
+0x0c256690      1  led_2p_left                              0x0c1625b0
+0x0c25669c      1  led_2p_right                             0x0c1625b4
+0x0c25763c      1  LOOP                                     0x0c168678
+0x0c257644      1  LOCK                                     0x0c16867c
+0x0c25764c      1  PAUSE                                    0x0c16881c
+0x0c257654      1  LAYOUT                                   0x0c16883c
+0x0c25765c      1  DRAW                                     0x0c168840
+0x0c2576a8      1  ROOT                                     0x0c16958c
+0x0c1bac20      1  BbRa                                     0x0c1bb3dc
+0x0c2506d8      1  EASY                                     0x0c1bfa38
+0x0c2506e0      1  NORMAL                                   0x0c1bfa40
+0x0c2506e8      1  HARD                                     0x0c1bfa48
+0x0c2508b0      1  MEMC_SYS                                 0x0c1c3a90
+0x0c2508bc      1  MEMC_TMP                                 0x0c1c3aa0
+0x0c2508c8      1  MEMC_MODE                                0x0c1c3ab0
+0x0c2508d4      1  MEMC_EVENT                               0x0c1c3ac0
+0x0c2508e0      1  MEMC_DEBUG                               0x0c1c3ad0
+0x0c2511fc      1  rank_plate1p_mov                         0x0c1cb6a0
+0x0c251210      1  ranking_single_1p_position1              0x0c1cb6a4
+0x0c25122c      1  ranking_single_1p_position2              0x0c1cb6a8
+0x0c251248      1  ranking_single_1p_position3              0x0c1cb6ac
+0x0c251264      1  ranking_single_1p_position4              0x0c1cb6b0
+0x0c251280      1  ranking_single_1p_position5              0x0c1cb6b4
+0x0c25129c      1  ranking_single_1p_position6              0x0c1cb6b8
+0x0c2512b8      1  ranking_single_1p_position7              0x0c1cb6bc
+0x0c2512d4      1  ranking_single_1p_position8              0x0c1cb6c0
+0x0c2512f0      1  ranking_single_1p_position9              0x0c1cb6c4
+0x0c25130c      1  ranking_single_1p_position10             0x0c1cb6c8
+0x0c2514bc      1  rank_plate2p_mov                         0x0c1cb764
+0x0c2514d0      1  ranking_double_1p_position1              0x0c1cb768
+0x0c2514ec      1  ranking_double_1p_position2              0x0c1cb76c
+0x0c251508      1  ranking_double_1p_position3              0x0c1cb770
+0x0c251524      1  ranking_double_1p_position4              0x0c1cb774
+0x0c251540      1  ranking_double_1p_position5              0x0c1cb778
+0x0c25155c      1  ranking_double_1p_position6              0x0c1cb77c
+0x0c251578      1  ranking_double_1p_position7              0x0c1cb780
+0x0c251594      1  ranking_double_1p_position8              0x0c1cb784
+0x0c2515b0      1  ranking_double_1p_position9              0x0c1cb788
+0x0c2515cc      1  ranking_double_1p_position10             0x0c1cb78c
+0x0c2515ec      1  ranking_double_2p_position1              0x0c1cb790
+0x0c251608      1  ranking_double_2p_position2              0x0c1cb794
+0x0c251624      1  ranking_double_2p_position3              0x0c1cb798
+0x0c251640      1  ranking_double_2p_position4              0x0c1cb79c
+0x0c25165c      1  ranking_double_2p_position5              0x0c1cb7a0
+0x0c251678      1  ranking_double_2p_position6              0x0c1cb7a4
+0x0c251694      1  ranking_double_2p_position7              0x0c1cb7a8
+0x0c2516b0      1  ranking_double_2p_position8              0x0c1cb7ac
+0x0c2516cc      1  ranking_double_2p_position9              0x0c1cb7b0
+0x0c2516e8      1  ranking_double_2p_position10             0x0c1cb7b4
+0x0c251854      1  active_1p_loop                           0x0c1cb7ec
+0x0c251864      1  push_1p                                  0x0c1cb7f0
+0x0c25187c      1  coin_suji_1p                             0x0c1cb7f8
+0x0c25188c      1  active_2p_loop                           0x0c1cb7fc
+0x0c25189c      1  push_2p                                  0x0c1cb800
+0x0c2518b4      1  coin_suji_2p                             0x0c1cb808
+0x0c251918      1  sel_stage_s_loop                         0x0c1cb818
+0x0c25192c      1  sel_stage_s_st                           0x0c1cb81c
+0x0c25193c      1  sel_stage_s_ya_01_l                      0x0c1cb820
+0x0c251950      1  sel_stage_s_ya_01_r                      0x0c1cb824
+0x0c251964      1  sel_stage_s_st_push                      0x0c1cb828
+0x0c2519c0      1  stage_07                                 0x0c1cb844
+0x0c2519cc      1  stage_08                                 0x0c1cb848
+0x0c2519d8      1  stage_09                                 0x0c1cb84c
+0x0c2519fc      1  sel_stage_d_loop                         0x0c1cb860
+0x0c251a10      1  sel_stage_d_st                           0x0c1cb864
+0x0c251a20      1  sel_stage_d_ya_01_l                      0x0c1cb868
+0x0c251a34      1  sel_stage_d_ya_01_r                      0x0c1cb86c
+0x0c251a48      1  sel_stage_d_st_push                      0x0c1cb870
+0x0c251ab8      1  sel_game_s_loop                          0x0c1cb8a8
+0x0c251ac8      1  icon_waku                                0x0c1cb8ac
+0x0c251ad4      1  sel_game_s_ya_01_l                       0x0c1cb8b0
+0x0c251ae8      1  sel_game_s_ya_01_r                       0x0c1cb8b4
+0x0c251afc      1  sel_game_s_icon_push                     0x0c1cb8b8
+0x0c251b14      1  stage_1                                  0x0c1cb8bc
+0x0c251b1c      1  stage_2                                  0x0c1cb8c0
+0x0c251b24      1  stage_3                                  0x0c1cb8c4
+0x0c251b2c      1  stage_4                                  0x0c1cb8c8
+0x0c251b34      1  stage_5                                  0x0c1cb8cc
+0x0c251b3c      1  stage_6                                  0x0c1cb8d0
+0x0c251b44      1  stage_7                                  0x0c1cb8d4
+0x0c251b4c      1  stage_8                                  0x0c1cb8d8
+0x0c251b54      1  stage_9                                  0x0c1cb8dc
+0x0c251b5c      1  gam_icon_clear_position_1                0x0c1cb908
+0x0c251b78      1  gam_icon_clear_position_2                0x0c1cb90c
+0x0c251b94      1  gam_icon_clear_position_3                0x0c1cb910
+0x0c251bb0      1  gam_icon_clear_position_4                0x0c1cb914
+0x0c251bcc      1  gam_icon_clear_position_5                0x0c1cb918
+0x0c251be8      1  gam_icon_clear_position_6                0x0c1cb91c
+0x0c251c04      1  gam_icon_remix_off_position_6            0x0c1cb920
+0x0c251c24      1  sel_game_s_gamesuu                       0x0c1cb924
+0x0c251c50      1  sel_game_s_bonus                         0x0c1cb948
+0x0c251c64      1  sel_game_d_loop                          0x0c1cb958
+0x0c251c74      1  icon_waku_d                              0x0c1cb95c
+0x0c251c80      1  sel_game_d_ya_01_l                       0x0c1cb960
+0x0c251c94      1  sel_game_d_ya_01_r                       0x0c1cb964
+0x0c251ca8      1  sel_game_d_icon_push                     0x0c1cb968
+0x0c251cc0      1  stage_1_d                                0x0c1cb96c
+0x0c251ccc      1  stage_2_d                                0x0c1cb970
+0x0c251cd8      1  stage_3_d                                0x0c1cb974
+0x0c251ce4      1  stage_4_d                                0x0c1cb978
+0x0c251cf0      1  stage_5_d                                0x0c1cb97c
+0x0c251cfc      1  stage_6_d                                0x0c1cb980
+0x0c251d08      1  gam_icon_clear_position_1_d              0x0c1cb9b8
+0x0c251d24      1  gam_icon_clear_position_2_d              0x0c1cb9bc
+0x0c251d40      1  gam_icon_clear_position_3_d              0x0c1cb9c0
+0x0c251d5c      1  gam_icon_clear_position_4_d              0x0c1cb9c4
+0x0c251d78      1  gam_icon_remix_off_position_4_d          0x0c1cb9d0
+0x0c251d98      1  sel_game_d_gamesuu                       0x0c1cb9d4
+0x0c251dac      1  norikan_suji_position_1p_d               0x0c1cb9f0
+0x0c251dc8      1  norikan_suji_position_2p_d               0x0c1cb9f4
+0x0c251de4      1  sel_game_d_bonus                         0x0c1cb9f8
+0x0c251f14      1  lv_00                                    0x0c1cba18
+0x0c251f1c      1  lv_00w                                   0x0c1cba1c
+0x0c251f24      1  lv_01                                    0x0c1cba20
+0x0c251f2c      1  lv_02                                    0x0c1cba24
+0x0c251f34      1  lv_03                                    0x0c1cba28
+0x0c251f3c      1  lv_04                                    0x0c1cba2c
+0x0c251f44      1  lv_05                                    0x0c1cba30
+0x0c251f4c      1  lv_00_1p                                 0x0c1cba50
+0x0c251f58      1  lv_00w_1p                                0x0c1cba54
+0x0c251f64      1  lv_01_1p                                 0x0c1cba58
+0x0c251f70      1  lv_02_1p                                 0x0c1cba5c
+0x0c251f7c      1  lv_03_1p                                 0x0c1cba60
+0x0c251f88      1  lv_04_1p                                 0x0c1cba64
+0x0c251f94      1  lv_05_1p                                 0x0c1cba68
+0x0c251fa0      1  lv_00_2p                                 0x0c1cba6c
+0x0c251fac      1  lv_00w_2p                                0x0c1cba70
+0x0c251fb8      1  lv_01_2p                                 0x0c1cba74
+0x0c251fc4      1  lv_02_2p                                 0x0c1cba78
+0x0c251fd0      1  lv_03_2p                                 0x0c1cba7c
+0x0c251fdc      1  lv_04_2p                                 0x0c1cba80
+0x0c251fe8      1  lv_05_2p                                 0x0c1cba84
+0x0c2521a4      1  perfect_L                                0x0c1cbae0
+0x0c2521b0      1  perfect_M                                0x0c1cbae4
+0x0c2521bc      1  perfect_S                                0x0c1cbae8
+0x0c2521c8      1  good_L                                   0x0c1cbaec
+0x0c2521d0      1  good_M                                   0x0c1cbaf0
+0x0c2521d8      1  good_S                                   0x0c1cbaf4
+0x0c2521e0      1  normalplus_L                             0x0c1cbaf8
+0x0c2521f0      1  normalplus_M                             0x0c1cbafc
+0x0c252200      1  normalplus_S                             0x0c1cbb00
+0x0c252210      1  normal_L                                 0x0c1cbb04
+0x0c25221c      1  normal_M                                 0x0c1cbb08
+0x0c252228      1  normal_S                                 0x0c1cbb0c
+0x0c252234      1  badplus_L                                0x0c1cbb10
+0x0c252240      1  badplus_M                                0x0c1cbb14
+0x0c25224c      1  badplus_S                                0x0c1cbb18
+0x0c252258      1  bad_L                                    0x0c1cbb1c
+0x0c252260      1  bad_M                                    0x0c1cbb20
+0x0c252268      1  bad_S                                    0x0c1cbb24
+0x0c252284      1  txt_1                                    0x0c1cbb2c
+0x0c25228c      1  txt_2                                    0x0c1cbb30
+0x0c252294      1  txt_3                                    0x0c1cbb34
+0x0c25229c      1  txt_4                                    0x0c1cbb38
+0x0c2522a4      1  txt_5                                    0x0c1cbb3c
+0x0c252350      1  count_0                                  0x0c1cbb58
+0x0c252358      1  count_1                                  0x0c1cbb5c
+0x0c252360      1  count_2                                  0x0c1cbb60
+0x0c252368      1  count_3                                  0x0c1cbb64
+0x0c252370      1  count_4                                  0x0c1cbb68
+0x0c252378      1  count_5                                  0x0c1cbb6c
+0x0c252380      1  count_6                                  0x0c1cbb70
+0x0c252388      1  count_7                                  0x0c1cbb74
+0x0c252390      1  count_8                                  0x0c1cbb78
+0x0c252398      1  count_9                                  0x0c1cbb7c
+0x0c254074      1  name_s_single_op_animation               0x0c1cc3e4
+0x0c2540a4      1  name_s_single_stage_title                0x0c1cc3f0
+0x0c2540c0      1  seibetu_single_1p                        0x0c1cc418
+0x0c2540d4      1  seibetu_single_1p_cursor                 0x0c1cc420
+0x0c2540f0      1  push_single_1p_man                       0x0c1cc430
+0x0c254104      1  push_single_1p_woman                     0x0c1cc434
+0x0c25411c      1  name_s_double_op_animation               0x0c1cc44c
+0x0c254138      1  name_s_double_stage_title                0x0c1cc458
+0x0c254154      1  seibetu_double_1p                        0x0c1cc480
+0x0c254168      1  seibetu_double_2p                        0x0c1cc484
+0x0c25417c      1  seibetu_double_1p_cursor                 0x0c1cc488
+0x0c254198      1  seibetu_double_2p_cursor                 0x0c1cc48c
+0x0c2541b4      1  push_double_1p_man                       0x0c1cc498
+0x0c2541c8      1  push_double_1p_woman                     0x0c1cc49c
+0x0c2541e0      1  push_double_2p_man                       0x0c1cc4a0
+0x0c2541f4      1  push_double_2p_woman                     0x0c1cc4a4
+0x0c254584      1  name_single_haikei                       0x0c1cc800
+0x0c254598      1  name_single_cursor_1p                    0x0c1cc804
+0x0c2545b0      1  name_single_1p_position                  0x0c1cc810
+0x0c2545c8      1  name_single_1p_ok                        0x0c1cc818
+0x0c2545dc      1  name_single_button_hikari_01             0x0c1cc820
+0x0c2545fc      1  name_single_button_hikari_02             0x0c1cc824
+0x0c25461c      1  name_double_haikei                       0x0c1cc834
+0x0c254630      1  name_double_cursor_1p                    0x0c1cc838
+0x0c254648      1  name_double_cursor_2p                    0x0c1cc83c
+0x0c254660      1  name_double_cursor_3p                    0x0c1cc840
+0x0c254678      1  name_double_1p_position                  0x0c1cc844
+0x0c254690      1  name_double_2p_position                  0x0c1cc848
+0x0c2546a8      1  name_double_1p_ok                        0x0c1cc84c
+0x0c2546bc      1  name_double_2p_ok                        0x0c1cc850
+0x0c2546d0      1  name_double_button_hikari_01             0x0c1cc854
+0x0c2546f0      1  name_double_button_hikari_02             0x0c1cc858
+0x0c255c5c      1  DOWN                                     0x0c1cd2fc
+0x0c255c64      1  RIGHT                                    0x0c1cd304
+0x0c255c6c      1  LEFT                                     0x0c1cd30c
+0x0c255c74      1  START                                    0x0c1cd314
+0x0c2568f8      1  riq_play_sample_00                       0x0c1cd494
+0x0c256938      1  riq_play_sample_09                       0x0c1cd4a8
+0x0c256978      1  riq_play_sample_27_2                     0x0c1cd4bc
+0x0c2569bc      1  riq_play_sample_22_3                     0x0c1cd4d0
+0x0c2569e8      1  riq_play_sample_02_2                     0x0c1cd4e4
+0x0c256a14      1  riq_play_sample_31_2                     0x0c1cd4f8
+0x0c256a3c      1  riq_play_sample_20                       0x0c1cd50c
+0x0c256a64      1  riq_play_sample_21                       0x0c1cd520
+0x0c256ab8      1  riq_play_sample_35                       0x0c1cd534
+0x0c256af8      1  riq_play_sample_11                       0x0c1cd548
+0x0c256b38      1  riq_play_sample_70                       0x0c1cd55c
+0x0c256b60      1  riq_play_sample_74                       0x0c1cd570
+0x0c256b84      1  riq_play_sample_29                       0x0c1cd584
+0x0c256bac      1  riq_play_sample_54                       0x0c1cd598
+0x0c256bd4      1  riq_play_sample_32                       0x0c1cd5ac
+0x0c256c10      1  riq_play_sample_46                       0x0c1cd5c0
+0x0c256c50      1  riq_play_sample_56                       0x0c1cd5d4
+0x0c256c78      1  riq_play_sample_83                       0x0c1cd5e8
+0x0c256c9c      1  riq_play_sample_61                       0x0c1cd5fc
+0x0c256cc4      1  riq_play_sample_06_2                     0x0c1cd610
+0x0c256cf0      1  riq_play_sample_38                       0x0c1cd624
+0x0c256d18      1  riq_play_sample_03                       0x0c1cd638
+0x0c256d40      1  riq_play_sample_60                       0x0c1cd64c
+0x0c256d80      1  riq_play_sample_75                       0x0c1cd660
+0x0c256da4      1  riq_play_sample_13_2                     0x0c1cd674
+0x0c256dd0      1  riq_play_sample_19                       0x0c1cd688
+0x0c256df8      1  riq_play_sample_42_2                     0x0c1cd69c
+0x0c256e24      1  riq_play_sample_34                       0x0c1cd6b0
+0x0c256e4c      1  riq_play_sample_23_2                     0x0c1cd6c4
+0x0c256e78      1  riq_play_sample_85                       0x0c1cd6d8
+0x0c256e9c      1  riq_play_sample_72                       0x0c1cd6ec
+0x0c256ec4      1  riq_play_sample_86                       0x0c1cd700
+0x0c256eec      1  riq_play_sample_77                       0x0c1cd714
+0x0c256f14      1  riq_play_sample_73                       0x0c1cd728
+0x0c256f3c      1  riq_play_sample_71                       0x0c1cd73c
+0x0c256f64      1  riq_play_sample_87                       0x0c1cd750
+0x0c256f88      1  riq_play_sample_08                       0x0c1cd764
+0x0c256f9c      1  riq_play_sample_09_2                     0x0c1cd778
+0x0c256fb4      1  riq_play_sample_19_2                     0x0c1cd78c
+0x0c256fcc      1  riq_play_sample_06_3                     0x0c1cd7a0
+0x0c256fe4      1  riq_play_sample_27_3                     0x0c1cd7b4
+0x0c256ffc      1  riq_play_sample_84                       0x0c1cd7c8
+0x0c257020      1  riq_play_sample_13_3                     0x0c1cd7dc
+0x0c257038      1  riq_play_sample_42                       0x0c1cd7f0
+0x0c25704c      1  riq_play_sample_05                       0x0c1cd804
+0x0c257060      1  riq_play_sample_22_4                     0x0c1cd818
+0x0c257078      1  riq_play_sample_20_2                     0x0c1cd82c
+0x0c257090      1  riq_play_sample_88                       0x0c1cd840
+0x0c2570b4      1  riq_play_sample_00ex                     0x0c1cd854
+0x0c2570dc      1  riq_play_sample_09ex                     0x0c1cd868
+0x0c257104      1  riq_play_sample_27_2ex                   0x0c1cd87c
+0x0c25712c      1  riq_play_sample_22_3ex                   0x0c1cd890
+0x0c257154      1  riq_play_sample_02_2ex                   0x0c1cd8a4
+0x0c25717c      1  riq_play_sample_31_2ex                   0x0c1cd8b8
+0x0c2571a4      1  mpRiq_result2                            0x0c1cd8cc
+0x0c2571b4      1  riq_play_sample_002p                     0x0c1cd8e0
+0x0c2571cc      1  riq_play_sample_092p                     0x0c1cd8f4
+0x0c2571e4      1  riq_play_sample_27_22p                   0x0c1cd908
+0x0c2571fc      1  riq_play_sample_22_32p                   0x0c1cd91c
+0x0c257214      1  riq_play_sample_202p                     0x0c1cd930
+0x0c25722c      1  riq_play_sample_352p                     0x0c1cd944
+0x0c257244      1  riq_play_sample_322p                     0x0c1cd958
+0x0c25725c      1  riq_play_sample_702p                     0x0c1cd96c
+0x0c257274      1  riq_play_sample_562p                     0x0c1cd980
+0x0c25728c      1  riq_play_sample_382p                     0x0c1cd994
+0x0c2572a4      1  riq_play_sample_192p                     0x0c1cd9a8
+0x0c2572bc      1  riq_play_sample_23_22p                   0x0c1cd9bc
+0x0c2572d4      1  riq_play_sample_082p                     0x0c1cd9d0
+0x0c2572ec      1  riq_play_sample_09_22p                   0x0c1cd9e4
+0x0c257304      1  riq_play_sample_772p                     0x0c1cd9f8
+0x0c25731c      1  riq_play_sample_27_32p                   0x0c1cda0c
+0x0c257334      1  riq_play_sample_20_22p                   0x0c1cda20
+0x0c25734c      1  riq_play_sample_19_22p                   0x0c1cda34
+0x0c257364      1  riq_play_sample_22_42p                   0x0c1cda48
+0x0c25737c      1  riq_play_sample_712p                     0x0c1cda5c
+0x0c257394      1  riq_play_sample_00ex2p                   0x0c1cda70
+0x0c2573ac      1  riq_play_sample_09ex2p                   0x0c1cda84
+0x0c2573c4      1  riq_play_sample_27_2ex2p                 0x0c1cda98
+0x0c2573e0      1  riq_play_sample_22_3ex2p                 0x0c1cdaac
+0x0c2573fc      1  riq_play_sample_48                       0x0c1cdac0
+0x0c257424      1  riq_play_sample_69                       0x0c1cdad4
+0x0c257448      1  riq_play_sample_69_2                     0x0c1cdae8

@@ -1,9 +1,7 @@
-# ROMs and binary game files — NEVER commit
+# ── ROMs and binary game data — NEVER commit ──────────────────────────────────
 roms/
 mame_roms/
 *.ic[0-9]*
-*.bin
-*.zip
 *.rom
 *.ipl
 fpr-*
@@ -19,55 +17,55 @@ dcnaodev*
 aicadrv.bin
 bios_aicadrv.bin
 
-# MAME runtime state
+# ── Compressed ROM archives ────────────────────────────────────────────────────
+*.zip
+
+# ── Raw binary blobs (compiled objects, firmware dumps, etc.) ─────────────────
+*.bin
+*.o
+*.obj
+
+# ── AICA register capture log (large binary, session-specific) ────────────────
+aica_writes.log
+aica_channel_state.bin
+
+# ── Captured WAV audio (copyrighted game audio, large files) ──────────────────
+# Root-level captures from Flycast/MAME sessions:
+rhytngk_*.wav
+rhytngk_*.mid
+
+# ── Flycast source tree (third-party; clone separately) ───────────────────────
+flycast-src/
+
+# ── MAME / Flycast runtime state ──────────────────────────────────────────────
 nvram/
 cfg/
 snap/
+~/Library/Application Support/Flycast/
+
+# ── Build / CMake logs ────────────────────────────────────────────────────────
+build.log
+cmake.log
 mame_stdout.log
 mame_stderr.log
 mame_err.log
 mame.log
-build.log
-cmake.log
-
-# Flycast build & runtime
-flycast-src/
-~/Library/Application Support/Flycast/
-aica_writes.log
-
-# Captured audio (large + game-derived)
-*.wav
-audio/sequences/
-audio/samples/
-
-# Build outputs from the decomp/analysis scripts
-build/
-*.o
-*.obj
-
-# Editor / OS junk
-.DS_Store
-*~
-.vscode/
-.idea/
-
-# Python
-__pycache__/
-*.pyc
-
-# Reverse-engineered output that contains potentially copyrighted melodies
-rhytngk_*.mid
-rhytngk_*.wav
-
-# Internal lock files / logs from this session
-.claude/
 aica_stderr.log
 error.log
 ffmpeg.log
 flycast_out.log
 patched.log
 patched_flycast.log
-mame_stdout.log
 
-# ROM-derived sample data
-audio/
+# ── Editor / OS junk ──────────────────────────────────────────────────────────
+.DS_Store
+*~
+.vscode/
+.idea/
+
+# ── Python cache ──────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+
+# ── Claude session data ───────────────────────────────────────────────────────
+.claude/

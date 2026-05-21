@@ -1,0 +1,832 @@
+{
+  "name": "jingle05",
+  "description": "Sample bank for jingle05 (from arcade DTPK)",
+  "arcade_rom": "ic9",
+  "arcade_offset": 14516480,
+  "samples": [
+    {
+      "id": "jingle05_s000",
+      "wav": "audio/samples/sample_1163.wav",
+      "pitch": "C5",
+      "loop_start": 7034,
+      "loop_end": 9628,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s001",
+      "wav": "audio/samples/sample_1164.wav",
+      "pitch": "C5",
+      "loop_start": 5257,
+      "loop_end": 7591,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s002",
+      "wav": "audio/samples/sample_1165.wav",
+      "pitch": "C5",
+      "loop_start": 1571,
+      "loop_end": 2795,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s003",
+      "wav": "audio/samples/sample_1166.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 16583,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s004",
+      "wav": "audio/samples/sample_1167.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4630,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s005",
+      "wav": "audio/samples/sample_1168.wav",
+      "pitch": "C5",
+      "loop_start": 3163,
+      "loop_end": 5143,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s006",
+      "wav": "audio/samples/sample_1169.wav",
+      "pitch": "C5",
+      "loop_start": 10255,
+      "loop_end": 13788,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s007",
+      "wav": "audio/samples/sample_1170.wav",
+      "pitch": "C5",
+      "loop_start": 4831,
+      "loop_end": 5800,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s008",
+      "wav": "audio/samples/sample_1171.wav",
+      "pitch": "C5",
+      "loop_start": 2470,
+      "loop_end": 3197,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s009",
+      "wav": "audio/samples/sample_1172.wav",
+      "pitch": "C5",
+      "loop_start": 3585,
+      "loop_end": 11002,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s010",
+      "wav": "audio/samples/sample_1173.wav",
+      "pitch": "C5",
+      "loop_start": 4736,
+      "loop_end": 9576,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s011",
+      "wav": "audio/samples/sample_1174.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 21950,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s012",
+      "wav": "audio/samples/sample_1175.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 10,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s013",
+      "wav": "audio/samples/sample_1176.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 5998,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s014",
+      "wav": "audio/samples/sample_1177.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2013,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s015",
+      "wav": "audio/samples/sample_1178.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3054,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s016",
+      "wav": "audio/samples/sample_1179.wav",
+      "pitch": "C5",
+      "loop_start": 3179,
+      "loop_end": 3586,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s017",
+      "wav": "audio/samples/sample_1180.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 20274,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s018",
+      "wav": "audio/samples/sample_1181.wav",
+      "pitch": "C5",
+      "loop_start": 4240,
+      "loop_end": 6177,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s019",
+      "wav": "audio/samples/sample_1182.wav",
+      "pitch": "C5",
+      "loop_start": 5464,
+      "loop_end": 9106,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s020",
+      "wav": "audio/samples/sample_1183.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1586,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s021",
+      "wav": "audio/samples/sample_1184.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2214,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s022",
+      "wav": "audio/samples/sample_1185.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 17978,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s023",
+      "wav": "audio/samples/sample_1186.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1050,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s024",
+      "wav": "audio/samples/sample_1187.wav",
+      "pitch": "C5",
+      "loop_start": 4016,
+      "loop_end": 5169,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s025",
+      "wav": "audio/samples/sample_1188.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 516,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s026",
+      "wav": "audio/samples/sample_1189.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1542,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s027",
+      "wav": "audio/samples/sample_1190.wav",
+      "pitch": "C5",
+      "loop_start": 1616,
+      "loop_end": 2785,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s028",
+      "wav": "audio/samples/sample_1191.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2134,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s029",
+      "wav": "audio/samples/sample_1192.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3465,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s030",
+      "wav": "audio/samples/sample_1193.wav",
+      "pitch": "C5",
+      "loop_start": 1354,
+      "loop_end": 2025,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s031",
+      "wav": "audio/samples/sample_1194.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 26751,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s032",
+      "wav": "audio/samples/sample_1195.wav",
+      "pitch": "C5",
+      "loop_start": 989,
+      "loop_end": 1461,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s033",
+      "wav": "audio/samples/sample_1196.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1362,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s034",
+      "wav": "audio/samples/sample_1197.wav",
+      "pitch": "C5",
+      "loop_start": 2372,
+      "loop_end": 3343,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s035",
+      "wav": "audio/samples/sample_1198.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 9534,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s036",
+      "wav": "audio/samples/sample_1199.wav",
+      "pitch": "C5",
+      "loop_start": 796,
+      "loop_end": 1297,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s037",
+      "wav": "audio/samples/sample_1200.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6398,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s038",
+      "wav": "audio/samples/sample_1201.wav",
+      "pitch": "C5",
+      "loop_start": 1914,
+      "loop_end": 2390,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s039",
+      "wav": "audio/samples/sample_1202.wav",
+      "pitch": "C5",
+      "loop_start": 3452,
+      "loop_end": 4221,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s040",
+      "wav": "audio/samples/sample_1203.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3047,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s041",
+      "wav": "audio/samples/sample_1204.wav",
+      "pitch": "C5",
+      "loop_start": 452,
+      "loop_end": 891,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s042",
+      "wav": "audio/samples/sample_1205.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3619,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s043",
+      "wav": "audio/samples/sample_1206.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3166,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s044",
+      "wav": "audio/samples/sample_1207.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3310,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s045",
+      "wav": "audio/samples/sample_1208.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1158,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s046",
+      "wav": "audio/samples/sample_1209.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2038,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s047",
+      "wav": "audio/samples/sample_1210.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 5038,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s048",
+      "wav": "audio/samples/sample_1211.wav",
+      "pitch": "C5",
+      "loop_start": 2308,
+      "loop_end": 2332,
+      "format": "adpcm"
+    },
+    {
+      "id": "jingle05_s049",
+      "wav": "audio/samples/sample_1212.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4638,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s050",
+      "wav": "audio/samples/sample_1213.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2862,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s051",
+      "wav": "audio/samples/sample_1214.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2526,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s052",
+      "wav": "audio/samples/sample_1215.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 24141,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s053",
+      "wav": "audio/samples/sample_1216.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 24141,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s054",
+      "wav": "audio/samples/sample_1217.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4654,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s055",
+      "wav": "audio/samples/sample_1218.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 14755,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s056",
+      "wav": "audio/samples/sample_1219.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3070,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s057",
+      "wav": "audio/samples/sample_1220.wav",
+      "pitch": "C5",
+      "loop_start": 5328,
+      "loop_end": 6577,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s058",
+      "wav": "audio/samples/sample_1221.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 30611,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s059",
+      "wav": "audio/samples/sample_1222.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 25592,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s060",
+      "wav": "audio/samples/sample_1223.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 6761,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s061",
+      "wav": "audio/samples/sample_1224.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 13588,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s062",
+      "wav": "audio/samples/sample_1225.wav",
+      "pitch": "C5",
+      "loop_start": 7315,
+      "loop_end": 7557,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s063",
+      "wav": "audio/samples/sample_1226.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 5699,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s064",
+      "wav": "audio/samples/sample_1227.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3614,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s065",
+      "wav": "audio/samples/sample_1228.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1798,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s066",
+      "wav": "audio/samples/sample_1229.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1471,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s067",
+      "wav": "audio/samples/sample_1230.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 21123,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s068",
+      "wav": "audio/samples/sample_1231.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 21123,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s069",
+      "wav": "audio/samples/sample_1232.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1326,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s070",
+      "wav": "audio/samples/sample_1233.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3166,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s071",
+      "wav": "audio/samples/sample_1234.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2002,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s072",
+      "wav": "audio/samples/sample_1235.wav",
+      "pitch": "C5",
+      "loop_start": 55,
+      "loop_end": 508,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s073",
+      "wav": "audio/samples/sample_1236.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2574,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s074",
+      "wav": "audio/samples/sample_1237.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2926,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s075",
+      "wav": "audio/samples/sample_1238.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1599,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s076",
+      "wav": "audio/samples/sample_1239.wav",
+      "pitch": "C5",
+      "loop_start": 2620,
+      "loop_end": 3132,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s077",
+      "wav": "audio/samples/sample_1240.wav",
+      "pitch": "C5",
+      "loop_start": 985,
+      "loop_end": 1450,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s078",
+      "wav": "audio/samples/sample_1241.wav",
+      "pitch": "C5",
+      "loop_start": 1449,
+      "loop_end": 1925,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s079",
+      "wav": "audio/samples/sample_1242.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2634,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s080",
+      "wav": "audio/samples/sample_1243.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4637,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s081",
+      "wav": "audio/samples/sample_1244.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3734,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s082",
+      "wav": "audio/samples/sample_1245.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 1994,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s083",
+      "wav": "audio/samples/sample_1246.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 4614,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s084",
+      "wav": "audio/samples/sample_1247.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3049,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s085",
+      "wav": "audio/samples/sample_1248.wav",
+      "pitch": "C5",
+      "loop_start": 3651,
+      "loop_end": 5313,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s086",
+      "wav": "audio/samples/sample_1249.wav",
+      "pitch": "C5",
+      "loop_start": 2629,
+      "loop_end": 3623,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s087",
+      "wav": "audio/samples/sample_1250.wav",
+      "pitch": "C5",
+      "loop_start": 2930,
+      "loop_end": 4885,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s088",
+      "wav": "audio/samples/sample_1251.wav",
+      "pitch": "C5",
+      "loop_start": 1298,
+      "loop_end": 2190,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s089",
+      "wav": "audio/samples/sample_1252.wav",
+      "pitch": "C5",
+      "loop_start": 1168,
+      "loop_end": 1708,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s090",
+      "wav": "audio/samples/sample_1253.wav",
+      "pitch": "C5",
+      "loop_start": 2704,
+      "loop_end": 3697,
+      "format": "8bit"
+    },
+    {
+      "id": "jingle05_s091",
+      "wav": "audio/samples/sample_1254.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 3758,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s092",
+      "wav": "audio/samples/sample_1255.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2052,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s093",
+      "wav": "audio/samples/sample_1256.wav",
+      "pitch": "C5",
+      "loop_start": 0,
+      "loop_end": 2014,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s094",
+      "wav": "audio/samples/sample_1257.wav",
+      "pitch": "C5",
+      "loop_start": 1306,
+      "loop_end": 1955,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s095",
+      "wav": "audio/samples/sample_1258.wav",
+      "pitch": "C5",
+      "loop_start": 1284,
+      "loop_end": 2111,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s096",
+      "wav": "audio/samples/sample_1259.wav",
+      "pitch": "C5",
+      "loop_start": 3135,
+      "loop_end": 4015,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s097",
+      "wav": "audio/samples/sample_1260.wav",
+      "pitch": "C5",
+      "loop_start": 5073,
+      "loop_end": 7994,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s098",
+      "wav": "audio/samples/sample_1261.wav",
+      "pitch": "C5",
+      "loop_start": 2958,
+      "loop_end": 3611,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s099",
+      "wav": "audio/samples/sample_1262.wav",
+      "pitch": "C5",
+      "loop_start": 3182,
+      "loop_end": 4094,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s100",
+      "wav": "audio/samples/sample_1263.wav",
+      "pitch": "C5",
+      "loop_start": 2432,
+      "loop_end": 3007,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s101",
+      "wav": "audio/samples/sample_1264.wav",
+      "pitch": "C5",
+      "loop_start": 1498,
+      "loop_end": 2369,
+      "format": "16bit"
+    },
+    {
+      "id": "jingle05_s102",
+      "wav": "audio/samples/sample_1265.wav",
+      "pitch": "C5",
+      "loop_start": 2365,
+      "loop_end": 4207,
+      "format": "16bit"
+    }
+  ]
+}
