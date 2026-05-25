@@ -1,0 +1,450 @@
+{
+  "0x00": {
+    "description": "Rest",
+    "macro": "rest"
+  },
+  "0x01": {
+    "description": "Stop",
+    "macro": "stop"
+  },
+  "0x02": {
+    "description": "(Scene) Run Function",
+    "macro": "scene_run"
+  },
+  "0x03": {
+    "description": "Run Function (1 Argument)",
+    "macro": "run"
+  },
+  "0x04": {
+    "description": "Run Function (2 Arguments)",
+    "macro": "run2"
+  },
+  "0x05": {
+    "description": "Set Variable",
+    "macro": "set_var"
+  },
+  "0x06": {
+    "description": "Add to Variable",
+    "macro": "add_var"
+  },
+  "0x07": {
+    "description": "Set Bit",
+    "macro": "set_bit"
+  },
+  "0x08": {
+    "description": "Clear Bit",
+    "macro": "clear_bit"
+  },
+  "0x09": {
+    "description": "(Scene) Set Variable",
+    "macro": "scene_set_var"
+  },
+  "0x0A": {
+    "description": "(Scene) Add to Variable",
+    "macro": "scene_add_var"
+  },
+  "0x0B": {
+    "description": "(Scene) Set Bit",
+    "macro": "scene_set_bit"
+  },
+  "0x0C": {
+    "description": "(Scene) Clear Bit",
+    "macro": "scene_clear_bit"
+  },
+  "0x0D": {
+    "description": "Branch with Link",
+    "macro": "call"
+  },
+  "0x0E": {
+    "description": "Return",
+    "macro": "return"
+  },
+  "0x0F": {
+    "description": "Branch without Link",
+    "macro": "goto"
+  },
+  "0x10": {
+    "description": "Start Loop",
+    "macro": "loop_start"
+  },
+  "0x11": {
+    "description": "End Loop",
+    "macro": "loop_end"
+  },
+  "0x12": {
+    "description": "If Equal",
+    "macro": "if_eq"
+  },
+  "0x13": {
+    "description": "If Not Equal",
+    "macro": "if_neq"
+  },
+  "0x14": {
+    "description": "Else",
+    "macro": "else"
+  },
+  "0x15": {
+    "description": "End If Statement",
+    "macro": "end_if"
+  },
+  "0x16": {
+    "description": "If Bit Set",
+    "macro": "if_set"
+  },
+  "0x17": {
+    "description": "If Bit Clear",
+    "macro": "if_clear"
+  },
+  "0x18": {
+    "description": "? (operations on the global scene variable)",
+    "macro": null
+  },
+  "0x19": {
+    "description": "? (operations on the global scene variable)",
+    "macro": "switch"
+  },
+  "0x1A": {
+    "description": "Switch Statement",
+    "macro": "switch"
+  },
+  "0x1B": {
+    "description": "End Switch Statement",
+    "macro": "end_switch"
+  },
+  "0x1C": {
+    "description": "Switch Case",
+    "macro": "case"
+  },
+  "0x1D": {
+    "description": "End Switch Case",
+    "macro": "break"
+  },
+  "0x1E": {
+    "description": "? (conditional statement (while?))",
+    "macro": null
+  },
+  "0x1F": {
+    "description": "? (conditional statement (while not?))",
+    "macro": null
+  },
+  "0x20": {
+    "description": "? (branch-related)",
+    "macro": "scene_if_eq"
+  },
+  "0x21": {
+    "description": "(Scene) If Equal",
+    "macro": "scene_if_eq"
+  },
+  "0x22": {
+    "description": "(Scene) If Not Equal",
+    "macro": "scene_if_neq"
+  },
+  "0x23": {
+    "description": "Scene Switch Statement",
+    "macro": "scene_switch"
+  },
+  "0x24": {
+    "description": "? (scene variant of 0x1F)",
+    "macro": null
+  },
+  "0x25": {
+    "description": "? (scene variant of 0x1E)",
+    "macro": null
+  },
+  "0x28": {
+    "description": "Play Music",
+    "macro": "play_music_in"
+  },
+  "0x29": {
+    "description": "Play Sound Effect",
+    "macro": "play_sfx"
+  },
+  "0x35": {
+    "description": "Music Fade-In",
+    "macro": "fade_music_in_cmd"
+  },
+  "0x36": {
+    "description": "Music Fade-Out",
+    "macro": "fade_music_out_cmd"
+  },
+  "0x38": {
+    "description": "Sound Effect Fade-Out",
+    "macro": "fade_sfx_out"
+  },
+  "0x39": {
+    "description": "Load Graphics Table (Immediate)",
+    "macro": "load_graphics"
+  },
+  "0x3A": {
+    "description": "Play Music (without overriding existing music if possible)",
+    "macro": "add_music"
+  },
+  "0x3C": {
+    "description": "Set Speed",
+    "macro": "set_speed"
+  },
+  "0x3D": {
+    "description": "Set Music Pitch (also updates an unknown flag)",
+    "macro": "set_music_pitch_s"
+  },
+  "0x3E": {
+    "description": "Set Music Pitch (avoids resetting an unknown flag)",
+    "macro": "set_music_pitch"
+  },
+  "0x3F": {
+    "description": "Change LCD Special Effect Controls (Blend)",
+    "macro": "mod_lcd_blend"
+  },
+  "0x40": {
+    "description": "Change Palette",
+    "macro": null
+  },
+  "0x41": {
+    "description": "Set BG Layer Registers",
+    "macro": null
+  },
+  "0x42": {
+    "description": "Start Data Interpolation Task (Linear)",
+    "macro": null
+  },
+  "0x46": {
+    "description": "Stub Function",
+    "macro": "task_load_graphics"
+  },
+  "0x47": {
+    "description": "Load Graphics Table (with bytes-per-update process limit)",
+    "macro": "task_load_graphics"
+  },
+  "0x48": {
+    "description": "Set Backdrop",
+    "macro": "set_backdrop"
+  },
+  "0x49": {
+    "description": "Set Video Mode",
+    "macro": "set_video_mode"
+  },
+  "0x4A": {
+    "description": "Fade Palette from Solid Colour",
+    "macro": "fade_screen"
+  },
+  "0x4C": {
+    "description": "Gradually Change Tempo",
+    "macro": "mod_tempo"
+  },
+  "0x4E": {
+    "description": "Gradually Change Music Pitch",
+    "macro": "mod_music_pitch"
+  },
+  "0x4F": {
+    "description": "Default Case",
+    "macro": "default"
+  },
+  "0x50": {
+    "description": "Gradually Change Music Volume",
+    "macro": "mod_music_volume"
+  },
+  "0x51": {
+    "description": "?",
+    "macro": null
+  },
+  "0x52": {
+    "description": "?",
+    "macro": null
+  },
+  "0x80": {
+    "description": "(Global Scene Sprite) Set Animation",
+    "macro": null
+  },
+  "0x81": {
+    "description": "(Global Scene Sprite) Set Animation Frame",
+    "macro": null
+  },
+  "0x82": {
+    "description": "(Global Scene Sprite) Set Animation Params.",
+    "macro": null
+  },
+  "0x83": {
+    "description": "(Global Scene Sprite) Set XYZ",
+    "macro": null
+  },
+  "0x84": {
+    "description": "(Global Scene Sprite) Set XY",
+    "macro": null
+  },
+  "0x85": {
+    "description": "(Global Scene Sprite) Set Z",
+    "macro": null
+  },
+  "0x86": {
+    "description": "(Global Scene Sprite) Show/Hide",
+    "macro": null
+  },
+  "0x87": {
+    "description": "(Global Scene Sprite) Set XY (Vector2)",
+    "macro": null
+  },
+  "0x88": {
+    "description": "(Global Scene Sprite) Set Palette",
+    "macro": null
+  },
+  "0x89": {
+    "description": "(Global Scene Sprite) sprite_set_base_tile()",
+    "macro": null
+  },
+  "0x8A": {
+    "description": "(Global Scene Sprite) sprite_set_enable_updates()",
+    "macro": null
+  },
+  "0x8B": {
+    "description": "(Global Scene Sprite) Set Playback Speed",
+    "macro": null
+  },
+  "0x8C": {
+    "description": "(Global Scene Sprite) Indefinite Linear Motion",
+    "macro": null
+  },
+  "0x8D": {
+    "description": "?",
+    "macro": null
+  },
+  "0x8E": {
+    "description": "?",
+    "macro": null
+  },
+  "0x8F": {
+    "description": "?",
+    "macro": null
+  },
+  "0x90": {
+    "description": "?",
+    "macro": null
+  },
+  "0x91": {
+    "description": "?",
+    "macro": null
+  },
+  "0x92": {
+    "description": "(Global Scene Sprite) Run Function Upon Motion Task End",
+    "macro": null
+  },
+  "0x93": {
+    "description": "?",
+    "macro": null
+  },
+  "0x94": {
+    "description": "?",
+    "macro": null
+  },
+  "0x95": {
+    "description": "?",
+    "macro": null
+  },
+  "0x96": {
+    "description": "(Global Scene Sprite) Add to XY",
+    "macro": null
+  },
+  "0x97": {
+    "description": "(Global Scene Sprite) Add to Z",
+    "macro": null
+  },
+  "0x98": {
+    "description": "?",
+    "macro": null
+  },
+  "0x99": {
+    "description": "?",
+    "macro": null
+  },
+  "0x9A": {
+    "description": "?",
+    "macro": null
+  },
+  "0x9B": {
+    "description": "?",
+    "macro": null
+  },
+  "0x9C": {
+    "description": "?",
+    "macro": null
+  },
+  "0x9D": {
+    "description": "(Global Scene Sprite) Run Function Upon Animation End",
+    "macro": null
+  },
+  "0x9E": {
+    "description": "(Global Scene Sprite) Delete",
+    "macro": null
+  },
+  "0x9F": {
+    "description": "(Global Scene Sprite) Delete All",
+    "macro": null
+  },
+  "0xA0": {
+    "description": "?",
+    "macro": null
+  },
+  "0xA1": {
+    "description": "?",
+    "macro": null
+  },
+  "0xA2": {
+    "description": "?",
+    "macro": null
+  },
+  "0xA3": {
+    "description": "?",
+    "macro": null
+  },
+  "0xA4": {
+    "description": "?",
+    "macro": null
+  },
+  "0xA5": {
+    "description": "?",
+    "macro": "dma_set"
+  },
+  "0xA6": {
+    "description": "DMA3 Set",
+    "macro": "dma_set"
+  },
+  "0xA7": {
+    "description": "Set Speed to Music (this also plays the given music)",
+    "macro": "set_speed_to_music"
+  },
+  "0xA8": {
+    "description": "(Global Scene Sprite) Fix XY to BG Layer",
+    "macro": null
+  },
+  "0xA9": {
+    "description": "(Global Scene Sprite) ?",
+    "macro": null
+  },
+  "0xAC": {
+    "description": "Set Music Track Volume",
+    "macro": "set_music_track_volume"
+  },
+  "0xAD": {
+    "description": "Gradually Change Music Track Volume",
+    "macro": "mod_music_track_volume"
+  },
+  "0xAE": {
+    "description": "Play Sound Effect (at given volume & pitch)",
+    "macro": "play_sfx_vol_pitch"
+  },
+  "0xAF": {
+    "description": "Gradually Add to Speed Multiplier",
+    "macro": "increase_speed"
+  },
+  "0xB0": {
+    "description": "Branch to Global Scene Variable",
+    "macro": "call_result"
+  },
+  "0xB1": {
+    "description": "Reset Rest Timer",
+    "macro": "rest_reset"
+  },
+  "0xB2": {
+    "description": "Play Sound Effect (at given volume & pitch)",
+    "macro": "play_sfx_synced_pitch"
+  }
+}
