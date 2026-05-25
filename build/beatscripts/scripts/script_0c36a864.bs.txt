@@ -1,0 +1,15 @@
+# BeatScript region @ VRAM 0x0c36a864
+# Length: 12 instructions (144 bytes)
+
+  0x0c36a864  op=03  call_async graphics_op(0x18)
+  0x0c36a870  op=04  call_act   action=0x0 graphics_op_action(0xc2b379c)
+  0x0c36a87c  op=03  call_async graphics_op(0x19)
+  0x0c36a888  op=04  call_act   action=0x0 graphics_op_action(0xc2b379c)
+  0x0c36a894  op=03  call_async graphics_op(0x9)
+  0x0c36a8a0  op=04  call_act   action=0x0 graphics_op_action(0xc2b379c)
+  0x0c36a8ac  op=03  call_async graphics_op(0xa)
+  0x0c36a8b8  op=04  call_act   action=0x0 graphics_op_action(0xc2b379c)
+  0x0c36a8c4  op=03  call_async graphics_op(0xb)
+  0x0c36a8d0  op=04  call_act   action=0x0 graphics_op_action(0xc2b379c)
+  0x0c36a8dc  op=03  call_async fn_0c0bbe60(0x0)
+  0x0c36a8e8  op=03  call_async fn_0c0bbe60(0x1)

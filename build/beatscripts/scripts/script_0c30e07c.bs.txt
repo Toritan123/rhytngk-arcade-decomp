@@ -1,0 +1,14 @@
+# BeatScript region @ VRAM 0x0c30e07c
+# Length: 11 instructions (132 bytes)
+
+  0x0c30e07c  op=03  call_async fn_0c0715fc(0xc26f404)
+  0x0c30e088  op=03  call_async fn_0c071588(0xc33111c)
+  0x0c30e094  op=03  call_async fn_0c08f110(0x2)
+  0x0c30e0a0  op=03  call_async fn_0c071674(0x1)
+  0x0c30e0ac  op=03  tempo_bpm(106)
+  0x0c30e0b8  op=03  set_volume(target=150)
+  0x0c30e0c4  op=03  call_async graphics_op(0x0)
+  0x0c30e0d0  op=04  call_act   action=0x0 graphics_op_action(0xc2b3158)
+  0x0c30e0dc  op=03  call_async graphics_op(0x0)
+  0x0c30e0e8  op=04  call_act   action=0x4 graphics_op_action(0xc2b3158)
+  0x0c30e0f4  op=03  call_async fn_0c08e1c8(0xc26f420)

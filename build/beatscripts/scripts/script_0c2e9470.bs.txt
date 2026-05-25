@@ -1,0 +1,18 @@
+# BeatScript region @ VRAM 0x0c2e9470
+# Length: 15 instructions (180 bytes)
+
+  0x0c2e9470  op=03  call_async graphics_op(0x0)
+  0x0c2e947c  op=04  call_act   action=0x10 graphics_op_action(0xc2b765c)
+  0x0c2e9488  op=03  call_async graphics_op(0x1)
+  0x0c2e9494  op=04  call_act   action=0x0 graphics_op_action(0xc2b765c)
+  0x0c2e94a0  op=03  call_async graphics_op(0x0)
+  0x0c2e94ac  op=04  call_act   action=0x1 graphics_op_action(0xc2b765c)
+  0x0c2e94b8  op=03  call_async graphics_op(0x2)
+  0x0c2e94c4  op=04  call_act   action=0x0 graphics_op_action(0xc2b765c)
+  0x0c2e94d0  op=03  call_async graphics_op(0x0)
+  0x0c2e94dc  op=04  call_act   action=0x1 graphics_op_action(0xc2b765c)
+  0x0c2e94e8  op=03  call_async graphics_op(0x3)
+  0x0c2e94f4  op=04  call_act   action=0x0 graphics_op_action(0xc2b765c)
+  0x0c2e9500  op=03  call_async graphics_op(0x0)
+  0x0c2e950c  op=04  call_act   action=0x1 graphics_op_action(0xc2b765c)
+  0x0c2e9518  op=04  call_act   action=0x0 fn_0c08eb6c(0x0)
