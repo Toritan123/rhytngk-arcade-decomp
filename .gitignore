@@ -28,6 +28,11 @@ bios_aicadrv.bin
 # ── AICA register capture log (large binary, session-specific) ────────────────
 aica_writes.log
 aica_channel_state.bin
+aica_keyon_states.bin
+
+# ── ic11 graphics asset extraction (~125 MB, ROM-derived) ─────────────────────
+build/ic11/
+build/ic11_farc_contents/
 
 # ── Captured WAV audio (copyrighted game audio, large files) ──────────────────
 # Root-level captures from Flycast/MAME sessions:
