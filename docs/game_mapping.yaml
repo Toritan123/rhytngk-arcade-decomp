@@ -1,79 +1,105 @@
 # Game mapping between Rhythm Tengoku Arcade and GBA versions
-# Based on string analysis and known game content.
+# Sources:
+#   - Original string analysis (project)
+#   - Names.txt from external RE notes (~/Rhythm Tengoku Arcade Docs/)
+#   - Cross-checked with GBA decomp at /Users/sumirintarou/rt
 # Reference GBA decomp: https://github.com/arthurtilly/rhythmtengoku
 
 arcade_to_gba:
-  aim: marching_orders
+  # Verified by external Names.txt
+  aim: sneaky_spirits
+  aim2: sneaky_spirits
+  aisyou: null  # unknown
   batter: spaceball
-  bigband: null  # arcade-only
-  bondance: rhythm_toys
+  batter2: spaceball
+  batter_extra: spaceball
+  bigband: null  # arcade-only (Drumming game)
+  bomber_demo: null  # unknown
+  bondance: bon_odori   # "Bon Dance" = arcade variant of bon_odori
   bonodori: bon_odori
-  boxing: null  # arcade-only
+  boxing: karate_man
+  boxing2: karate_man
+  boxing_extra: karate_man
   conveyer: mannequin_factory
-  cosmodance: space_dance
+  cosmodance: space_dance     # "Cosmic Dance"
   credit: staff_credit
   drumboys: drum_studio
   drumgirls: drum_studio
   drumko: drum_studio
+  drumko1: drum_studio
   drumko2: drum_studio
   drumko3: drum_studio
   drumko4: drum_studio
   drumosu: drum_studio
-  drumtech: drum_studio
-  esa: null  # arcade-only
-  even: null  # arcade-only
+  drumtech: night_walk        # ← corrected (was drum_studio)
+  esa: showtime               # ← corrected (was arcade-only)
+  even: bouncy_road           # ← corrected (was arcade-only)
+  even2: bouncy_road
   gyrotest: null  # arcade-only
-  hair: power_calligraphy
-  hair_extra: power_calligraphy
+  hair: rhythm_tweezers       # ← corrected (was power_calligraphy)
+  hair2: rhythm_tweezers
+  hair_extra: rhythm_tweezers
   hanabi: fireworks
   handclap: clappy_trio
-  handclap_bari: clappy_trio
+  handclap_bari: clappy_trio  # "Snappy Trio"
   handclap_earth: clappy_trio
   iai: samurai_slice
-  kanji: null  # arcade-only
-  machine: mechanical_horse
+  kanji: power_calligraphy    # ← corrected (was arcade-only)
+  live: drum_studio           # "Drum Boys/Girls/Samurai menu"
+  logo_adv: null
+  machine: rhythm_test        # ← corrected (was mechanical_horse)
   marcher: marching_orders
   marcher2: marching_orders
   marcher_extra: marching_orders
-  metronome: metronome
-  music_image: null  # arcade-only
-  option: null  # arcade-only
-  polyrythm: polyrhythm
-  poster: null  # arcade-only
+  metronome: mr_upbeat        # ← corrected (was metronome which is GBA-only)
+  music_image: null
+  name_double: null
+  name_single: null
+  option: null                # debug menu
+  polyrhythm: polyrhythm
+  polyrythm: polyrhythm       # alternate spelling found in some places
+  poster: null
   quiz: quiz_show
   rabbit: bunny_hop
   rapman: rap_men
   rapwoman: rap_men
   rat: rat_race
-  samurai: samurai_slice
+  samurai: ninja_bodyguard    # ← corrected (was samurai_slice — that's iai)
   spacedance: space_dance
-  spaceusagi: null  # arcade-only
-  tanuki: null  # arcade-only
+  spaceusagi: marching_orders # "Marching Orders Space Bunnies edition"
+  tanuki: null                # unused drum game
   tap: tap_trial
-  tap_china: tap_trial
-  tap_dress: tap_trial
-  tap_remix: tap_trial
-  tap_ska: tap_trial
+  tap_china: tap_trial        # Remix 8
+  tap_dress: tap_trial        # Remix 7 (pigs)
+  tap_remix: tap_trial        # Remix 5
+  tap_ska: tap_trial          # Tap Trial 2
+  test: null
+  title_op: null
   tossboys: toss_boys
   tossboys2: toss_boys
   tossboys_remix: toss_boys
-  trampoline: null  # arcade-only
-  trampoline_show: null  # arcade-only
-  uma: mechanical_horse
+  trampoline: tram_and_pauline     # ← corrected (was arcade-only)
+  trampoline_show: tram_and_pauline
+  uma: mechanical_horse       # "Horse Machine"
   virus: sick_beats
-  warning: null  # arcade-only
+  warning: null
   witch: wizards_waltz
-  yankee: ninja_bodyguard
+  yankee: ninja_bodyguard     # "Ninja Reincarnate" variant
 
+# GBA games with no arcade version
 gba_only:
-  - bouncy_road
   - drum_intro
   - drum_live
-  - karate_man
-  - mr_upbeat
-  - night_walk
-  - rhythm_test
-  - rhythm_tweezers
-  - showtime
-  - sneaky_spirits
-  - tram_and_pauline
+
+# Naming notes (from external docs):
+#   aim    → "Sneaky Spirits"      (aim = aiming/shooting at spirits)
+#   batter → "Spaceball"           (space baseball game, not regular baseball)
+#   boxing → "Karate Man"          (early/JP name for karate_man)
+#   esa    → "Showtime"            (esa = bait, refers to fish-feeding stage)
+#   even   → "Bouncy Road"
+#   hair   → "Rhythm Tweezers"     (hair-plucking with tweezers)
+#   kanji  → "Power Calligraphy"   (kanji = Chinese characters)
+#   machine → "Rhythm Test"        (NOT mechanical_horse — that's "uma")
+#   metronome → "Mr. Upbeat"
+#   samurai → "Ninja Bodyguard"    (NOT samurai_slice — that's "iai")
+#   uma    → mechanical_horse / "Horse Machine"

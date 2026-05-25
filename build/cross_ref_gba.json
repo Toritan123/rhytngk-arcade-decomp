@@ -1,40 +1,55 @@
 {
   "arcade_to_gba": {
-    "aim": "marching_orders",
+    "aim": "sneaky_spirits",
+    "aim2": "sneaky_spirits",
+    "aisyou": null,
     "batter": "spaceball",
+    "batter2": "spaceball",
+    "batter_extra": "spaceball",
     "bigband": null,
-    "bondance": "rhythm_toys",
+    "bomber_demo": null,
+    "bondance": "bon_odori",
     "bonodori": "bon_odori",
-    "boxing": null,
+    "boxing": "karate_man",
+    "boxing2": "karate_man",
+    "boxing_extra": "karate_man",
     "conveyer": "mannequin_factory",
     "cosmodance": "space_dance",
     "credit": "staff_credit",
     "drumboys": "drum_studio",
     "drumgirls": "drum_studio",
     "drumko": "drum_studio",
+    "drumko1": "drum_studio",
     "drumko2": "drum_studio",
     "drumko3": "drum_studio",
     "drumko4": "drum_studio",
     "drumosu": "drum_studio",
-    "drumtech": "drum_studio",
-    "esa": null,
-    "even": null,
+    "drumtech": "night_walk",
+    "esa": "showtime",
+    "even": "bouncy_road",
+    "even2": "bouncy_road",
     "gyrotest": null,
-    "hair": "power_calligraphy",
-    "hair_extra": "power_calligraphy",
+    "hair": "rhythm_tweezers",
+    "hair2": "rhythm_tweezers",
+    "hair_extra": "rhythm_tweezers",
     "hanabi": "fireworks",
     "handclap": "clappy_trio",
     "handclap_bari": "clappy_trio",
     "handclap_earth": "clappy_trio",
     "iai": "samurai_slice",
-    "kanji": null,
-    "machine": "mechanical_horse",
+    "kanji": "power_calligraphy",
+    "live": "drum_studio",
+    "logo_adv": null,
+    "machine": "rhythm_test",
     "marcher": "marching_orders",
     "marcher2": "marching_orders",
     "marcher_extra": "marching_orders",
-    "metronome": "metronome",
+    "metronome": "mr_upbeat",
     "music_image": null,
+    "name_double": null,
+    "name_single": null,
     "option": null,
+    "polyrhythm": "polyrhythm",
     "polyrythm": "polyrhythm",
     "poster": null,
     "quiz": "quiz_show",
@@ -42,20 +57,22 @@
     "rapman": "rap_men",
     "rapwoman": "rap_men",
     "rat": "rat_race",
-    "samurai": "samurai_slice",
+    "samurai": "ninja_bodyguard",
     "spacedance": "space_dance",
-    "spaceusagi": null,
+    "spaceusagi": "marching_orders",
     "tanuki": null,
     "tap": "tap_trial",
     "tap_china": "tap_trial",
     "tap_dress": "tap_trial",
     "tap_remix": "tap_trial",
     "tap_ska": "tap_trial",
+    "test": null,
+    "title_op": null,
     "tossboys": "toss_boys",
     "tossboys2": "toss_boys",
     "tossboys_remix": "toss_boys",
-    "trampoline": null,
-    "trampoline_show": null,
+    "trampoline": "tram_and_pauline",
+    "trampoline_show": "tram_and_pauline",
     "uma": "mechanical_horse",
     "virus": "sick_beats",
     "warning": null,
@@ -63,17 +80,8 @@
     "yankee": "ninja_bodyguard"
   },
   "gba_only": [
-    "bouncy_road",
     "drum_intro",
-    "drum_live",
-    "karate_man",
-    "mr_upbeat",
-    "night_walk",
-    "rhythm_test",
-    "rhythm_tweezers",
-    "showtime",
-    "sneaky_spirits",
-    "tram_and_pauline"
+    "drum_live"
   ],
   "gba_songs": {
     "Lesson1": {
@@ -4947,7 +4955,16 @@
   "correlations": [
     {
       "arcade": "aim",
-      "gba": "marching_orders",
+      "gba": "sneaky_spirits",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "aim2",
+      "gba": "sneaky_spirits",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -4964,13 +4981,37 @@
       "gba_bank_cts": []
     },
     {
-      "arcade": "bondance",
-      "gba": "rhythm_toys",
+      "arcade": "batter2",
+      "gba": "spaceball",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
       "gba_banks": [],
       "gba_bank_cts": []
+    },
+    {
+      "arcade": "batter_extra",
+      "gba": "spaceball",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "bondance",
+      "gba": "bon_odori",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [
+        "s_bon_odori_bgm"
+      ],
+      "gba_banks": [
+        38
+      ],
+      "gba_bank_cts": [
+        11
+      ]
     },
     {
       "arcade": "bonodori",
@@ -4986,6 +5027,33 @@
       "gba_bank_cts": [
         11
       ]
+    },
+    {
+      "arcade": "boxing",
+      "gba": "karate_man",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "boxing2",
+      "gba": "karate_man",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "boxing_extra",
+      "gba": "karate_man",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
     },
     {
       "arcade": "conveyer",
@@ -5051,6 +5119,15 @@
       "gba_bank_cts": []
     },
     {
+      "arcade": "drumko1",
+      "gba": "drum_studio",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
       "arcade": "drumko2",
       "gba": "drum_studio",
       "arc_dtpks": [],
@@ -5088,7 +5165,34 @@
     },
     {
       "arcade": "drumtech",
-      "gba": "drum_studio",
+      "gba": "night_walk",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "esa",
+      "gba": "showtime",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "even",
+      "gba": "bouncy_road",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "even2",
+      "gba": "bouncy_road",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5097,7 +5201,16 @@
     },
     {
       "arcade": "hair",
-      "gba": "power_calligraphy",
+      "gba": "rhythm_tweezers",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "hair2",
+      "gba": "rhythm_tweezers",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5106,7 +5219,7 @@
     },
     {
       "arcade": "hair_extra",
-      "gba": "power_calligraphy",
+      "gba": "rhythm_tweezers",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5159,8 +5272,26 @@
       "gba_bank_cts": []
     },
     {
+      "arcade": "kanji",
+      "gba": "power_calligraphy",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "live",
+      "gba": "drum_studio",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
       "arcade": "machine",
-      "gba": "mechanical_horse",
+      "gba": "rhythm_test",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5196,7 +5327,16 @@
     },
     {
       "arcade": "metronome",
-      "gba": "metronome",
+      "gba": "mr_upbeat",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "polyrhythm",
+      "gba": "polyrhythm",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5263,7 +5403,7 @@
     },
     {
       "arcade": "samurai",
-      "gba": "samurai_slice",
+      "gba": "ninja_bodyguard",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],
@@ -5287,6 +5427,15 @@
       "gba_bank_cts": [
         100
       ]
+    },
+    {
+      "arcade": "spaceusagi",
+      "gba": "marching_orders",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
     },
     {
       "arcade": "tap",
@@ -5354,6 +5503,24 @@
     {
       "arcade": "tossboys_remix",
       "gba": "toss_boys",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "trampoline",
+      "gba": "tram_and_pauline",
+      "arc_dtpks": [],
+      "arc_samp_ct": [],
+      "gba_songs": [],
+      "gba_banks": [],
+      "gba_bank_cts": []
+    },
+    {
+      "arcade": "trampoline_show",
+      "gba": "tram_and_pauline",
       "arc_dtpks": [],
       "arc_samp_ct": [],
       "gba_songs": [],

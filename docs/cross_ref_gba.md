@@ -13,41 +13,56 @@ Sources: arcade `audio/banks/*.json` + GBA `/Users/sumirintarou/rt/audio/`.
 
 | Arcade game | GBA game | Arcade DTPKs (samples) | GBA songs | GBA banks (instruments) |
 |---|---|---|---|---|
-| aim | marching_orders | — | — | — |
+| aim | sneaky_spirits | — | — | — |
+| aim2 | sneaky_spirits | — | — | — |
 | batter | spaceball | — | — | — |
-| bondance | rhythm_toys | — | — | — |
+| batter2 | spaceball | — | — | — |
+| batter_extra | spaceball | — | — | — |
+| bondance | bon_odori | — | `s_bon_odori_bgm` | B38(11) |
 | bonodori | bon_odori | — | `s_bon_odori_bgm` | B38(11) |
+| boxing | karate_man | — | — | — |
+| boxing2 | karate_man | — | — | — |
+| boxing_extra | karate_man | — | — | — |
 | conveyer | mannequin_factory | — | — | — |
 | cosmodance | space_dance | — | `s_f_space_dancer`, `s_f_space_dancer_swing`, `s_f_space_dancer_sit`, `s_f_space_dancer_pa` | B56(100) |
 | credit | staff_credit | — | — | — |
 | drumboys | drum_studio | — | — | — |
 | drumgirls | drum_studio | — | — | — |
 | drumko | drum_studio | — | — | — |
+| drumko1 | drum_studio | — | — | — |
 | drumko2 | drum_studio | — | — | — |
 | drumko3 | drum_studio | — | — | — |
 | drumko4 | drum_studio | — | — | — |
 | drumosu | drum_studio | — | — | — |
-| drumtech | drum_studio | — | — | — |
-| hair | power_calligraphy | — | — | — |
-| hair_extra | power_calligraphy | — | — | — |
+| drumtech | night_walk | — | — | — |
+| esa | showtime | — | — | — |
+| even | bouncy_road | — | — | — |
+| even2 | bouncy_road | — | — | — |
+| hair | rhythm_tweezers | — | — | — |
+| hair2 | rhythm_tweezers | — | — | — |
+| hair_extra | rhythm_tweezers | — | — | — |
 | hanabi | fireworks | — | — | — |
 | handclap | clappy_trio | — | — | — |
 | handclap_bari | clappy_trio | — | — | — |
 | handclap_earth | clappy_trio | — | — | — |
 | iai | samurai_slice | — | — | — |
-| machine | mechanical_horse | — | — | — |
+| kanji | power_calligraphy | — | — | — |
+| live | drum_studio | — | — | — |
+| machine | rhythm_test | — | — | — |
 | marcher | marching_orders | — | — | — |
 | marcher2 | marching_orders | — | — | — |
 | marcher_extra | marching_orders | — | — | — |
-| metronome | metronome | — | — | — |
+| metronome | mr_upbeat | — | — | — |
+| polyrhythm | polyrhythm | — | — | — |
 | polyrythm | polyrhythm | — | — | — |
 | quiz | quiz_show | — | — | — |
 | rabbit | bunny_hop | — | — | — |
 | rapman | rap_men | — | — | — |
 | rapwoman | rap_men | — | — | — |
 | rat | rat_race | `s_renshu_rat`(69) | — | — |
-| samurai | samurai_slice | — | — | — |
+| samurai | ninja_bodyguard | — | — | — |
 | spacedance | space_dance | — | `s_f_space_dancer`, `s_f_space_dancer_swing`, `s_f_space_dancer_sit`, `s_f_space_dancer_pa` | B56(100) |
+| spaceusagi | marching_orders | — | — | — |
 | tap | tap_trial | — | — | — |
 | tap_china | tap_trial | — | — | — |
 | tap_dress | tap_trial | — | — | — |
@@ -56,6 +71,8 @@ Sources: arcade `audio/banks/*.json` + GBA `/Users/sumirintarou/rt/audio/`.
 | tossboys | toss_boys | — | — | — |
 | tossboys2 | toss_boys | — | — | — |
 | tossboys_remix | toss_boys | — | — | — |
+| trampoline | tram_and_pauline | — | — | — |
+| trampoline_show | tram_and_pauline | — | — | — |
 | uma | mechanical_horse | — | — | — |
 | virus | sick_beats | — | — | — |
 | witch | wizards_waltz | — | — | — |
@@ -89,17 +106,8 @@ Total: 89 DTPKs not matched to any GBA game.
 
 ## GBA-Only Games
 
-- `bouncy_road` → banks: —
 - `drum_intro` → banks: —
 - `drum_live` → banks: —
-- `karate_man` → banks: —
-- `mr_upbeat` → banks: —
-- `night_walk` → banks: —
-- `rhythm_test` → banks: —
-- `rhythm_tweezers` → banks: —
-- `showtime` → banks: —
-- `sneaky_spirits` → banks: —
-- `tram_and_pauline` → banks: —
 
 ## Jingle Correlation (Hypothesis)
 
