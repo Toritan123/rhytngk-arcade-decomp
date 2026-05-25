@@ -1,0 +1,12 @@
+# BeatScript region @ 0x0c35cddc
+# Length: 9 instructions (108 bytes)
+
+  0x0c35cddc  scene_clear_bit          arg2=0x00000003 arg3=0x0c08ef3c                               // (Scene) Clear Bit
+  0x0c35cde8  rest                     arg2=0x00000003 arg3=0x0c08ef58                               // Rest
+  0x0c35cdf4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c35ce00  op_18                    arg2=0x00000000 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c35ce0c  op_18                    arg2=0x00000000 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c35ce18  op_18                    arg2=0x00000003 arg3=0x0c0a2e18                               // ? (operations on the global scene variable)
+  0x0c35ce24  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c35ce30  op_18                    arg2=0x00000003 arg3=0x0c08f8fc                               // ? (operations on the global scene variable)
+  0x0c35ce3c  stop                     arg2=0x00000003 arg3=0x0c08f8d0                               // Stop

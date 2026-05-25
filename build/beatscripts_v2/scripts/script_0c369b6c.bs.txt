@@ -1,0 +1,42 @@
+# BeatScript region @ 0x0c369b6c
+# Length: 39 instructions (468 bytes)
+
+  0x0c369b6c  run                      arg2=0x0c0715fc arg3=0x0c271924                               // Run Function (1 Argument)
+  0x0c369b78  run                      arg2=0x0c071588 arg3=0x0c389840                               // Run Function (1 Argument)
+  0x0c369b84  run                      arg2=0x0c08f110 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c369b90  run                      arg2=0x0c08f274 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369b9c  run                      arg2=0x0c0987e8 arg3=0x00000096                               // Run Function (1 Argument)
+  0x0c369ba8  run                      arg2=0x0c0985bc arg3=0x00000100                               // Run Function (1 Argument)
+  0x0c369bb4  play_music_in            arg2=0x000000ff arg3=0x0c1cdcd0                               // Play Music
+  0x0c369bc0  set_music_pitch          arg2=0x00000000 arg3=0x00000200                               // Set Music Pitch (avoids resetting an unknown flag)
+  0x0c369bcc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369bd8  run                      arg2=0x0c0a2e18 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c369be4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369bf0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369bfc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369c08  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369c14  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369c20  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369c2c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369c38  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369c44  call                     arg2=0x0c389854 arg3=0x00000000                               // Branch with Link
+  0x0c369c50  run                      arg2=0x0c090004 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c369c5c  call                     arg2=0x0c389b24 arg3=0x00000000                               // Branch with Link
+  0x0c369c68  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369c74  call                     arg2=0x0c389854 arg3=0x00000000                               // Branch with Link
+  0x0c369c80  run                      arg2=0x0c090004 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c369c8c  call                     arg2=0x0c389b24 arg3=0x00000000                               // Branch with Link
+  0x0c369c98  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369ca4  call                     arg2=0x0c389e0c arg3=0x00000000                               // Branch with Link
+  0x0c369cb0  call                     arg2=0x0c389e0c arg3=0x00000000                               // Branch with Link
+  0x0c369cbc  run                      arg2=0x0c090004 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c369cc8  run                      arg2=0x0c08f358 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369cd4  call                     arg2=0x0c38a220 arg3=0x00000000                               // Branch with Link
+  0x0c369ce0  call                     arg2=0x0c38a220 arg3=0x00000000                               // Branch with Link
+  0x0c369cec  run                      arg2=0x0c090004 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c369cf8  call                     arg2=0x0c38a610 arg3=0x00000000                               // Branch with Link
+  0x0c369d04  call                     arg2=0x0c38a610 arg3=0x00000000                               // Branch with Link
+  0x0c369d10  run                      arg2=0x0c08eefc arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369d1c  run                      arg2=0x0c0a2e18 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c369d28  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c369d34  return                   arg2=0x00000000 arg3=0x00000000                               // Return

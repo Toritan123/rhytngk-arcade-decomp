@@ -1,0 +1,20 @@
+# BeatScript region @ 0x0c2b08f4
+# Length: 17 instructions (204 bytes)
+
+  0x0c2b08f4  set_var                  arg2=0x00000000 arg3=0x00000000                               // Set Variable
+  0x0c2b0900  op_18                    arg2=0x00000000 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c2b090c  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2b0918  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2b0924  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2b0930  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2b093c  scene_clear_bit          arg2=0x00000003 arg3=0x0c0909a4                               // (Scene) Clear Bit
+  0x0c2b0948  set_var                  arg2=0x00000000 arg3=0x00000000                               // Set Variable
+  0x0c2b0954  op_18                    arg2=0x00000000 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c2b0960  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2b096c  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2b0978  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2b0984  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2b0990  scene_clear_bit          arg2=0x00000000 arg3=0x00000000                               // (Scene) Clear Bit
+  0x0c2b099c  op_18                    arg2=0x00000000 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c2b09a8  op_18                    arg2=0x00000003 arg3=0x0c08eba4                               // ? (operations on the global scene variable)
+  0x0c2b09b4  rest                     arg2=0x00000004 arg3=0x0c08ebbc                               // Rest

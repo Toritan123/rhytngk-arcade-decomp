@@ -1,0 +1,21 @@
+# BeatScript region @ 0x0c2c7e04
+# Length: 18 instructions (216 bytes)
+
+  0x0c2c7e04  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c7e10  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c7e1c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c7e28  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c7e34  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c7e40  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c7e4c  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2c7e58  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c2b30c0                      // Run Function (2 Arguments)
+  0x0c2c7e64  play_music_in            arg2=0x000000ff arg3=0x0c1cdd00                               // Play Music
+  0x0c2c7e70  run                      arg2=0x0c0a0164 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c2c7e7c  if_eq                    arg2=0x0c3d4e1c arg3=0x00000000                               // If Equal
+  0x0c2c7e88  call                     arg2=0x0c2e9d94 arg3=0x00000000                               // Branch with Link
+  0x0c2c7e94  else                     arg2=0x00000000 arg3=0x00000000                               // Else
+  0x0c2c7ea0  call                     arg2=0x0c2ea658 arg3=0x00000000                               // Branch with Link
+  0x0c2c7eac  end_if                   arg2=0x00000000 arg3=0x00000000                               // End If Statement
+  0x0c2c7eb8  increase_speed           arg2=0x00000120 arg3=0x0000005e                               // Gradually Add to Speed Multiplier
+  0x0c2c7ec4  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c7ed0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest

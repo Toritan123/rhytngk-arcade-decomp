@@ -1,0 +1,20 @@
+# BeatScript region @ 0x0c1b1c10
+# Length: 17 instructions (204 bytes)
+
+  0x0c1b1c10  default                  arg2=0x00004c00 arg3=0x0c267404                               // Default Case
+  0x0c1b1c1c  default                  arg2=0x00000c00 arg3=0x0c267418                               // Default Case
+  0x0c1b1c28  default                  arg2=0x00000400 arg3=0x0c267430                               // Default Case
+  0x0c1b1c34  mod_music_volume         arg2=0x00006400 arg3=0x0c267448                               // Gradually Change Music Volume
+  0x0c1b1c40  mod_music_volume         arg2=0x00000800 arg3=0x0c26745c                               // Gradually Change Music Volume
+  0x0c1b1c4c  op_51                    arg2=0x00004c00 arg3=0x0c267474                               // ?
+  0x0c1b1c58  op_51                    arg2=0x00000800 arg3=0x0c267488                               // ?
+  0x0c1b1c64  mod_music_pitch          arg2=0x00000400 arg3=0x0c2674a0                               // Gradually Change Music Pitch
+  0x0c1b1c70  mod_music_pitch          arg2=0x00002800 arg3=0x0c2674b8                               // Gradually Change Music Pitch
+  0x0c1b1c7c  mod_music_pitch          arg2=0x00002800 arg3=0x0c2674d0                               // Gradually Change Music Pitch
+  0x0c1b1c88  mod_music_pitch          arg2=0x00002c00 arg3=0x0c2674e8                               // Gradually Change Music Pitch
+  0x0c1b1c94  mod_music_pitch          arg2=0x00005800 arg3=0x0c267500                               // Gradually Change Music Pitch
+  0x0c1b1ca0  op_52                    arg2=0x00001400 arg3=0x0c267518                               // ?
+  0x0c1b1cac  op_52                    arg2=0x00004c00 arg3=0x0c26752c                               // ?
+  0x0c1b1cb8  op_52                    arg2=0x00001800 arg3=0x0c267544                               // ?
+  0x0c1b1cc4  op_52                    arg2=0x00001000 arg3=0x0c26755c                               // ?
+  0x0c1b1cd0  op_52                    arg2=0x00002000 arg3=0x0c267578                               // ?

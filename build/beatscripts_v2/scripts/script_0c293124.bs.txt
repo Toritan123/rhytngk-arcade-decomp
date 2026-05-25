@@ -1,0 +1,22 @@
+# BeatScript region @ 0x0c293124
+# Length: 19 instructions (228 bytes)
+
+  0x0c293124  run                      arg2=0x0c0987e8 arg3=0x0000008c                               // Run Function (1 Argument)
+  0x0c293130  run                      arg2=0x0c097e60 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c29313c  run                      arg2=0x0c09c81c arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c293148  run                      arg2=0x0c073d20 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c293154  play_sfx                 arg2=0x00000000 arg3=0x0c1ce450                               // Play Sound Effect
+  0x0c293160  rest                     arg2=0x00000000 arg3=0x00000048                               // Rest
+  0x0c29316c  run                      arg2=0x0c072f9c arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c293178  play_sfx                 arg2=0x00000000 arg3=0x0c1ce454                               // Play Sound Effect
+  0x0c293184  rest                     arg2=0x00000000 arg3=0x00000060                               // Rest
+  0x0c293190  run                      arg2=0x0c073c50 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c29319c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2931a8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2931b4  run                      arg2=0x0c073c00 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2931c0  run                      arg2=0x0c0985bc arg3=0x00000032                               // Run Function (1 Argument)
+  0x0c2931cc  default                  arg2=0x00000100 arg3=0x00000180                               // Default Case
+  0x0c2931d8  run                      arg2=0x0c073afc arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2931e4  scene_set_var            arg2=0x00000008 arg3=0x00000001                               // (Scene) Set Variable
+  0x0c2931f0  run                      arg2=0x0c097e60 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2931fc  scene_set_var            arg2=0x00000008 arg3=0x00000000                               // (Scene) Set Variable

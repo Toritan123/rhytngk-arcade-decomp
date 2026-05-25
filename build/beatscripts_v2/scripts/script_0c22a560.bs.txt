@@ -1,0 +1,17 @@
+# BeatScript region @ 0x0c22a560
+# Length: 14 instructions (168 bytes)
+
+  0x0c22a560  rest                     arg2=0x00000008 arg3=0x00000010                               // Rest
+  0x0c22a56c  scene_if_eq              arg2=0x00000002 arg3=0x00000002                               // ? (branch-related)
+  0x0c22a578  scene_run                arg2=0x00000002 arg3=0x00000003                               // (Scene) Run Function
+  0x0c22a584  run2                     arg2=0x00000010 arg3=0x00000010                               // Run Function (2 Arguments)
+  0x0c22a590  loop_start               arg2=0x00000010 arg3=0x00000018                               // Start Loop
+  0x0c22a59c  scene_if_eq              arg2=0x00000000 arg3=0x0000001a                               // ? (branch-related)
+  0x0c22a5a8  case                     arg2=0x0000001b arg3=0x00000000                               // Switch Case
+  0x0c22a5b4  rest                     arg2=0x00000014 arg3=0x0000001d                               // Rest
+  0x0c22a5c0  rest                     arg2=0x0000001e arg3=0x00000013                               // Rest
+  0x0c22a5cc  switch                   arg2=0x00000018 arg3=0x00000017                               // ? (operations on the global scene variable)
+  0x0c22a5d8  if_set                   arg2=0x00000011 arg3=0x00000000                               // If Bit Set
+  0x0c22a5e4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c22a5f0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c22a5fc  if_eq                    arg2=0x00000000 arg3=0x00000015                               // If Equal

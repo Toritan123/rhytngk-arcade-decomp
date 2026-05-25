@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c36e094
+# Length: 11 instructions (132 bytes)
+
+  0x0c36e094  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c36e0a0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c271560                      // Run Function (2 Arguments)
+  0x0c36e0ac  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c36e0b8  mod_music_pitch          arg2=0x00000000 arg3=0x00000000                               // Gradually Change Music Pitch
+  0x0c36e0c4  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c271c9c                      // Run Function (2 Arguments)
+  0x0c36e0d0  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c36e0dc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c36e0e8  play_sfx                 arg2=0x00000000 arg3=0x0c1ce664                               // Play Sound Effect
+  0x0c36e0f4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c36e100  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c36e10c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest

@@ -1,0 +1,40 @@
+# BeatScript region @ 0x0c2cb638
+# Length: 37 instructions (444 bytes)
+
+  0x0c2cb638  run                      arg2=0x0c08f960 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cb644  run                      arg2=0x0c0987e8 arg3=0x00000078                               // Run Function (1 Argument)
+  0x0c2cb650  play_music_in            arg2=0x000000ff arg3=0x0c1ce29c                               // Play Music
+  0x0c2cb65c  run                      arg2=0x0c0985bc arg3=0x00000028                               // Run Function (1 Argument)
+  0x0c2cb668  default                  arg2=0x00000100 arg3=0x00000030                               // Default Case
+  0x0c2cb674  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb680  run                      arg2=0x0c0a2e18 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2cb68c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb698  run                      arg2=0x0c08e1c8 arg3=0x0c26ad28                               // Run Function (1 Argument)
+  0x0c2cb6a4  run                      arg2=0x0c08e390 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cb6b0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cb6bc  run                      arg2=0x0c08e1c8 arg3=0x0c26ad6c                               // Run Function (1 Argument)
+  0x0c2cb6c8  run                      arg2=0x0c08e390 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cb6d4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cb6e0  run                      arg2=0x0c08e1c8 arg3=0x0c26ada0                               // Run Function (1 Argument)
+  0x0c2cb6ec  default                  arg2=0x00000000 arg3=0x00000060                               // Default Case
+  0x0c2cb6f8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb704  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb710  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb71c  run                      arg2=0x0c08e390 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cb728  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cb734  run                      arg2=0x0c08eba4 arg3=0x00000078                               // Run Function (1 Argument)
+  0x0c2cb740  run2                     sub=0x0b arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2cb74c  run                      arg2=0x0c0a0164 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c2cb758  switch                   arg2=0x00000000 arg3=0x0c3d4e1c                               // Switch Statement
+  0x0c2cb764  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c2cb770  run                      arg2=0x0c08eba4 arg3=0x0c2ed274                               // Run Function (1 Argument)
+  0x0c2cb77c  run2                     sub=0x07 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2cb788  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2cb794  case                     arg2=0x00000000 arg3=0x00000001                               // Switch Case
+  0x0c2cb7a0  run                      arg2=0x0c08eba4 arg3=0x0c2ed280                               // Run Function (1 Argument)
+  0x0c2cb7ac  run2                     sub=0x07 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2cb7b8  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2cb7c4  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c2cb7d0  run                      arg2=0x0c08ee28 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cb7dc  loop_start               arg2=0x00000000 arg3=0x00000000                               // Start Loop
+  0x0c2cb7e8  run                      arg2=0x0c097e30 arg3=0x00000000                               // Run Function (1 Argument)

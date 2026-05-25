@@ -1,0 +1,85 @@
+# BeatScript region @ 0x0c3342b4
+# Length: 82 instructions (984 bytes)
+
+  0x0c3342b4  run                      arg2=0x0c0987e8 arg3=0x00000078                               // Run Function (1 Argument)
+  0x0c3342c0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c27095c                      // Run Function (2 Arguments)
+  0x0c3342cc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3342d8  run                      arg2=0x0c0a2e18 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c3342e4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3342f0  run                      arg2=0x0c08f3b0 arg3=0x0c2b9344                               // Run Function (1 Argument)
+  0x0c3342fc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334308  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c334314  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334320  run                      arg2=0x0c071674 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c33432c  run                      arg2=0x0c0987e8 arg3=0x0000006e                               // Run Function (1 Argument)
+  0x0c334338  run                      arg2=0x0c0985bc arg3=0x000000c8                               // Run Function (1 Argument)
+  0x0c334344  play_music_in            arg2=0x000000ff arg3=0x0c1ce2f4                               // Play Music
+  0x0c334350  rest                     arg2=0x00000000 arg3=0x00000006                               // Rest
+  0x0c33435c  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c270978                      // Run Function (2 Arguments)
+  0x0c334368  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334374  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334380  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33438c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334398  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3343a4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3343b0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c3343bc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3343c8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3343d4  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c270998                      // Run Function (2 Arguments)
+  0x0c3343e0  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3343ec  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3343f8  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334404  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334410  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33441c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334428  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334434  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334440  call                     arg2=0x0c3541d4 arg3=0x00000000                               // Branch with Link
+  0x0c33444c  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c2709ac                      // Run Function (2 Arguments)
+  0x0c334458  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334464  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334470  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33447c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334488  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334494  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3344a0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c3344ac  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3344b8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3344c4  call                     arg2=0x0c354294 arg3=0x00000000                               // Branch with Link
+  0x0c3344d0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c2709cc                      // Run Function (2 Arguments)
+  0x0c3344dc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3344e8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3344f4  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334500  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c33450c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334518  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334524  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c334530  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33453c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334548  call                     arg2=0x0c354354 arg3=0x00000000                               // Branch with Link
+  0x0c334554  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c2709ec                      // Run Function (2 Arguments)
+  0x0c334560  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33456c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334578  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334584  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334590  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33459c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3345a8  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c3345b4  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3345c0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3345cc  call                     arg2=0x0c35442c arg3=0x00000000                               // Branch with Link
+  0x0c3345d8  run                      arg2=0x0c08f3b0 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c3345e4  default                  arg2=0x00000000 arg3=0x0000005a                               // Default Case
+  0x0c3345f0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c26b734                      // Run Function (2 Arguments)
+  0x0c3345fc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334608  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334614  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334620  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c33462c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c334638  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334644  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c334650  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c33465c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334668  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334674  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c334680  goto                     arg2=0x0c3544e0 arg3=0x00000000                               // Branch without Link

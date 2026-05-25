@@ -1,0 +1,13 @@
+# BeatScript region @ 0x0c2a3e24
+# Length: 10 instructions (120 bytes)
+
+  0x0c2a3e24  run                      arg2=0x0c0987e8 arg3=0x0000007c                               // Run Function (1 Argument)
+  0x0c2a3e30  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2a3e3c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2a3e48  run2                     arg2=0x0c08f988 arg3=0x0c39c55c                               // Run Function (2 Arguments)
+  0x0c2a3e54  run                      arg2=0x0c08f1d0 arg3=0x00020001                               // Run Function (1 Argument)
+  0x0c2a3e60  run                      arg2=0x0c08f960 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a3e6c  run                      arg2=0x0c071674 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a3e78  call                     arg2=0x0c3152b4 arg3=0x00000000                               // Branch with Link
+  0x0c2a3e84  run                      arg2=0x0c0a2e18 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a3e90  run                      arg2=0x0c08f960 arg3=0x00000000                               // Run Function (1 Argument)

@@ -1,0 +1,39 @@
+# BeatScript region @ 0x0c1b2048
+# Length: 36 instructions (432 bytes)
+
+  0x0c1b2048  op_80                    arg2=0x00001800 arg3=0x0c267cf4                               // (Global Scene Sprite) Set Animation
+  0x0c1b2054  op_81                    arg2=0x00002400 arg3=0x0c267d14                               // (Global Scene Sprite) Set Animation Frame
+  0x0c1b2060  op_82                    arg2=0x00001800 arg3=0x0c267d28                               // (Global Scene Sprite) Set Animation Params.
+  0x0c1b206c  op_83                    arg2=0x00003400 arg3=0x0c267d40                               // (Global Scene Sprite) Set XYZ
+  0x0c1b2078  op_84                    arg2=0x00003000 arg3=0x0c267d58                               // (Global Scene Sprite) Set XY
+  0x0c1b2084  op_85                    arg2=0x00001c00 arg3=0x0c267d74                               // (Global Scene Sprite) Set Z
+  0x0c1b2090  op_86                    arg2=0x00002400 arg3=0x0c267d94                               // (Global Scene Sprite) Show/Hide
+  0x0c1b209c  op_87                    arg2=0x00002000 arg3=0x0c267dbc                               // (Global Scene Sprite) Set XY (Vector2)
+  0x0c1b20a8  op_88                    arg2=0x00002400 arg3=0x0c267dd0                               // (Global Scene Sprite) Set Palette
+  0x0c1b20b4  op_8a                    arg2=0x00002000 arg3=0x0c267de8                               // (Global Scene Sprite) sprite_set_enable_updates()
+  0x0c1b20c0  op_89                    arg2=0x00003000 arg3=0x0c267e08                               // (Global Scene Sprite) sprite_set_base_tile()
+  0x0c1b20cc  op_8b                    arg2=0x00001800 arg3=0x0c267e24                               // (Global Scene Sprite) Set Playback Speed
+  0x0c1b20d8  op_8c                    arg2=0x00003000 arg3=0x0c267e44                               // (Global Scene Sprite) Indefinite Linear Motion
+  0x0c1b20e4  op_8d                    arg2=0x00002800 arg3=0x0c267e5c                               // ?
+  0x0c1b20f0  op_8e                    arg2=0x00002000 arg3=0x0c267e78                               // ?
+  0x0c1b20fc  op_8f                    arg2=0x00002000 arg3=0x0c267e94                               // ?
+  0x0c1b2108  op_90                    arg2=0x00001400 arg3=0x0c267eb4                               // ?
+  0x0c1b2114  op_91                    arg2=0x00001800 arg3=0x0c267ec8                               // ?
+  0x0c1b2120  op_92                    arg2=0x00003400 arg3=0x0c267ee4                               // (Global Scene Sprite) Run Function Upon Motion Task End
+  0x0c1b212c  op_93                    arg2=0x00002c00 arg3=0x0c267f00                               // ?
+  0x0c1b2138  op_94                    arg2=0x00003400 arg3=0x0c267f1c                               // ?
+  0x0c1b2144  op_95                    arg2=0x00002400 arg3=0x0c267f38                               // ?
+  0x0c1b2150  op_96                    arg2=0x00002c00 arg3=0x0c267f54                               // (Global Scene Sprite) Add to XY
+  0x0c1b215c  op_97                    arg2=0x00003800 arg3=0x0c267f70                               // (Global Scene Sprite) Add to Z
+  0x0c1b2168  op_98                    arg2=0x00003400 arg3=0x0c267f8c                               // ?
+  0x0c1b2174  op_9a                    arg2=0x00002400 arg3=0x0c267fa8                               // ?
+  0x0c1b2180  op_99                    arg2=0x00002800 arg3=0x0c267fc8                               // ?
+  0x0c1b218c  op_9b                    arg2=0x00002800 arg3=0x0c267fe4                               // ?
+  0x0c1b2198  op_9c                    arg2=0x00002000 arg3=0x0c268008                               // ?
+  0x0c1b21a4  op_9d                    arg2=0x00002c00 arg3=0x0c26801c                               // (Global Scene Sprite) Run Function Upon Animation End
+  0x0c1b21b0  op_9f                    arg2=0x00002000 arg3=0x0c268038                               // (Global Scene Sprite) Delete All
+  0x0c1b21bc  op_9e                    arg2=0x00003000 arg3=0x0c268058                               // (Global Scene Sprite) Delete
+  0x0c1b21c8  op_a0                    arg2=0x00002800 arg3=0x0c268078                               // ?
+  0x0c1b21d4  op_a1                    arg2=0x00002000 arg3=0x0c26809c                               // ?
+  0x0c1b21e0  op_a2                    arg2=0x00001c00 arg3=0x0c2680b4                               // ?
+  0x0c1b21ec  rest                     arg2=0x00001000 arg3=0x0c2680cc                               // Rest

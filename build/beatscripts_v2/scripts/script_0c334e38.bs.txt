@@ -1,0 +1,53 @@
+# BeatScript region @ 0x0c334e38
+# Length: 50 instructions (600 bytes)
+
+  0x0c334e38  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334e44  rest                     arg2=0x00000003 arg3=0x0c090004                               // Rest
+  0x0c334e50  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334e5c  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c334e68  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334e74  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334e80  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334e8c  op_18                    arg2=0x0000000d arg3=0x0c3a67c8                               // ? (operations on the global scene variable)
+  0x0c334e98  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334ea4  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334eb0  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c334ebc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334ec8  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334ed4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334ee0  op_18                    arg2=0x0000000d arg3=0x0c3a67c8                               // ? (operations on the global scene variable)
+  0x0c334eec  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334ef8  rest                     arg2=0x0000000d arg3=0x0c3a6750                               // Rest
+  0x0c334f04  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c334f10  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334f1c  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334f28  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334f34  op_18                    arg2=0x0000000d arg3=0x0c3a67c8                               // ? (operations on the global scene variable)
+  0x0c334f40  rest                     arg2=0x00000003 arg3=0x0c0987e8                               // Rest
+  0x0c334f4c  op_8b                    arg2=0x00000004 arg3=0x0c08eb6c                               // (Global Scene Sprite) Set Playback Speed
+  0x0c334f58  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334f64  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334f70  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334f7c  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334f88  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334f94  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334fa0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334fac  op_18                    arg2=0x00000003 arg3=0x0c090004                               // ? (operations on the global scene variable)
+  0x0c334fb8  scene_run                arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Run Function
+  0x0c334fc4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334fd0  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c334fdc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c334fe8  op_18                    arg2=0x0000000d arg3=0x0c3a6750                               // ? (operations on the global scene variable)
+  0x0c334ff4  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c335000  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c33500c  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c335018  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c335024  op_18                    arg2=0x0000000d arg3=0x0c3a6750                               // ? (operations on the global scene variable)
+  0x0c335030  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c33503c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c335048  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c335054  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c335060  op_18                    arg2=0x0000000d arg3=0x0c3a6750                               // ? (operations on the global scene variable)
+  0x0c33506c  rest                     arg2=0x0000000d arg3=0x0c3a69d8                               // Rest
+  0x0c335078  rest                     arg2=0x00000003 arg3=0x0c090004                               // Rest
+  0x0c335084  stop                     arg2=0x00000003 arg3=0x0c08f358                               // Stop

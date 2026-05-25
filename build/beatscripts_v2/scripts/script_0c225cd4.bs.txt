@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c225cd4
+# Length: 8 instructions (96 bytes)
+
+  0x0c225cd4  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c225ce0  scene_run                arg2=0x00000001 arg3=0x00000002                               // (Scene) Run Function
+  0x0c225cec  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c225cf8  rest                     arg2=0x00000002 arg3=0x00000000                               // Rest
+  0x0c225d04  rest                     arg2=0x00000002 arg3=0x00000000                               // Rest
+  0x0c225d10  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c225d1c  rest                     arg2=0x00000001 arg3=0x00000002                               // Rest
+  0x0c225d28  stop                     arg2=0x00000000 arg3=0x00000002                               // Stop

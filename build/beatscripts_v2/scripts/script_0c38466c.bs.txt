@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c38466c
+# Length: 11 instructions (132 bytes)
+
+  0x0c38466c  op_96                    arg2=0x00000003 arg3=0x0c0d9728                               // (Global Scene Sprite) Add to XY
+  0x0c384678  loop_start               arg2=0x00000003 arg3=0x0c0d976c                               // Start Loop
+  0x0c384684  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c384690  op_18                    arg2=0x00000003 arg3=0x0c0d976c                               // ? (operations on the global scene variable)
+  0x0c38469c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3846a8  op_18                    arg2=0x00000003 arg3=0x0c0d976c                               // ? (operations on the global scene variable)
+  0x0c3846b4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3846c0  op_18                    arg2=0x00000003 arg3=0x0c0d976c                               // ? (operations on the global scene variable)
+  0x0c3846cc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3846d8  op_18                    arg2=0x00000003 arg3=0x0c08eba4                               // ? (operations on the global scene variable)
+  0x0c3846e4  scene_run                arg2=0x00000304 arg3=0x0c08ebbc                               // (Scene) Run Function

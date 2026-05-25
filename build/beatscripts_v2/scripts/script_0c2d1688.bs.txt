@@ -1,0 +1,15 @@
+# BeatScript region @ 0x0c2d1688
+# Length: 12 instructions (144 bytes)
+
+  0x0c2d1688  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2d1694  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2d16a0  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c39af98                      // Run Function (2 Arguments)
+  0x0c2d16ac  play_sfx_synced_pitch    sub=0x96 arg2=0x00000180 arg3=0x0c1cdfc4                      // Play Sound Effect (at given volume & pitch)
+  0x0c2d16b8  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2d16c4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2d16d0  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2d16dc  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c39af98                      // Run Function (2 Arguments)
+  0x0c2d16e8  rest                     arg2=0x00000000 arg3=0x00000006                               // Rest
+  0x0c2d16f4  play_music_in            arg2=0x000000ff arg3=0x0c1ce2f4                               // Play Music
+  0x0c2d1700  rest                     arg2=0x00000000 arg3=0x00000006                               // Rest
+  0x0c2d170c  return                   arg2=0x00000000 arg3=0x00000000                               // Return

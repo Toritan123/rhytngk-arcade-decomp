@@ -1,0 +1,15 @@
+# BeatScript region @ 0x0c2c8020
+# Length: 12 instructions (144 bytes)
+
+  0x0c2c8020  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c802c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c8038  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c8044  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c8050  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c805c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2c8068  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2c8074  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c2b30c0                      // Run Function (2 Arguments)
+  0x0c2c8080  call                     arg2=0x0c2eaf64 arg3=0x00000000                               // Branch with Link
+  0x0c2c808c  increase_speed           arg2=0x00000120 arg3=0x0000005e                               // Gradually Add to Speed Multiplier
+  0x0c2c8098  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2c80a4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest

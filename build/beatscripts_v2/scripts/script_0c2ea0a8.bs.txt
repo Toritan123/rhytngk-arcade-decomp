@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c2ea0a8
+# Length: 8 instructions (96 bytes)
+
+  0x0c2ea0a8  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2ea0b4  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c2ea0c0  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2ea0cc  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2ea0d8  run2                     arg2=0x00000000 arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2ea0e4  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c2ea0f0  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c2ea0fc  stop                     arg2=0x00000000 arg3=0x00000000                               // Stop

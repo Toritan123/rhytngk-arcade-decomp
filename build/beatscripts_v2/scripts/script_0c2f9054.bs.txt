@@ -1,0 +1,22 @@
+# BeatScript region @ 0x0c2f9054
+# Length: 19 instructions (228 bytes)
+
+  0x0c2f9054  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f9060  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f906c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f9078  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f9084  play_sfx                 arg2=0x00000000 arg3=0x0c1ce5f8                               // Play Sound Effect
+  0x0c2f9090  run                      arg2=0x0c08eba4 arg3=0xffffffe0                               // Run Function (1 Argument)
+  0x0c2f909c  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f90a8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f90b4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f90c0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f90cc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f90d8  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f90e4  run2                     sub=0x03 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f90f0  run                      arg2=0x0c08eefc arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2f90fc  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f9108  run2                     sub=0x04 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f9114  if_eq                    arg2=0x0c3d4e1c arg3=0x00000000                               // If Equal
+  0x0c2f9120  run                      arg2=0x0c071588 arg3=0x0c3190c4                               // Run Function (1 Argument)
+  0x0c2f912c  run                      arg2=0x0c071674 arg3=0x00000001                               // Run Function (1 Argument)

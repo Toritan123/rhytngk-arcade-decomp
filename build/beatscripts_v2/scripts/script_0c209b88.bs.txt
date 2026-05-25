@@ -1,0 +1,12 @@
+# BeatScript region @ 0x0c209b88
+# Length: 9 instructions (108 bytes)
+
+  0x0c209b88  else                     arg2=0x0c2290b8 arg3=0x0000006f                               // Else
+  0x0c209b94  rest                     arg2=0x00000000 arg3=0x0c2293a6                               // Rest
+  0x0c209ba0  op_40                    arg2=0x0c2293c4 arg3=0x00000040                               // Change Palette
+  0x0c209bac  rest                     arg2=0x00000000 arg3=0x0c228fe6                               // Rest
+  0x0c209bb8  scene_clear_bit          arg2=0x0c229004 arg3=0x0000000c                               // (Scene) Clear Bit
+  0x0c209bc4  rest                     arg2=0x00000000 arg3=0x0c2293f4                               // Rest
+  0x0c209bd0  set_var                  arg2=0x0c229400 arg3=0x00000005                               // Set Variable
+  0x0c209bdc  rest                     arg2=0x00000000 arg3=0x0c228f4a                               // Rest
+  0x0c209be8  run                      arg2=0x00000000 arg3=0x00000000                               // Run Function (1 Argument)

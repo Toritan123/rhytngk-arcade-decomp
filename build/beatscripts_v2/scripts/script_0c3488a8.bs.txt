@@ -1,0 +1,12 @@
+# BeatScript region @ 0x0c3488a8
+# Length: 9 instructions (108 bytes)
+
+  0x0c3488a8  op_a0                    arg2=0x0000000d arg3=0x0c3c4ff0                               // ?
+  0x0c3488b4  rest                     arg2=0x00000003 arg3=0x0c090004                               // Rest
+  0x0c3488c0  scene_run                arg2=0x00000003 arg3=0x0c0987e8                               // (Scene) Run Function
+  0x0c3488cc  op_a0                    arg2=0x0000000d arg3=0x0c3c5620                               // ?
+  0x0c3488d8  rest                     arg2=0x00000003 arg3=0x0c090004                               // Rest
+  0x0c3488e4  rest                     arg2=0x00000003 arg3=0x0c0987e8                               // Rest
+  0x0c3488f0  mod_music_volume         arg2=0x0000000d arg3=0x0c3c4cc0                               // Gradually Change Music Volume
+  0x0c3488fc  rest                     arg2=0x00000003 arg3=0x0c090004                               // Rest
+  0x0c348908  stop                     arg2=0x00000003 arg3=0x0c0987e8                               // Stop

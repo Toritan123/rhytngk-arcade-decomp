@@ -1,0 +1,31 @@
+# BeatScript region @ 0x0c292d70
+# Length: 28 instructions (336 bytes)
+
+  0x0c292d70  clear_bit                arg2=0x00000000 arg3=0x00000136                               // Clear Bit
+  0x0c292d7c  rest                     arg2=0x00000030 arg3=0x00000149                               // Rest
+  0x0c292d88  scene_clear_bit          arg2=0x00000000 arg3=0x00000000                               // (Scene) Clear Bit
+  0x0c292d94  rest                     arg2=0x0000000c arg3=0x00000000                               // Rest
+  0x0c292da0  rest                     arg2=0x00000018 arg3=0x00000001                               // Rest
+  0x0c292dac  rest                     arg2=0x00000000 arg3=0x00000001                               // Rest
+  0x0c292db8  rest                     arg2=0x00000000 arg3=0x0c53fb2c                               // Rest
+  0x0c292dc4  scene_set_var            arg2=0x0c2b29c0 arg3=0x0c071bfc                               // (Scene) Set Variable
+  0x0c292dd0  add_var                  arg2=0x0c2b29d0 arg3=0x0c071b9c                               // Add to Variable
+  0x0c292ddc  scene_set_var            arg2=0x0c2b29e0 arg3=0x0c071c40                               // (Scene) Set Variable
+  0x0c292de8  add_var                  arg2=0x0c2b29f0 arg3=0x0c071b00                               // Add to Variable
+  0x0c292df4  rest                     arg2=0x0c2b2a00 arg3=0x0c071b6c                               // Rest
+  0x0c292e00  rest                     arg2=0x0c2b2a10 arg3=0x0c071eac                               // Rest
+  0x0c292e0c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c292e18  clear_bit                arg2=0x0c2b2a30 arg3=0x0c071ec8                               // Clear Bit
+  0x0c292e24  scene_set_var            arg2=0x0c2b29d0 arg3=0x0c071b9c                               // (Scene) Set Variable
+  0x0c292e30  set_bit                  arg2=0x0c2b2a40 arg3=0x0c071a94                               // Set Bit
+  0x0c292e3c  add_var                  arg2=0x0c2b29f0 arg3=0x0c071b00                               // Add to Variable
+  0x0c292e48  rest                     arg2=0x0c2b2a00 arg3=0x0c071b6c                               // Rest
+  0x0c292e54  rest                     arg2=0x0c2b2a10 arg3=0x0c071eac                               // Rest
+  0x0c292e60  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c292e6c  clear_bit                arg2=0x0c2b2a50 arg3=0x0c071f38                               // Clear Bit
+  0x0c292e78  set_var                  arg2=0x0c2b2a30 arg3=0x0c071ec8                               // Set Variable
+  0x0c292e84  scene_add_var            arg2=0x0c2b2a40 arg3=0x0c071a94                               // (Scene) Add to Variable
+  0x0c292e90  set_bit                  arg2=0x0c2b29f0 arg3=0x0c071b00                               // Set Bit
+  0x0c292e9c  rest                     arg2=0x0c2b2a00 arg3=0x0c071b6c                               // Rest
+  0x0c292ea8  rest                     arg2=0x0c2b2a10 arg3=0x0c071eac                               // Rest
+  0x0c292eb4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest

@@ -1,0 +1,30 @@
+# BeatScript region @ 0x0c2f9480
+# Length: 27 instructions (324 bytes)
+
+  0x0c2f9480  end_if                   arg2=0x00000000 arg3=0x00000000                               // End If Statement
+  0x0c2f948c  run                      arg2=0x0c0a0164 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c2f9498  switch                   arg2=0x00000000 arg3=0x0c3d4e1c                               // Switch Statement
+  0x0c2f94a4  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c2f94b0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f94bc  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f94c8  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f94d4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f94e0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f94ec  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2f94f8  case                     arg2=0x00000000 arg3=0x00000001                               // Switch Case
+  0x0c2f9504  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f9510  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2f951c  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f9528  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f9534  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f9540  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2f954c  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f9558  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f9564  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2f9570  mod_music_pitch          arg2=0x00000000 arg3=0x00000000                               // Gradually Change Music Pitch
+  0x0c2f957c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f9588  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2f9594  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c2b371c                      // Run Function (2 Arguments)
+  0x0c2f95a0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f95ac  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c2f95b8  return                   arg2=0x00000000 arg3=0x00000000                               // Return

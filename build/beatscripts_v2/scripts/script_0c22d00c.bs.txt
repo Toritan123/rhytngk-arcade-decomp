@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c22d00c
+# Length: 11 instructions (132 bytes)
+
+  0x0c22d00c  run                      arg2=0x00000003 arg3=0x00000004                               // Run Function (1 Argument)
+  0x0c22d018  run2                     arg2=0x00000005 arg3=0x00000005                               // Run Function (2 Arguments)
+  0x0c22d024  add_var                  arg2=0x00000006 arg3=0x00000007                               // Add to Variable
+  0x0c22d030  set_bit                  arg2=0x00000008 arg3=0x00000008                               // Set Bit
+  0x0c22d03c  scene_set_var            arg2=0x00000009 arg3=0x0000000a                               // (Scene) Set Variable
+  0x0c22d048  scene_add_var            arg2=0x0000000b arg3=0x0000000b                               // (Scene) Add to Variable
+  0x0c22d054  scene_clear_bit          arg2=0x0000000c arg3=0x0000000d                               // (Scene) Clear Bit
+  0x0c22d060  call                     arg2=0x00000000 arg3=0x00000001                               // Branch with Link
+  0x0c22d06c  scene_run                arg2=0x00000003 arg3=0x00000004                               // (Scene) Run Function
+  0x0c22d078  add_var                  arg2=0x00000008 arg3=0x0000000c                               // Add to Variable
+  0x0c22d084  loop_start               arg2=0x00000018 arg3=0x00000020                               // Start Loop

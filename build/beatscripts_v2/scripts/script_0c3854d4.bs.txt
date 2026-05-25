@@ -1,0 +1,31 @@
+# BeatScript region @ 0x0c3854d4
+# Length: 28 instructions (336 bytes)
+
+  0x0c3854d4  run                      arg2=0x0c0987e8 arg3=0x00000060                               // Run Function (1 Argument)
+  0x0c3854e0  run                      arg2=0x0c0985bc arg3=0x000000c8                               // Run Function (1 Argument)
+  0x0c3854ec  run                      arg2=0x0c0d9728 arg3=0x00000080                               // Run Function (1 Argument)
+  0x0c3854f8  run                      arg2=0x0c0d976c arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c385504  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385510  run                      arg2=0x0c0d976c arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c38551c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385528  run                      arg2=0x0c0d976c arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c385534  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385540  run                      arg2=0x0c0d976c arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c38554c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385558  play_music_in            arg2=0x000000ff arg3=0x0c1ce214                               // Play Music
+  0x0c385564  rest                     arg2=0x00000000 arg3=0x000000c0                               // Rest
+  0x0c385570  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c38557c  run2                     sub=0x03 arg2=0x0c08ebbc arg3=0x0c39d06c                      // Run Function (2 Arguments)
+  0x0c385588  rest                     arg2=0x00000000 arg3=0x00000180                               // Rest
+  0x0c385594  rest                     arg2=0x00000000 arg3=0x00000180                               // Rest
+  0x0c3855a0  rest                     arg2=0x00000000 arg3=0x00000180                               // Rest
+  0x0c3855ac  rest                     arg2=0x00000000 arg3=0x00000180                               // Rest
+  0x0c3855b8  rest                     arg2=0x00000000 arg3=0x000000c0                               // Rest
+  0x0c3855c4  rest                     arg2=0x00000000 arg3=0x00000180                               // Rest
+  0x0c3855d0  rest                     arg2=0x00000000 arg3=0x000000c0                               // Rest
+  0x0c3855dc  rest                     arg2=0x00000000 arg3=0x000000c0                               // Rest
+  0x0c3855e8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3855f4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385600  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c38560c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c385618  return                   arg2=0x00000000 arg3=0x00000000                               // Return

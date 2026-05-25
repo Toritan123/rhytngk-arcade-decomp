@@ -1,0 +1,19 @@
+# BeatScript region @ 0x0c328f64
+# Length: 16 instructions (192 bytes)
+
+  0x0c328f64  scene_clear_bit          arg2=0x00000003 arg3=0x0c0909a4                               // (Scene) Clear Bit
+  0x0c328f70  clear_bit                arg2=0x00000004 arg3=0x0c08eb6c                               // Clear Bit
+  0x0c328f7c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c328f88  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c328f94  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c328fa0  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c328fac  clear_bit                arg2=0x00000004 arg3=0x0c08eb6c                               // Clear Bit
+  0x0c328fb8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c328fc4  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c328fd0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c328fdc  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c328fe8  clear_bit                arg2=0x00000004 arg3=0x0c08eb6c                               // Clear Bit
+  0x0c328ff4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c329000  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c32900c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c329018  op_18                    arg2=0x00000003 arg3=0x0c08ed00                               // ? (operations on the global scene variable)

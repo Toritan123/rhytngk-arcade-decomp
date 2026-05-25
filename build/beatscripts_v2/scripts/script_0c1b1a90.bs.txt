@@ -1,0 +1,15 @@
+# BeatScript region @ 0x0c1b1a90
+# Length: 12 instructions (144 bytes)
+
+  0x0c1b1a90  set_speed                arg2=0x00002000 arg3=0x0c267068                               // Set Speed
+  0x0c1b1a9c  set_speed                arg2=0x00002c00 arg3=0x0c267088                               // Set Speed
+  0x0c1b1aa8  set_music_pitch          arg2=0x00001000 arg3=0x0c2670a8                               // Set Music Pitch (avoids resetting an unknown flag)
+  0x0c1b1ab4  set_music_pitch          arg2=0x00002c00 arg3=0x0c2670cc                               // Set Music Pitch (avoids resetting an unknown flag)
+  0x0c1b1ac0  set_music_pitch_s        arg2=0x00001000 arg3=0x0c2670f0                               // Set Music Pitch (also updates an unknown flag)
+  0x0c1b1acc  set_music_pitch_s        arg2=0x00004c00 arg3=0x0c267110                               // Set Music Pitch (also updates an unknown flag)
+  0x0c1b1ad8  mod_lcd_blend            arg2=0x00001800 arg3=0x0c267134                               // Change LCD Special Effect Controls (Blend)
+  0x0c1b1ae4  mod_lcd_blend            arg2=0x00001000 arg3=0x0c267158                               // Change LCD Special Effect Controls (Blend)
+  0x0c1b1af0  op_40                    arg2=0x00001800 arg3=0x0c267180                               // Change Palette
+  0x0c1b1afc  op_40                    arg2=0x00002000 arg3=0x0c26719c                               // Change Palette
+  0x0c1b1b08  op_41                    arg2=0x00000800 arg3=0x0c2671b8                               // Set BG Layer Registers
+  0x0c1b1b14  op_41                    arg2=0x00000800 arg3=0x0c2671d4                               // Set BG Layer Registers

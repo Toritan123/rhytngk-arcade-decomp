@@ -1,0 +1,23 @@
+# BeatScript region @ 0x0c292484
+# Length: 20 instructions (240 bytes)
+
+  0x0c292484  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c292490  op_18                    arg2=0x00000001 arg3=0x00000000                               // ? (operations on the global scene variable)
+  0x0c29249c  rest                     arg2=0x0c2cbe44 arg3=0x0c3d558c                               // Rest
+  0x0c2924a8  clear_bit                arg2=0x0c2cbe44 arg3=0x0c3d557c                               // Clear Bit
+  0x0c2924b4  scene_run                arg2=0x0c2cbe44 arg3=0x0c3d55ac                               // (Scene) Run Function
+  0x0c2924c0  clear_bit                arg2=0x0c2cbe44 arg3=0x0c3d559c                               // Clear Bit
+  0x0c2924cc  scene_run                arg2=0x0c2cbe4c arg3=0x0c3d55cc                               // (Scene) Run Function
+  0x0c2924d8  clear_bit                arg2=0x0c2cbe4c arg3=0x0c3d55bc                               // Clear Bit
+  0x0c2924e4  scene_run                arg2=0x0c2cbe54 arg3=0x0c3d55ec                               // (Scene) Run Function
+  0x0c2924f0  clear_bit                arg2=0x0c2cbe54 arg3=0x0c3d55dc                               // Clear Bit
+  0x0c2924fc  scene_run                arg2=0x0c2cbe5c arg3=0x0c3d560c                               // (Scene) Run Function
+  0x0c292508  clear_bit                arg2=0x0c2cbe5c arg3=0x0c3d55fc                               // Clear Bit
+  0x0c292514  scene_run                arg2=0x0c2cbe64 arg3=0x0c3d562c                               // (Scene) Run Function
+  0x0c292520  clear_bit                arg2=0x0c2cbe64 arg3=0x0c3d561c                               // Clear Bit
+  0x0c29252c  scene_run                arg2=0x0c2cbe6c arg3=0x0c3d564c                               // (Scene) Run Function
+  0x0c292538  clear_bit                arg2=0x0c2cbe6c arg3=0x0c3d563c                               // Clear Bit
+  0x0c292544  scene_run                arg2=0x0c2cbe3c arg3=0x0c3d566c                               // (Scene) Run Function
+  0x0c292550  clear_bit                arg2=0x0c2cbe3c arg3=0x0c3d565c                               // Clear Bit
+  0x0c29255c  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c292568  rest                     arg2=0x0c06fa34 arg3=0x0c2b2090                               // Rest

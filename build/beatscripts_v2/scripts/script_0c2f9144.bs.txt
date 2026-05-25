@@ -1,0 +1,21 @@
+# BeatScript region @ 0x0c2f9144
+# Length: 18 instructions (216 bytes)
+
+  0x0c2f9144  case                     arg2=0x00000000 arg3=0x00000005                               // Switch Case
+  0x0c2f9150  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f915c  run                      arg2=0x0c091924 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f9168  run                      arg2=0x0c090004 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2f9174  run                      arg2=0x0c0918f4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f9180  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2f918c  case                     arg2=0x00000000 arg3=0x00000004                               // Switch Case
+  0x0c2f9198  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f91a4  run                      arg2=0x0c091924 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f91b0  run                      arg2=0x0c090004 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2f91bc  run                      arg2=0x0c0918f4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f91c8  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2f91d4  case                     arg2=0x00000000 arg3=0x00000003                               // Switch Case
+  0x0c2f91e0  run                      arg2=0x0c090004 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f91ec  run                      arg2=0x0c0918f4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f91f8  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2f9204  mod_music_pitch          arg2=0x00000000 arg3=0x00000000                               // Gradually Change Music Pitch
+  0x0c2f9210  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement

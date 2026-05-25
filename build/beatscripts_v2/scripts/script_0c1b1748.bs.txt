@@ -1,0 +1,29 @@
+# BeatScript region @ 0x0c1b1748
+# Length: 26 instructions (312 bytes)
+
+  0x0c1b1748  op_18                    arg2=0x00000800 arg3=0x0c2667e4                               // ? (operations on the global scene variable)
+  0x0c1b1754  op_18                    arg2=0x00001000 arg3=0x0c2667fc                               // ? (operations on the global scene variable)
+  0x0c1b1760  switch                   arg2=0x00001000 arg3=0x0c266814                               // ? (operations on the global scene variable)
+  0x0c1b176c  switch                   arg2=0x00002000 arg3=0x0c266830                               // ? (operations on the global scene variable)
+  0x0c1b1778  switch                   arg2=0x00002800 arg3=0x0c266850                               // Switch Statement
+  0x0c1b1784  switch                   arg2=0x00003800 arg3=0x0c266870                               // Switch Statement
+  0x0c1b1790  end_switch               arg2=0x00001800 arg3=0x0c266894                               // End Switch Statement
+  0x0c1b179c  end_switch               arg2=0x00001c00 arg3=0x0c2668b4                               // End Switch Statement
+  0x0c1b17a8  case                     arg2=0x00004000 arg3=0x0c2668d8                               // Switch Case
+  0x0c1b17b4  case                     arg2=0x00001000 arg3=0x0c2668f4                               // Switch Case
+  0x0c1b17c0  break                    arg2=0x00002000 arg3=0x0c266914                               // End Switch Case
+  0x0c1b17cc  break                    arg2=0x00000c00 arg3=0x0c266938                               // End Switch Case
+  0x0c1b17d8  op_1f                    arg2=0x00001400 arg3=0x0c266960                               // ? (conditional statement (while not?))
+  0x0c1b17e4  op_1f                    arg2=0x00000400 arg3=0x0c266980                               // ? (conditional statement (while not?))
+  0x0c1b17f0  scene_if_eq              arg2=0x00001000 arg3=0x0c2669a4                               // ? (branch-related)
+  0x0c1b17fc  scene_if_eq              arg2=0x00002800 arg3=0x0c2669bc                               // ? (branch-related)
+  0x0c1b1808  scene_if_eq              arg2=0x00002c00 arg3=0x0c2669d4                               // (Scene) If Equal
+  0x0c1b1814  scene_if_eq              arg2=0x00000400 arg3=0x0c2669ec                               // (Scene) If Equal
+  0x0c1b1820  scene_if_neq             arg2=0x00001000 arg3=0x0c266a08                               // (Scene) If Not Equal
+  0x0c1b182c  scene_if_neq             arg2=0x00001c00 arg3=0x0c266a20                               // (Scene) If Not Equal
+  0x0c1b1838  scene_switch             arg2=0x00002000 arg3=0x0c266a3c                               // Scene Switch Statement
+  0x0c1b1844  scene_switch             arg2=0x00002400 arg3=0x0c266a58                               // Scene Switch Statement
+  0x0c1b1850  op_24                    arg2=0x00002000 arg3=0x0c266a78                               // ? (scene variant of 0x1F)
+  0x0c1b185c  op_25                    arg2=0x00002000 arg3=0x0c266a98                               // ? (scene variant of 0x1E)
+  0x0c1b1868  op_25                    arg2=0x00003000 arg3=0x0c266ac4                               // ? (scene variant of 0x1E)
+  0x0c1b1874  op_24                    arg2=0x00003400 arg3=0x0c266af0                               // ? (scene variant of 0x1F)

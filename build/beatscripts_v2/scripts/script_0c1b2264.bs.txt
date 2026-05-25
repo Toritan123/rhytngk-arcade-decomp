@@ -1,0 +1,13 @@
+# BeatScript region @ 0x0c1b2264
+# Length: 10 instructions (120 bytes)
+
+  0x0c1b2264  op_a4                    arg2=0x00000c00 arg3=0x0c268198                               // ?
+  0x0c1b2270  dma_set                  arg2=0x00000800 arg3=0x0c2681b8                               // ?
+  0x0c1b227c  dma_set                  arg2=0x00004400 arg3=0x0c2681dc                               // ?
+  0x0c1b2288  dma_set                  arg2=0x00002800 arg3=0x0c268204                               // DMA3 Set
+  0x0c1b2294  dma_set                  arg2=0x00002000 arg3=0x0c268220                               // DMA3 Set
+  0x0c1b22a0  set_speed_to_music       arg2=0x00000400 arg3=0x0c26823c                               // Set Speed to Music (this also plays the given music)
+  0x0c1b22ac  op_a8                    arg2=0x00003400 arg3=0x0c26825c                               // (Global Scene Sprite) Fix XY to BG Layer
+  0x0c1b22b8  op_a8                    arg2=0x00002000 arg3=0x0c26827c                               // (Global Scene Sprite) Fix XY to BG Layer
+  0x0c1b22c4  op_a9                    arg2=0x00001800 arg3=0x0c26829c                               // (Global Scene Sprite) ?
+  0x0c1b22d0  op_a9                    arg2=0x00000800 arg3=0x0c2682bc                               // (Global Scene Sprite) ?

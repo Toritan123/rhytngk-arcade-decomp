@@ -1,0 +1,28 @@
+# BeatScript region @ 0x0c388258
+# Length: 25 instructions (300 bytes)
+
+  0x0c388258  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c388264  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c388270  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c38827c  rest                     arg2=0x00000000 arg3=0x00000016                               // Rest
+  0x0c388288  play_sfx                 arg2=0x00000000 arg3=0x0c1ce000                               // Play Sound Effect
+  0x0c388294  rest                     arg2=0x00000000 arg3=0x00000002                               // Rest
+  0x0c3882a0  play_sfx                 arg2=0x00000000 arg3=0x0c1ce01c                               // Play Sound Effect
+  0x0c3882ac  run                      arg2=0x0c08eba4 arg3=0x00000006                               // Run Function (1 Argument)
+  0x0c3882b8  run2                     arg2=0x0c08ebbc arg3=0x0c2b32a0                               // Run Function (2 Arguments)
+  0x0c3882c4  run                      arg2=0x0c0909a4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c3882d0  run                      arg2=0x0c0909a4 arg3=0x0000000d                               // Run Function (1 Argument)
+  0x0c3882dc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c3882e8  rest                     arg2=0x00000000 arg3=0x00000008                               // Rest
+  0x0c3882f4  rest                     arg2=0x00000000 arg3=0x00000006                               // Rest
+  0x0c388300  play_sfx                 arg2=0x00000000 arg3=0x0c1ce020                               // Play Sound Effect
+  0x0c38830c  play_sfx                 arg2=0x00000000 arg3=0x0c1ce004                               // Play Sound Effect
+  0x0c388318  rest                     arg2=0x00000000 arg3=0x00000002                               // Rest
+  0x0c388324  rest                     arg2=0x00000000 arg3=0x00000008                               // Rest
+  0x0c388330  run                      arg2=0x0c08eba4 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c38833c  run2                     arg2=0x0c08ebbc arg3=0x0c2b32a0                               // Run Function (2 Arguments)
+  0x0c388348  play_sfx                 arg2=0x00000000 arg3=0x0c1ce024                               // Play Sound Effect
+  0x0c388354  play_sfx                 arg2=0x00000000 arg3=0x0c1ce008                               // Play Sound Effect
+  0x0c388360  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c38836c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c388378  return                   arg2=0x00000000 arg3=0x00000000                               // Return

@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c209940
+# Length: 11 instructions (132 bytes)
+
+  0x0c209940  add_var                  arg2=0x0c228f08 arg3=0x00000006                               // Add to Variable
+  0x0c20994c  rest                     arg2=0x00000000 arg3=0x0c228f7a                               // Rest
+  0x0c209958  scene_clear_bit          arg2=0x0c228f86 arg3=0x0000000c                               // (Scene) Clear Bit
+  0x0c209964  rest                     arg2=0x00000000 arg3=0x0c228f92                               // Rest
+  0x0c209970  scene_clear_bit          arg2=0x0c228faa arg3=0x0000000c                               // (Scene) Clear Bit
+  0x0c20997c  rest                     arg2=0x00000000 arg3=0x0c228fc2                               // Rest
+  0x0c209988  loop_start               arg2=0x0c228fd4 arg3=0x00000010                               // Start Loop
+  0x0c209994  rest                     arg2=0x00000000 arg3=0x0c2290d6                               // Rest
+  0x0c2099a0  scene_clear_bit          arg2=0x0c2290e2 arg3=0x0000000c                               // (Scene) Clear Bit
+  0x0c2099ac  rest                     arg2=0x00000000 arg3=0x0c2290ee                               // Rest
+  0x0c2099b8  scene_if_eq              arg2=0x0c2290e2 arg3=0x00000002                               // ? (branch-related)

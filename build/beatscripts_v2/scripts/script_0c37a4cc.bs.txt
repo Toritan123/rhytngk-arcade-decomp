@@ -1,0 +1,12 @@
+# BeatScript region @ 0x0c37a4cc
+# Length: 9 instructions (108 bytes)
+
+  0x0c37a4cc  clear_bit                arg2=0x0c2cbe0c arg3=0x0c3d567c                               // Clear Bit
+  0x0c37a4d8  scene_run                arg2=0x0c2cbe54 arg3=0x0c3d56ac                               // (Scene) Run Function
+  0x0c37a4e4  clear_bit                arg2=0x0c2cbe54 arg3=0x0c3d569c                               // Clear Bit
+  0x0c37a4f0  scene_run                arg2=0x0c2cbe6c arg3=0x0c3d56cc                               // (Scene) Run Function
+  0x0c37a4fc  clear_bit                arg2=0x0c2cbe6c arg3=0x0c3d56bc                               // Clear Bit
+  0x0c37a508  scene_run                arg2=0x0c2cbe64 arg3=0x0c3d56ec                               // (Scene) Run Function
+  0x0c37a514  clear_bit                arg2=0x0c2cbe64 arg3=0x0c3d56dc                               // Clear Bit
+  0x0c37a520  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c37a52c  rest                     arg2=0x0c1d1d34 arg3=0x00000000                               // Rest

@@ -1,0 +1,26 @@
+# BeatScript region @ 0x0c1cc484
+# Length: 23 instructions (276 bytes)
+
+  0x0c1cc484  set_speed                arg2=0x0c1eb908 arg3=0x0000003c                               // Set Speed
+  0x0c1cc490  rest                     arg2=0x00000000 arg3=0x0c1eab58                               // Rest
+  0x0c1cc49c  op_1e                    arg2=0x0c1eab94 arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc4a8  rest                     arg2=0x00000000 arg3=0x0c1eacc6                               // Rest
+  0x0c1cc4b4  op_1e                    arg2=0x0c1ead02 arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc4c0  rest                     arg2=0x00000000 arg3=0x0c1eae64                               // Rest
+  0x0c1cc4cc  op_1e                    arg2=0x0c1eaea0 arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc4d8  rest                     arg2=0x00000000 arg3=0x0c1eb248                               // Rest
+  0x0c1cc4e4  op_1e                    arg2=0x0c1eb27e arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc4f0  rest                     arg2=0x00000000 arg3=0x0c1eb392                               // Rest
+  0x0c1cc4fc  op_1e                    arg2=0x0c1eb3c8 arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc508  rest                     arg2=0x00000000 arg3=0x0c1eb506                               // Rest
+  0x0c1cc514  op_1e                    arg2=0x0c1eb53c arg3=0x00000064                               // ? (conditional statement (while?))
+  0x0c1cc520  rest                     arg2=0x00000000 arg3=0x0c1eb83c                               // Rest
+  0x0c1cc52c  run                      arg2=0x0c1eb920 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c1cc538  rest                     arg2=0x00000000 arg3=0x0c1eb854                               // Rest
+  0x0c1cc544  run                      arg2=0x0c1eb95c arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c1cc550  rest                     arg2=0x00000000 arg3=0x0c1eb89c                               // Rest
+  0x0c1cc55c  run                      arg2=0x0c1eb998 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c1cc568  rest                     arg2=0x00000000 arg3=0x0c1eb884                               // Rest
+  0x0c1cc574  run                      arg2=0x0c1eb9d4 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c1cc580  rest                     arg2=0x00000000 arg3=0x0c1eb068                               // Rest
+  0x0c1cc58c  stop                     arg2=0x0c1eb09e arg3=0x00000001                               // Stop

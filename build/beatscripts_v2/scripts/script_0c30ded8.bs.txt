@@ -1,0 +1,18 @@
+# BeatScript region @ 0x0c30ded8
+# Length: 15 instructions (180 bytes)
+
+  0x0c30ded8  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c30dee4  run                      arg2=0x0c08e1c8 arg3=0x0c26f3a0                               // Run Function (1 Argument)
+  0x0c30def0  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c30defc  mod_music_pitch          arg2=0x00000000 arg3=0x00000000                               // Gradually Change Music Pitch
+  0x0c30df08  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c30df14  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c30df20  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c30df2c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c30df38  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c30df44  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c30df50  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c30df5c  run                      arg2=0x0c08f3b0 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c30df68  run                      arg2=0x0c08e1c8 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c30df74  default                  arg2=0x00000000 arg3=0x00000060                               // Default Case
+  0x0c30df80  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest

@@ -1,0 +1,24 @@
+# BeatScript region @ 0x0c36494c
+# Length: 21 instructions (252 bytes)
+
+  0x0c36494c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c364958  op_18                    arg2=0x00000104 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c364964  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c364970  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c36497c  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c364988  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c364994  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c3649a0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3649ac  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c3649b8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3649c4  op_18                    arg2=0x00000104 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c3649d0  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c3649dc  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c3649e8  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c3649f4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c364a00  op_18                    arg2=0x0000004d arg3=0x00000284                               // ? (operations on the global scene variable)
+  0x0c364a0c  if_set                   arg2=0x00000004 arg3=0x0c08eb6c                               // If Bit Set
+  0x0c364a18  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c364a24  op_18                    arg2=0x00000003 arg3=0x0c0987e8                               // ? (operations on the global scene variable)
+  0x0c364a30  op_96                    arg2=0x00000003 arg3=0x0c090004                               // (Global Scene Sprite) Add to XY
+  0x0c364a3c  stop                     arg2=0x0000004b arg3=0x000000aa                               // Stop

@@ -1,0 +1,35 @@
+# BeatScript region @ 0x0c39dbdc
+# Length: 32 instructions (384 bytes)
+
+  0x0c39dbdc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c39dbe8  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dbf4  run2                     sub=0x07 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dc00  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c39dc0c  run                      arg2=0x0c08eba4 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c39dc18  run2                     sub=0x04 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dc24  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c39dc30  run2                     sub=0x08 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dc3c  run                      arg2=0x0c0909a4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dc48  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c39dc54  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dc60  run2                     sub=0x08 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dc6c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c39dc78  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c39dc84  run                      arg2=0x0c08eba4 arg3=0x0000e5f5                               // Run Function (1 Argument)
+  0x0c39dc90  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dc9c  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c39dca8  run2                     sub=0x07 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dcb4  play_sfx_vol_pitch       sub=0xa0 arg2=0xfffffe00 arg3=0x0c1ce120                      // Play Sound Effect (at given volume & pitch)
+  0x0c39dcc0  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c39dccc  run2                     sub=0x08 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dcd8  run                      arg2=0x0c08eba4 arg3=0x00000004                               // Run Function (1 Argument)
+  0x0c39dce4  run2                     sub=0x04 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dcf0  run                      arg2=0x0c0909a4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dcfc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c39dd08  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dd14  run2                     sub=0x08 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dd20  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c39dd2c  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39dd38  run2                     sub=0x09 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39dd44  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c39dd50  return                   arg2=0x00000000 arg3=0x00000000                               // Return

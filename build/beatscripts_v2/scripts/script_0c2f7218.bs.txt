@@ -1,0 +1,17 @@
+# BeatScript region @ 0x0c2f7218
+# Length: 14 instructions (168 bytes)
+
+  0x0c2f7218  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2f7224  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f7230  run                      arg2=0x0c08ee48 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f723c  loop_end                 arg2=0x00000000 arg3=0x00000000                               // End Loop
+  0x0c2f7248  run                      arg2=0x0c08e1c8 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2f7254  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce6b0                      // Play Sound Effect (at given volume & pitch)
+  0x0c2f7260  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2f726c  run                      arg2=0x0c08eba4 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c2f7278  run2                     arg2=0x0c08ebbc arg3=0x0c39c55c                               // Run Function (2 Arguments)
+  0x0c2f7284  call                     arg2=0x0c3171bc arg3=0x00000000                               // Branch with Link
+  0x0c2f7290  call                     arg2=0x0c3171bc arg3=0x00000000                               // Branch with Link
+  0x0c2f729c  call                     arg2=0x0c3171bc arg3=0x00000000                               // Branch with Link
+  0x0c2f72a8  call                     arg2=0x0c3171bc arg3=0x00000000                               // Branch with Link
+  0x0c2f72b4  call                     arg2=0x0c3171bc arg3=0x00000000                               // Branch with Link

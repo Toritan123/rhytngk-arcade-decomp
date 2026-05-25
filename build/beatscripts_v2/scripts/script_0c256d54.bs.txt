@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c256d54
+# Length: 8 instructions (96 bytes)
+
+  0x0c256d54  op_25                    arg2=0x0000006d arg3=0x0000002f                               // ? (scene variant of 0x1E)
+  0x0c256d60  op_25                    arg2=0x00000064 arg3=0x0000002f                               // ? (scene variant of 0x1E)
+  0x0c256d6c  op_25                    arg2=0x00000079 arg3=0x00000000                               // ? (scene variant of 0x1E)
+  0x0c256d78  op_25                    arg2=0x00000048 arg3=0x0000003a                               // ? (scene variant of 0x1E)
+  0x0c256d84  op_25                    arg2=0x0000004d arg3=0x0000003a                               // ? (scene variant of 0x1E)
+  0x0c256d90  op_25                    arg2=0x00000053 arg3=0x00000000                               // ? (scene variant of 0x1E)
+  0x0c256d9c  op_41                    arg2=0x0000004d arg3=0x00000000                               // Set BG Layer Registers
+  0x0c256da8  mod_music_volume         arg2=0x0000004d arg3=0x00000000                               // Gradually Change Music Volume

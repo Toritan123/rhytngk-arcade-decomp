@@ -1,0 +1,24 @@
+# BeatScript region @ 0x0c3508f0
+# Length: 21 instructions (252 bytes)
+
+  0x0c3508f0  run                      arg2=0x0c0715fc arg3=0x0c2710d8                               // Run Function (1 Argument)
+  0x0c3508fc  run                      arg2=0x0c071588 arg3=0x0c3704ec                               // Run Function (1 Argument)
+  0x0c350908  run                      arg2=0x0c071674 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c350914  run                      arg2=0x0c08f110 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c350920  run                      arg2=0x0c08f274 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c35092c  run                      arg2=0x0c0985bc arg3=0x00000100                               // Run Function (1 Argument)
+  0x0c350938  call                     arg2=0x0c3704fc arg3=0x00000000                               // Branch with Link
+  0x0c350944  call                     arg2=0x0c370760 arg3=0x00000000                               // Branch with Link
+  0x0c350950  call                     arg2=0x0c3704fc arg3=0x00000000                               // Branch with Link
+  0x0c35095c  call                     arg2=0x0c370a54 arg3=0x00000000                               // Branch with Link
+  0x0c350968  run                      arg2=0x0c08f358 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c350974  call                     arg2=0x0c370db4 arg3=0x00000000                               // Branch with Link
+  0x0c350980  call                     arg2=0x0c370ff4 arg3=0x00000000                               // Branch with Link
+  0x0c35098c  call                     arg2=0x0c370db4 arg3=0x00000000                               // Branch with Link
+  0x0c350998  call                     arg2=0x0c37133c arg3=0x00000000                               // Branch with Link
+  0x0c3509a4  call                     arg2=0x0c3704fc arg3=0x00000000                               // Branch with Link
+  0x0c3509b0  run                      arg2=0x0c08eefc arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c3509bc  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3509c8  run                      arg2=0x0c0a2e18 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c3509d4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c3509e0  return                   arg2=0x00000000 arg3=0x00000000                               // Return

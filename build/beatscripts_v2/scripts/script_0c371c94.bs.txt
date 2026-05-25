@@ -1,0 +1,82 @@
+# BeatScript region @ 0x0c371c94
+# Length: 79 instructions (948 bytes)
+
+  0x0c371c94  clear_bit                arg2=0x00000003 arg3=0x0c0909a4                               // Clear Bit
+  0x0c371ca0  else                     arg2=0x00000004 arg3=0x0c08eb6c                               // Else
+  0x0c371cac  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371cb8  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371cc4  clear_bit                arg2=0x00000003 arg3=0x0c0909a4                               // Clear Bit
+  0x0c371cd0  else                     arg2=0x00000004 arg3=0x0c08eb6c                               // Else
+  0x0c371cdc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371ce8  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371cf4  run2                     arg2=0x00000003 arg3=0x0c0909a4                               // Run Function (2 Arguments)
+  0x0c371d00  loop_start               arg2=0x00000004 arg3=0x0c08eb6c                               // Start Loop
+  0x0c371d0c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371d18  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371d24  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371d30  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371d3c  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371d48  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371d54  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371d60  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371d6c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371d78  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371d84  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371d90  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371d9c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371da8  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371db4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371dc0  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371dcc  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371dd8  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371de4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371df0  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371dfc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371e08  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371e14  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371e20  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371e2c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371e38  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371e44  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371e50  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371e5c  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371e68  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371e74  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371e80  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371e8c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371e98  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371ea4  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371eb0  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371ebc  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371ec8  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371ed4  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371ee0  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371eec  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371ef8  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371f04  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371f10  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371f1c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371f28  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371f34  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371f40  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371f4c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371f58  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371f64  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371f70  op_18                    arg2=0x00000003 arg3=0x0c090004                               // ? (operations on the global scene variable)
+  0x0c371f7c  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371f88  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c371f94  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c371fa0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371fac  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371fb8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371fc4  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c371fd0  run2                     arg2=0x00000003 arg3=0x0c0909a4                               // Run Function (2 Arguments)
+  0x0c371fdc  loop_start               arg2=0x00000004 arg3=0x0c08eb6c                               // Start Loop
+  0x0c371fe8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371ff4  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c372000  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c37200c  op_18                    arg2=0x00000104 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c372018  scene_run                arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Run Function
+  0x0c372024  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c372030  op_18                    arg2=0x00000003 arg3=0x0c090004                               // ? (operations on the global scene variable)
+  0x0c37203c  stop                     arg2=0x00000003 arg3=0x0c0909a4                               // Stop

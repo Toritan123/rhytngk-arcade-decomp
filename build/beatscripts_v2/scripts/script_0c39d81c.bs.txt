@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c39d81c
+# Length: 11 instructions (132 bytes)
+
+  0x0c39d81c  run                      arg2=0x0c08eba4 arg3=0x00000002                               // Run Function (1 Argument)
+  0x0c39d828  run2                     arg2=0x0c08ebbc arg3=0x0c2b39ac                               // Run Function (2 Arguments)
+  0x0c39d834  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39d840  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39d84c  run                      arg2=0x0c08eba4 arg3=0x0000d1e7                               // Run Function (1 Argument)
+  0x0c39d858  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39d864  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c39d870  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c2b39ac                      // Run Function (2 Arguments)
+  0x0c39d87c  play_sfx                 arg2=0x00000000 arg3=0x00000000                               // Play Sound Effect
+  0x0c39d888  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c39d894  return                   arg2=0x00000000 arg3=0x00000000                               // Return

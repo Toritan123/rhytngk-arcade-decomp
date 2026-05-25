@@ -1,0 +1,14 @@
+# BeatScript region @ 0x0c22e7dc
+# Length: 11 instructions (132 bytes)
+
+  0x0c22e7dc  rest                     arg2=0x00000000 arg3=0x00000080                               // Rest
+  0x0c22e7e8  op_80                    arg2=0x00000004 arg3=0x00000000                               // (Global Scene Sprite) Set Animation
+  0x0c22e7f4  rest                     arg2=0x0000016d arg3=0x0000016e                               // Rest
+  0x0c22e800  op_1f                    arg2=0x0000001c arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e80c  op_1e                    arg2=0x0000001f arg3=0x0000001e                               // ? (conditional statement (while?))
+  0x0c22e818  op_1f                    arg2=0x0000001f arg3=0x0000001e                               // ? (conditional statement (while not?))
+  0x0c22e824  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e830  op_1f                    arg2=0x0000001d arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e83c  op_1e                    arg2=0x0000001f arg3=0x0000001e                               // ? (conditional statement (while?))
+  0x0c22e848  op_1f                    arg2=0x0000001f arg3=0x0000001e                               // ? (conditional statement (while not?))
+  0x0c22e854  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))

@@ -1,0 +1,20 @@
+# BeatScript region @ 0x0c2c184c
+# Length: 17 instructions (204 bytes)
+
+  0x0c2c184c  add_var                  arg2=0x00000004 arg3=0x0c08eb6c                               // Add to Variable
+  0x0c2c1858  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c1864  scene_clear_bit          arg2=0x00000000 arg3=0x00000000                               // (Scene) Clear Bit
+  0x0c2c1870  scene_clear_bit          arg2=0x00000004 arg3=0x0c08eb6c                               // (Scene) Clear Bit
+  0x0c2c187c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c1888  op_18                    arg2=0x00000003 arg3=0x0c0909a4                               // ? (operations on the global scene variable)
+  0x0c2c1894  rest                     arg2=0x00000004 arg3=0x0c08eb6c                               // Rest
+  0x0c2c18a0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c18ac  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c2c18b8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c18c4  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c2c18d0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c18dc  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c2c18e8  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c2c18f4  scene_clear_bit          arg2=0x00000000 arg3=0x00000000                               // (Scene) Clear Bit
+  0x0c2c1900  add_var                  arg2=0x00000003 arg3=0x0c08edf0                               // Add to Variable
+  0x0c2c190c  rest                     arg2=0x00000004 arg3=0x0c08f988                               // Rest

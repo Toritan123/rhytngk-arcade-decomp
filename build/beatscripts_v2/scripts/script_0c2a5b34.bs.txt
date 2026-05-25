@@ -1,0 +1,23 @@
+# BeatScript region @ 0x0c2a5b34
+# Length: 20 instructions (240 bytes)
+
+  0x0c2a5b34  run                      arg2=0x0c0987e8 arg3=0x0000007c                               // Run Function (1 Argument)
+  0x0c2a5b40  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2a5b4c  run                      arg2=0x0c08edf0 arg3=0x00000010                               // Run Function (1 Argument)
+  0x0c2a5b58  run2                     sub=0x03 arg2=0x0c08f988 arg3=0x0c2b31b8                      // Run Function (2 Arguments)
+  0x0c2a5b64  loop_start               arg2=0x00000000 arg3=0x00000000                               // Start Loop
+  0x0c2a5b70  rest                     arg2=0x00000000 arg3=0x00000001                               // Rest
+  0x0c2a5b7c  run                      arg2=0x0c098de0 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5b88  loop_end                 arg2=0x00000000 arg3=0x00000000                               // End Loop
+  0x0c2a5b94  run                      arg2=0x0c08f7b0 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5ba0  run                      arg2=0x0c08f1d0 arg3=0x00020001                               // Run Function (1 Argument)
+  0x0c2a5bac  run                      arg2=0x0c08f8fc arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a5bb8  run                      arg2=0x0c08f8d0 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a5bc4  run                      arg2=0x0c0716c8 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a5bd0  run                      arg2=0x0c0716e4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a5bdc  call                     arg2=0x0c2fe594 arg3=0x00000000                               // Branch with Link
+  0x0c2a5be8  run                      arg2=0x0c08f1ac arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5bf4  run                      arg2=0x0c08f188 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5c00  run                      arg2=0x0c0a2e18 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5c0c  run                      arg2=0x0c08f8fc arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2a5c18  run                      arg2=0x0c08f8d0 arg3=0x00000000                               // Run Function (1 Argument)

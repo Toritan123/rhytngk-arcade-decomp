@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c1b1694
+# Length: 8 instructions (96 bytes)
+
+  0x0c1b1694  if_neq                   arg2=0x00004800 arg3=0x0c266674                               // If Not Equal
+  0x0c1b16a0  if_neq                   arg2=0x00001800 arg3=0x0c26668c                               // If Not Equal
+  0x0c1b16ac  else                     arg2=0x00004800 arg3=0x0c2666a4                               // Else
+  0x0c1b16b8  else                     arg2=0x00000c00 arg3=0x0c2666bc                               // Else
+  0x0c1b16c4  else                     arg2=0x00000400 arg3=0x0c2666d4                               // Else
+  0x0c1b16d0  end_if                   arg2=0x00001000 arg3=0x0c2666f0                               // End If Statement
+  0x0c1b16dc  end_if                   arg2=0x00001000 arg3=0x0c266704                               // End If Statement
+  0x0c1b16e8  end_if                   arg2=0x00001c00 arg3=0x0c26671c                               // End If Statement

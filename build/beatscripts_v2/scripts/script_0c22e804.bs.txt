@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c22e804
+# Length: 8 instructions (96 bytes)
+
+  0x0c22e804  case                     arg2=0x0000001f arg3=0x0000001e                               // Switch Case
+  0x0c22e810  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e81c  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e828  op_1e                    arg2=0x0000001f arg3=0x0000001f                               // ? (conditional statement (while?))
+  0x0c22e834  break                    arg2=0x0000001f arg3=0x0000001e                               // End Switch Case
+  0x0c22e840  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e84c  op_1f                    arg2=0x0000001e arg3=0x0000001f                               // ? (conditional statement (while not?))
+  0x0c22e858  op_1e                    arg2=0x0000001f arg3=0x0c276c18                               // ? (conditional statement (while?))

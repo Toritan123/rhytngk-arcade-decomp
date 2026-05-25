@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c325e58
+# Length: 8 instructions (96 bytes)
+
+  0x0c325e58  scene_clear_bit          arg2=0x00000000 arg3=0x00000000                               // (Scene) Clear Bit
+  0x0c325e64  add_var                  arg2=0x00000000 arg3=0x00000000                               // Add to Variable
+  0x0c325e70  scene_clear_bit          arg2=0x00000003 arg3=0x0c0909a4                               // (Scene) Clear Bit
+  0x0c325e7c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c325e88  scene_clear_bit          arg2=0x00000003 arg3=0x0c0909a4                               // (Scene) Clear Bit
+  0x0c325e94  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c325ea0  add_var                  arg2=0x00000003 arg3=0x0c08eba4                               // Add to Variable
+  0x0c325eac  rest                     arg2=0x00000004 arg3=0x0c08ebbc                               // Rest

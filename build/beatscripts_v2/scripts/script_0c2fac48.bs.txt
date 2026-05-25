@@ -1,0 +1,42 @@
+# BeatScript region @ 0x0c2fac48
+# Length: 39 instructions (468 bytes)
+
+  0x0c2fac48  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c2fac54  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c26b734                      // Run Function (2 Arguments)
+  0x0c2fac60  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2fac6c  mod_music_pitch          arg2=0x00000000 arg3=0x00000000                               // Gradually Change Music Pitch
+  0x0c2fac78  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c26d9ac                      // Run Function (2 Arguments)
+  0x0c2fac84  run                      arg2=0x0c08eec4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2fac90  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c2fac9c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2faca8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2facb4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2facc0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c2faccc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2facd8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2face4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2facf0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x0c26da78                      // Run Function (2 Arguments)
+  0x0c2facfc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fad08  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad14  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad20  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fad2c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad38  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad44  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fad50  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad5c  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad68  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fad74  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad80  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fad8c  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fad98  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fada4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fadb0  run2                     sub=0x01 arg2=0x0c08eb6c arg3=0x00000000                      // Run Function (2 Arguments)
+  0x0c2fadbc  run2                     arg2=0x0c08eb6c arg3=0x00000000                               // Run Function (2 Arguments)
+  0x0c2fadc8  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fadd4  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2fade0  run                      arg2=0x0c08ee28 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2fadec  run                      arg2=0x0c08ee84 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c2fadf8  loop_start               arg2=0x00000000 arg3=0x00000000                               // Start Loop
+  0x0c2fae04  run                      arg2=0x0c097e30 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2fae10  run                      arg2=0x0c08eec4 arg3=0x00000000                               // Run Function (1 Argument)

@@ -1,0 +1,13 @@
+# BeatScript region @ 0x0c371820
+# Length: 10 instructions (120 bytes)
+
+  0x0c371820  call                     arg2=0x00000004 arg3=0x0c08eb6c                               // Branch with Link
+  0x0c37182c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371838  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371844  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371850  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c37185c  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371868  op_18                    arg2=0x00000004 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c371874  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c371880  op_18                    arg2=0x00000104 arg3=0x0c08eb6c                               // ? (operations on the global scene variable)
+  0x0c37188c  stop                     arg2=0x00000004 arg3=0x0c08eb6c                               // Stop

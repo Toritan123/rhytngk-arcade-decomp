@@ -1,0 +1,17 @@
+# BeatScript region @ 0x0c2cb464
+# Length: 14 instructions (168 bytes)
+
+  0x0c2cb464  play_music_in            arg2=0x000000ff arg3=0x0c1cdd00                               // Play Music
+  0x0c2cb470  run                      arg2=0x0c0a0164 arg3=0x00000003                               // Run Function (1 Argument)
+  0x0c2cb47c  switch                   arg2=0x00000000 arg3=0x0c3d4e1c                               // Switch Statement
+  0x0c2cb488  case                     arg2=0x00000000 arg3=0x00000000                               // Switch Case
+  0x0c2cb494  call                     arg2=0x0c2e94d0 arg3=0x00000000                               // Branch with Link
+  0x0c2cb4a0  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2cb4ac  case                     arg2=0x00000000 arg3=0x00000001                               // Switch Case
+  0x0c2cb4b8  call                     arg2=0x0c2e9d94 arg3=0x00000000                               // Branch with Link
+  0x0c2cb4c4  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2cb4d0  case                     arg2=0x00000000 arg3=0x00000002                               // Switch Case
+  0x0c2cb4dc  call                     arg2=0x0c2ea658 arg3=0x00000000                               // Branch with Link
+  0x0c2cb4e8  break                    arg2=0x00000000 arg3=0x00000000                               // End Switch Case
+  0x0c2cb4f4  end_switch               arg2=0x00000000 arg3=0x00000000                               // End Switch Statement
+  0x0c2cb500  return                   arg2=0x00000000 arg3=0x00000000                               // Return

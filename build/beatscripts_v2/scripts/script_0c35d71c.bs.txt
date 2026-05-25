@@ -1,0 +1,16 @@
+# BeatScript region @ 0x0c35d71c
+# Length: 13 instructions (156 bytes)
+
+  0x0c35d71c  rest                     arg2=0x00000003 arg3=0x0c0909a4                               // Rest
+  0x0c35d728  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c35d734  op_18                    arg2=0x00000003 arg3=0x0c090004                               // ? (operations on the global scene variable)
+  0x0c35d740  scene_run                arg2=0x00000003 arg3=0x0c0909a4                               // (Scene) Run Function
+  0x0c35d74c  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c35d758  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c35d764  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c35d770  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c35d77c  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c35d788  add_var                  arg2=0x00000003 arg3=0x0c0909a4                               // Add to Variable
+  0x0c35d794  scene_run                arg2=0x00000000 arg3=0x00000000                               // (Scene) Run Function
+  0x0c35d7a0  add_var                  arg2=0x00000003 arg3=0x0c08eba4                               // Add to Variable
+  0x0c35d7ac  rest                     arg2=0x00000004 arg3=0x0c08ebbc                               // Rest

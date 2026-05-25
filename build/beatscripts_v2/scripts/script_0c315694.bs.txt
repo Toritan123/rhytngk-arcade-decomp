@@ -1,0 +1,11 @@
+# BeatScript region @ 0x0c315694
+# Length: 8 instructions (96 bytes)
+
+  0x0c315694  op_82                    arg2=0x0000000d arg3=0x0c335450                               // (Global Scene Sprite) Set Animation Params.
+  0x0c3156a0  rest                     arg2=0x0000000d arg3=0x0c335498                               // Rest
+  0x0c3156ac  rest                     arg2=0x0000000d arg3=0x0c335498                               // Rest
+  0x0c3156b8  rest                     arg2=0x0000000d arg3=0x0c335588                               // Rest
+  0x0c3156c4  rest                     arg2=0x0000000d arg3=0x0c33569c                               // Rest
+  0x0c3156d0  rest                     arg2=0x00000000 arg3=0x00000000                               // Rest
+  0x0c3156dc  op_18                    arg2=0x00000003 arg3=0x0c08edf0                               // ? (operations on the global scene variable)
+  0x0c3156e8  clear_bit                arg2=0x00000104 arg3=0x0c08f988                               // Clear Bit

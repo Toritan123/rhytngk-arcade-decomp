@@ -1,0 +1,24 @@
+# BeatScript region @ 0x0c2a7290
+# Length: 21 instructions (252 bytes)
+
+  0x0c2a7290  run                      arg2=0x0c0987e8 arg3=0x0000009b                               // Run Function (1 Argument)
+  0x0c2a729c  run                      arg2=0x0c097e60 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a72a8  scene_if_eq              sub=0x02 arg2=0x0000001a arg3=0x00000001                      // (Scene) If Equal
+  0x0c2a72b4  run                      arg2=0x0c0985bc arg3=0x00000046                               // Run Function (1 Argument)
+  0x0c2a72c0  default                  arg2=0x00000100 arg3=0x00000018                               // Default Case
+  0x0c2a72cc  run                      arg2=0x0c098a38 arg3=0x0c1cdcf8                               // Run Function (1 Argument)
+  0x0c2a72d8  end_if                   arg2=0x00000000 arg3=0x00000000                               // End If Statement
+  0x0c2a72e4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2a72f0  run                      arg2=0x0c09c81c arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a72fc  set_video_mode           arg2=0x0000000c arg3=0x00000000                               // Set Video Mode
+  0x0c2a7308  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2a7314  scene_if_eq              sub=0x02 arg2=0x0000001a arg3=0x00000000                      // (Scene) If Equal
+  0x0c2a7320  play_music_in            arg2=0x000000ff arg3=0x0c1cdcf8                               // Play Music
+  0x0c2a732c  run                      arg2=0x0c0985bc arg3=0x00000100                               // Run Function (1 Argument)
+  0x0c2a7338  end_if                   arg2=0x00000000 arg3=0x00000000                               // End If Statement
+  0x0c2a7344  scene_set_var            arg2=0x00000008 arg3=0x00000001                               // (Scene) Set Variable
+  0x0c2a7350  run                      arg2=0x0c097e60 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2a735c  scene_set_var            arg2=0x00000008 arg3=0x00000000                               // (Scene) Set Variable
+  0x0c2a7368  scene_if_eq              sub=0x02 arg2=0x0000001b arg3=0x00000001                      // (Scene) If Equal
+  0x0c2a7374  default                  arg2=0x00000046 arg3=0x00000022                               // Default Case
+  0x0c2a7380  else                     arg2=0x00000000 arg3=0x00000000                               // Else

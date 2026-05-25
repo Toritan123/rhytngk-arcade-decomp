@@ -1,0 +1,108 @@
+# BeatScript region @ 0x0c2cd954
+# Length: 105 instructions (1260 bytes)
+
+  0x0c2cd954  run                      arg2=0x0c08eba4 arg3=0x00000064                               // Run Function (1 Argument)
+  0x0c2cd960  run2                     sub=0x02 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cd96c  run                      arg2=0x0c0985bc arg3=0x0000009c                               // Run Function (1 Argument)
+  0x0c2cd978  run                      arg2=0x0c08eba4 arg3=0x0c2edd3c                               // Run Function (1 Argument)
+  0x0c2cd984  run2                     sub=0x04 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cd990  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cd99c  run                      arg2=0x0c0a2e18 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2cd9a8  run                      arg2=0x0c08f89c arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2cd9b4  run                      arg2=0x0c08f3b0 arg3=0x0c2ba22c                               // Run Function (1 Argument)
+  0x0c2cd9c0  rest                     arg2=0x00000000 arg3=0x00000018                               // Rest
+  0x0c2cd9cc  rest                     arg2=0x00000000 arg3=0x00000006                               // Rest
+  0x0c2cd9d8  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cd9e4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cd9f0  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cd9fc  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cda08  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda14  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cda20  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda2c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda38  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cda44  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda50  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cda5c  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cda68  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda74  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cda80  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda8c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cda98  loop_start               arg2=0x00000000 arg3=0x00000000                               // Start Loop
+  0x0c2cdaa4  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdab0  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdabc  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdac8  run2                     arg2=0x0c08ebbc arg3=0x0c39f5b0                               // Run Function (2 Arguments)
+  0x0c2cdad4  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdae0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdaec  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdaf8  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdb04  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb10  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdb1c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb28  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb34  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdb40  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb4c  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdb58  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdb64  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb70  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdb7c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb88  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdb94  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdba0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdbac  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdbb8  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdbc4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdbd0  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdbdc  play_sfx                 arg2=0x00000000 arg3=0x0c1cdf24                               // Play Sound Effect
+  0x0c2cdbe8  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdbf4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdc00  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdc0c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdc18  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdc24  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdc30  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdc3c  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdc48  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdc54  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdc60  run                      arg2=0x0c08eba4 arg3=0x00000001                               // Run Function (1 Argument)
+  0x0c2cdc6c  run2                     sub=0x06 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdc78  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdc84  run2                     arg2=0x0c08ebbc arg3=0x0c39f5b0                               // Run Function (2 Arguments)
+  0x0c2cdc90  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdc9c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdca8  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdcb4  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdcc0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdccc  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdcd8  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdce4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdcf0  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdcfc  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd08  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdd14  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdd20  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd2c  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdd38  play_sfx                 arg2=0x00000000 arg3=0x0c1cdf24                               // Play Sound Effect
+  0x0c2cdd44  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd50  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd5c  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdd68  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd74  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cdd80  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cdd8c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdd98  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cdda4  play_sfx                 arg2=0x00000000 arg3=0x0c1cdf24                               // Play Sound Effect
+  0x0c2cddb0  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cddbc  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cddc8  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cddd4  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cdde0  run                      arg2=0x0c08eba4 arg3=0x00000000                               // Run Function (1 Argument)
+  0x0c2cddec  run2                     sub=0x01 arg2=0x0c08ebbc arg3=0x0c39f5b0                      // Run Function (2 Arguments)
+  0x0c2cddf8  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cde04  play_sfx_vol_pitch       sub=0x60 arg2=0x00000000 arg3=0x0c1ce354                      // Play Sound Effect (at given volume & pitch)
+  0x0c2cde10  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cde1c  rest                     arg2=0x00000000 arg3=0x0000000c                               // Rest
+  0x0c2cde28  loop_end                 arg2=0x00000000 arg3=0x00000000                               // End Loop
+  0x0c2cde34  return                   arg2=0x00000000 arg3=0x00000000                               // Return
