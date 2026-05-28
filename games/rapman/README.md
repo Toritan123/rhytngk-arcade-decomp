@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/rapman/init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/rap_men/` (available)
+GBA source: `~/rt/games/rap_men/`
   - `engine.c`
   - `macros.inc`
   - `rap_men.bs`
@@ -20,8 +20,8 @@ GBA source: `~/rt/games/rap_men/` (available)
 
 ## Extracted assets
 - Textures: 2 directory(ies)
-  - `textures_png/ic9/spr_chapter_rapman_chapter_rapman/`
-  - `textures_png/ic11/spr_result_rapman_result_rapman/`
+  - `textures_png/ic9/spr_chapter_rapman_chapter_rapman/`  → symlinked into `graphics/`
+  - `textures_png/ic11/spr_result_rapman_result_rapman/`  → symlinked into `graphics/`
 - FARC archives: 3
   - `extracted/ic9/spr_chapter_rapman.farc`
   - `extracted/ic11/spr_result_rapman.farc`
@@ -29,8 +29,9 @@ GBA source: `~/rt/games/rap_men/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

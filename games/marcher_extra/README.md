@@ -3,10 +3,10 @@
 **Arcade name:** `marcher_extra`  ↔  **GBA equivalent:** `marching_orders`
 
 ## Arcade source files
-- (no SH-4 source filenames recovered for this game)
+- (no SH-4 source filenames recovered)
 
 ## GBA reference
-GBA source: `~/rt/games/marching_orders/` (available)
+GBA source: `~/rt/games/marching_orders/`
   - `engine.c`
   - `macros.inc`
   - `marching_orders.bs`
@@ -19,7 +19,7 @@ GBA source: `~/rt/games/marching_orders/` (available)
 
 ## Extracted assets
 - Textures: 1 directory(ies)
-  - `textures_png/ic11/spr_marcher_extra_op_marcher_extra_op/`
+  - `textures_png/ic11/spr_marcher_extra_op_marcher_extra_op/`  → symlinked into `graphics/`
 - FARC archives: 3
   - `extracted/ic9/aet_marcher_extra_op.farc`
   - `extracted/ic9/aet_marcher_extra_rslt.farc`
@@ -29,6 +29,7 @@ GBA source: `~/rt/games/marching_orders/` (available)
 ## Decompilation status
 - `_init.c`: not identified
 - `_data.c`: not identified
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

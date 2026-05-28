@@ -3,10 +3,10 @@
 **Arcade name:** `yankee`  ↔  **GBA equivalent:** `ninja_bodyguard`
 
 ## Arcade source files
-- (no SH-4 source filenames recovered for this game)
+- (no SH-4 source filenames recovered)
 
 ## GBA reference
-GBA source: `~/rt/games/ninja_bodyguard/` (available)
+GBA source: `~/rt/games/ninja_bodyguard/`
   - `engine.c`
   - `macros.inc`
   - `ninja_bodyguard.bs`
@@ -23,6 +23,7 @@ GBA source: `~/rt/games/ninja_bodyguard/` (available)
 ## Decompilation status
 - `_init.c`: not identified
 - `_data.c`: not identified
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

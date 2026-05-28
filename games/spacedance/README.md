@@ -5,9 +5,11 @@
 ## Arcade source files
 - `src/riq/riq_play/scene/spacedance/data.c`
 - `src/riq/riq_play/scene/spacedance/init.c`
+- `src/riq/riq_play/scene/spacedance2p/spacedance2p_data.c`
+- `src/riq/riq_play/scene/spacedance2p/spacedance2p_init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/space_dance/` (available)
+GBA source: `~/rt/games/space_dance/`
   - `cosmic_dance.bs`
   - `cosmic_dance_prologue_engine.c`
   - `cosmic_dance_text.c`
@@ -20,10 +22,10 @@ GBA source: `~/rt/games/space_dance/` (available)
 
 ## Extracted assets
 - Textures: 4 directory(ies)
-  - `textures_png/ic9/spr_result_spacedance_result_spacedance/`
-  - `textures_png/ic9/spr_spacedance_rslt_spacedance_rslt/`
-  - `textures_png/ic9/spr_spacedance_tut_spacedance_tut/`
-  - `textures_png/ic9/spr_chapter_spacedance_chapter_spacedance/`
+  - `textures_png/ic9/spr_result_spacedance_result_spacedance/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_spacedance_rslt_spacedance_rslt/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_spacedance_tut_spacedance_tut/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_chapter_spacedance_chapter_spacedance/`  → symlinked into `graphics/`
 - FARC archives: 7
   - `extracted/ic9/spr_spacedance.farc`
   - `extracted/ic9/spr_chapter_spacedance.farc`
@@ -34,8 +36,9 @@ GBA source: `~/rt/games/space_dance/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

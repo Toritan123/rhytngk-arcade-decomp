@@ -3,10 +3,10 @@
 **Arcade name:** `rapwoman`  ↔  **GBA equivalent:** `rap_men`
 
 ## Arcade source files
-- (no SH-4 source filenames recovered for this game)
+- (no SH-4 source filenames recovered)
 
 ## GBA reference
-GBA source: `~/rt/games/rap_men/` (available)
+GBA source: `~/rt/games/rap_men/`
   - `engine.c`
   - `macros.inc`
   - `rap_men.bs`
@@ -19,7 +19,7 @@ GBA source: `~/rt/games/rap_men/` (available)
 
 ## Extracted assets
 - Textures: 1 directory(ies)
-  - `textures_png/ic9/spr_rapwoman_op_rapwoman_op/`
+  - `textures_png/ic9/spr_rapwoman_op_rapwoman_op/`  → symlinked into `graphics/`
 - FARC archives: 4
   - `extracted/ic9/aet_rapwoman_op.farc`
   - `extracted/ic9/spr_rapwoman.farc`
@@ -30,6 +30,7 @@ GBA source: `~/rt/games/rap_men/` (available)
 ## Decompilation status
 - `_init.c`: not identified
 - `_data.c`: not identified
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/trampoline/init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/tram_and_pauline/` (available)
+GBA source: `~/rt/games/tram_and_pauline/`
   - `engine.c`
   - `macros.inc`
   - `tram_and_pauline.bs`
@@ -16,9 +16,9 @@ GBA source: `~/rt/games/tram_and_pauline/` (available)
 
 ## Extracted assets
 - Textures: 3 directory(ies)
-  - `textures_png/ic9/spr_trampoline_rslt_trampoline_rslt/`
-  - `textures_png/ic11/spr_result_trampoline_result_trampoline/`
-  - `textures_png/ic11/spr_chapter_trampoline_chapter_trampoline/`
+  - `textures_png/ic9/spr_trampoline_rslt_trampoline_rslt/`  → symlinked into `graphics/`
+  - `textures_png/ic11/spr_result_trampoline_result_trampoline/`  → symlinked into `graphics/`
+  - `textures_png/ic11/spr_chapter_trampoline_chapter_trampoline/`  → symlinked into `graphics/`
 - FARC archives: 6
   - `extracted/ic9/spr_trampoline_show.farc`
   - `extracted/ic9/spr_trampoline_rslt.farc`
@@ -29,8 +29,9 @@ GBA source: `~/rt/games/tram_and_pauline/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

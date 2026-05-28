@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/even/even_init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/bouncy_road/` (available)
+GBA source: `~/rt/games/bouncy_road/`
   - `bouncy_road.bs`
   - `bouncy_road_2.bs`
   - `bouncy_road_prologue_engine.c`
@@ -19,12 +19,11 @@ GBA source: `~/rt/games/bouncy_road/` (available)
 
 ## Extracted assets
 - Textures: 6 directory(ies)
-  - `textures_png/ic9/spr_chapter_even_chapter_even/`
-  - `textures_png/ic9/spr_even_tut_even_tut/`
-  - `textures_png/ic9/spr_result_even_result_even/`
-  - `textures_png/ic9/spr_even2_tut_even2_tut/`
-  - `textures_png/ic9/spr_even_rslt_even_rslt/`
-  - `textures_png/ic11/spr_even_op_even_op/`
+  - `textures_png/ic9/spr_chapter_even_chapter_even/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_even_tut_even_tut/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_result_even_result_even/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_even2_tut_even2_tut/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_even_rslt_even_rslt/`  → symlinked into `graphics/`
 - FARC archives: 9
   - `extracted/ic9/spr_chapter_even.farc`
   - `extracted/ic9/spr_even2_tut.farc`
@@ -35,8 +34,9 @@ GBA source: `~/rt/games/bouncy_road/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/tossboys/init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/toss_boys/` (available)
+GBA source: `~/rt/games/toss_boys/`
   - `engine.c`
   - `macros.inc`
   - `toss_boys.bs`
@@ -18,13 +18,11 @@ GBA source: `~/rt/games/toss_boys/` (available)
 
 ## Extracted assets
 - Textures: 7 directory(ies)
-  - `textures_png/ic9/spr_tossboys2_op_tossboys2_op/`
-  - `textures_png/ic9/spr_result_tossboys_result_tossboys/`
-  - `textures_png/ic9/spr_result_tossboys2_result_tossboys2/`
-  - `textures_png/ic9/spr_chapter_tossboys2_chapter_tossboys2/`
-  - `textures_png/ic9/spr_chapter_tossboys_chapter_tossboys/`
-  - `textures_png/ic11/spr_tossboys_op_tossboys_op/`
-  - `textures_png/ic11/spr_tossboys2_rslt_tossboys2_rslt/`
+  - `textures_png/ic9/spr_tossboys2_op_tossboys2_op/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_result_tossboys_result_tossboys/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_result_tossboys2_result_tossboys2/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_chapter_tossboys2_chapter_tossboys2/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_chapter_tossboys_chapter_tossboys/`  → symlinked into `graphics/`
 - FARC archives: 9
   - `extracted/ic9/aet_tossboys_rslt.farc`
   - `extracted/ic9/spr_result_tossboys2.farc`
@@ -35,8 +33,9 @@ GBA source: `~/rt/games/toss_boys/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

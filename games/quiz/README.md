@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/quiz/init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/quiz_show/` (available)
+GBA source: `~/rt/games/quiz_show/`
   - `engine.c`
   - `macros.inc`
   - `quiz_show.bs`
@@ -17,15 +17,16 @@ GBA source: `~/rt/games/quiz_show/` (available)
 
 ## Extracted assets
 - Textures: 1 directory(ies)
-  - `textures_png/ic11/spr_chapter_quiz_chapter_quiz/`
+  - `textures_png/ic11/spr_chapter_quiz_chapter_quiz/`  → symlinked into `graphics/`
 - FARC archives: 2
   - `extracted/ic9/aet_quiz_rslt.farc`
   - `extracted/ic11/spr_chapter_quiz.farc`
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

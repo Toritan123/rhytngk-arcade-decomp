@@ -6,9 +6,12 @@
 - `src/riq/riq_play/scene/bonodori/data.c`
 - `src/riq/riq_play/scene/bonodori/init.c`
 - `src/riq/riq_play/scene/bonodori/main.c`
+- `src/riq/riq_play/scene/bonodori2p/data.c`
+- `src/riq/riq_play/scene/bonodori2p/init.c`
+- `src/riq/riq_play/scene/bonodori2p/main.c`
 
 ## GBA reference
-GBA source: `~/rt/games/bon_odori/` (available)
+GBA source: `~/rt/games/bon_odori/`
   - `bon_dance.bs`
   - `bon_dance_prologue_engine.c`
   - `bon_dance_text.c`
@@ -20,8 +23,8 @@ GBA source: `~/rt/games/bon_odori/` (available)
 
 ## Extracted assets
 - Textures: 2 directory(ies)
-  - `textures_png/ic9/spr_result_bonodori_result_bonodori/`
-  - `textures_png/ic9/spr_chapter_bonodori_chapter_bonodori/`
+  - `textures_png/ic9/spr_result_bonodori_result_bonodori/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_chapter_bonodori_chapter_bonodori/`  → symlinked into `graphics/`
 - FARC archives: 5
   - `extracted/ic9/spr_result_bonodori.farc`
   - `extracted/ic9/aet_bonodori_op.farc`
@@ -31,8 +34,9 @@ GBA source: `~/rt/games/bon_odori/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

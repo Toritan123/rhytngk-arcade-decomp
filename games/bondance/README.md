@@ -3,10 +3,10 @@
 **Arcade name:** `bondance`  ↔  **GBA equivalent:** `bon_odori`
 
 ## Arcade source files
-- (no SH-4 source filenames recovered for this game)
+- (no SH-4 source filenames recovered)
 
 ## GBA reference
-GBA source: `~/rt/games/bon_odori/` (available)
+GBA source: `~/rt/games/bon_odori/`
   - `bon_dance.bs`
   - `bon_dance_prologue_engine.c`
   - `bon_dance_text.c`
@@ -18,8 +18,8 @@ GBA source: `~/rt/games/bon_odori/` (available)
 
 ## Extracted assets
 - Textures: 2 directory(ies)
-  - `textures_png/ic9/spr_bondance_op_bondance_op/`
-  - `textures_png/ic11/spr_bondance_rslt_bondance_rslt/`
+  - `textures_png/ic9/spr_bondance_op_bondance_op/`  → symlinked into `graphics/`
+  - `textures_png/ic11/spr_bondance_rslt_bondance_rslt/`  → symlinked into `graphics/`
 - FARC archives: 4
   - `extracted/ic9/aet_bondance_op.farc`
   - `extracted/ic9/spr_bondance_op.farc`
@@ -30,6 +30,7 @@ GBA source: `~/rt/games/bon_odori/` (available)
 ## Decompilation status
 - `_init.c`: not identified
 - `_data.c`: not identified
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

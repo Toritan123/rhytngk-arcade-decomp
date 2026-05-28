@@ -7,7 +7,7 @@
 - `src/riq/riq_play/scene/iai/iai_init.c`
 
 ## GBA reference
-GBA source: `~/rt/games/samurai_slice/` (available)
+GBA source: `~/rt/games/samurai_slice/`
   - `engine.c`
   - `macros.inc`
   - `samurai_slice.bs`
@@ -16,9 +16,9 @@ GBA source: `~/rt/games/samurai_slice/` (available)
 
 ## Extracted assets
 - Textures: 3 directory(ies)
-  - `textures_png/ic9/spr_chapter_iai_chapter_iai/`
-  - `textures_png/ic9/spr_iai_rslt_iai_rslt/`
-  - `textures_png/ic9/spr_iai_tut_iai_tut/`
+  - `textures_png/ic9/spr_chapter_iai_chapter_iai/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_iai_rslt_iai_rslt/`  → symlinked into `graphics/`
+  - `textures_png/ic9/spr_iai_tut_iai_tut/`  → symlinked into `graphics/`
 - FARC archives: 7
   - `extracted/ic9/spr_iai_tut.farc`
   - `extracted/ic9/spr_iai_rslt.farc`
@@ -29,8 +29,9 @@ GBA source: `~/rt/games/samurai_slice/` (available)
 - MIDI sequences: 0
 
 ## Decompilation status
-- `_init.c`: identified, not decompiled
-- `_data.c`: identified, not decompiled
+- `_init.c`: identified, stub generated
+- `_data.c`: identified, stub generated
+- `_bsd.c`: not identified
 
 Source stubs (one per recovered file) live alongside this README.
-Each stub contains a comment header pointing back to the SH-4 address.
+See `docs/handclap_vs_clappy_trio.md` for a worked example.

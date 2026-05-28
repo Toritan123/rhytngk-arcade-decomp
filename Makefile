@@ -53,7 +53,7 @@ PYTHON ?= python3
 
 .PHONY: all help setup decrypt split disasm \
         extract-rom extract-audio extract-assets extract-graphics \
-        generate-games per-game-list \
+        generate-games per-game-list per-system-list \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -74,8 +74,11 @@ help:
 	@echo "  make extract-rom      — unpack SFFS volumes ic9 / ic11"
 	@echo "  make extract-graphics — FARC + gzip + PowerVR2 → PNG (165 textures)"
 	@echo "  make extract-audio    — DTPK → WAV samples (11,893 samples)"
-	@echo "  make generate-games   — build games/<name>/ folder tree for all 78 games"
-	@echo "  make per-game-list    — list all known arcade games and their status"
+	@echo "  make generate-games   — build games/ + system/ folder trees"
+	@echo "  make per-game-list    — list all arcade games"
+	@echo "  make per-system-list  — list all non-game subsystems"
+	@echo "  make game-<name>      — show one game's files + status"
+	@echo "  make system-<name>    — show one subsystem's files + status"
 	@echo "  make disasm           — re-run SH-4 + ARM7 objdump"
 	@echo "  make check-tools      — verify required tools are installed"
 	@echo "  make clean            — remove all build artifacts"
@@ -165,6 +168,17 @@ $(BUILD_DIR)/.generate-games.stamp: $(TOOLS_DIR)/generate_game_dirs.py \
 per-game-list:
 	@find $(GAMES_DIR) -maxdepth 1 -mindepth 1 -type d \
 		| sort | sed 's|.*/|  • |'
+
+per-system-list:
+	@find system -maxdepth 1 -mindepth 1 -type d 2>/dev/null \
+		| sort | sed 's|.*/|  • |'
+
+system-%:
+	@if [ ! -d "system/$*" ]; then \
+		echo "Unknown subsystem '$*' — see 'make per-system-list'"; exit 1; \
+	fi
+	@echo "Subsystem 'system/$*' files:"
+	@ls -1 system/$*
 
 # ──────────────────────────────────────────────────────────────────────
 #  Step 6: Re-disassemble (the asm/ tree is checked in, so this is
