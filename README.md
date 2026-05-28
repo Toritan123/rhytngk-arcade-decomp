@@ -1,92 +1,133 @@
 # Rhythm Tengoku Arcade (NAOMI) Decompilation
 
-A work-in-progress decompilation project for the NAOMI arcade game
-**「リズム天国 アーケード版」** based on the SEGA NAOMI hardware.
+Work-in-progress decompilation of the SEGA NAOMI arcade game
+**「リズム天国 アーケード版」** (Rhythm Tengoku Arcade).
 
 This project is the arcade-version counterpart to
 [arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
-(GBA decompilation). Where applicable, we follow the GBA decomp's audio
-data layout and naming so that assets and code can cross-reference both
-versions.
+(GBA decompilation).  The directory layout, Makefile workflow, and
+per-game folder structure follow the same conventions as the GBA decomp
+so that cross-referencing is straightforward.
+
+## Quick start
+
+```sh
+brew install --cask flycast            # install Flycast emulator
+make check-tools                        # verify python + pillow
+make all                                # decrypt + extract + organize
+./launch_rhytngk.command                # play the game (Flycast)
+```
+
+## Project layout
+
+```
+rhytngk-arcade-decomp/
+├── games/                  80 per-game folders (GBA-decomp style)
+│   ├── handclap/
+│   │   ├── README.md       comparison with GBA + asset inventory
+│   │   ├── handclap_init.c source stub
+│   │   ├── graphics/       symlinks → textures_png/...
+│   │   └── audio/          symlinks → audio/banks/*.json
+│   └── ...
+├── system/                 19 non-game subsystem folders
+│   ├── seqsel/             music/sequence selector
+│   ├── riq_title/          title screen
+│   ├── riq_result/         result screen
+│   └── ...
+├── src/                    shared engine code (decompiled)
+│   ├── seqsel/seqsel_init.c   ✓ first-pass complete (5/5 functions)
+│   ├── seqsel/seqsel_bsd.c    ⚠ first-pass partial (5/15 functions)
+│   └── sound/dtpk_loader.c    ⚠ partial
+├── include/                shared headers (common.h, dtpk.h, naomi.h)
+├── asm/                    full SH-4 + ARM7 disassembly
+├── audio/                  DTPK samples (WAV) + MIDI sequences + banks
+├── textures_png/           177 PNG textures (gitignored, ROM-derived)
+├── docs/                   analysis documents
+├── tools/                  Python pipelines
+└── Makefile                full GBA-decomp-compatible build
+```
 
 ## ROM Set
 
 | File | Type | Size | Status |
 |------|------|------|--------|
-| fpr-24423.ic8 | SH-4 program ROM (encrypted) | 8MB | ✓ Decrypted (PIC: subkey1=0xf5e4, subkey2=0x9c6a) |
-| fpr-24424.ic9 | Data ROM (sound + sprites) | 64MB | ✓ Mapped (39 DTPK + FlashFS) |
-| fpr-24425.ic10 | Data ROM (sound) | 64MB | ✓ Mapped (35 DTPK) |
-| fpr-24426.ic11 | Data ROM (sound + sprites) | 64MB | ✓ Mapped (17 DTPK + FARC) |
+| `fpr-24423.ic8` | SH-4 program (encrypted) | 8 MB | ✓ Decrypted (PIC subkey1=0xf5e4, subkey2=0x9c6a) |
+| `fpr-24424.ic9` | Data (sound + sprites) | 64 MB | ✓ Mapped (SFFS volume, 232 inner files) |
+| `fpr-24425.ic10` | Data (sound) | 64 MB | ✓ Mapped (35 DTPK, SE.bin) |
+| `fpr-24426.ic11` | Data (sound + sprites) | 64 MB | ✓ Mapped (SFFS volume, 118 inner files) |
 
 ## Architecture
 
-- **Main CPU**: Hitachi SH-4 @ 200 MHz
-- **Sound CPU**: ARM7 (AICA) @ 22.5792 / 45.1584 MHz
-- **GPU**: PowerVR2 CLX2
+- **Main CPU**: Hitachi SH-4 @ 200 MHz (the encrypted ROM, 6,430 candidate functions identified)
+- **Sound CPU**: ARM7 (AICA) @ 22.5792 / 45.1584 MHz (full disassembly of `aicadrv.bin`)
+- **GPU**: PowerVR2 CLX2 with KAMUI2 graphics library
+- **Filesystem**: SimpleFlashFS on ic9/ic10/ic11, plus FARC archives + gzip + PowerVR2 ARGB1555 twiddled textures
 
-## Game Roster
+## Game roster
 
-61 games identified in source filenames; 47 have a corresponding GBA
-title. See [`docs/game_mapping.yaml`](docs/game_mapping.yaml) for the
-full mapping.
+78 game entries identified — 47 with a confirmed GBA counterpart, 14
+arcade-exclusive games, 12 GBA-exclusive games (no arcade port).
 
-| Arcade-only games | GBA-only games |
-|-------------------|---------------|
-| bigband, boxing, esa, even, kanji | bouncy_road, drum_intro, drum_live |
-| spaceusagi, tanuki, trampoline | karate_man, mr_upbeat, night_walk |
-| (and 8 more)       | (and 5 more)   |
+| 14 arcade-only games | 12 GBA-only games |
+|---|---|
+| `aisyou`, `bigband`, `bomber_demo`, `gyrotest`, | `drum_intro`, `drum_live`, `metronome` (GBA Mr. Upbeat), |
+| `logo_adv`, `music_image`, `name_double`, `name_single`, | `remix_1` … `remix_8`, |
+| `option`, `poster`, `tanuki`, `test`, | `rhythm_toys` |
+| `title_op`, `warning` | |
 
-## Audio Pipeline
+(The remaining ~47 arcade games map to GBA originals like `handclap`↔`clappy_trio`,
+`boxing`↔`karate_man`, `hair`↔`rhythm_tweezers`, etc.  See
+[`docs/game_mapping.yaml`](docs/game_mapping.yaml) for the full table.)
 
-The arcade uses **AM2 Sequencer 1.33** by Y. Takeda (SEGA AM2), driven
-by a small ARM7 program in `aicadrv.bin` (extracted from ic9 @ 0xDBC000).
-Audio data is packaged in **DTPK** containers — 91 of them across the
-data ROMs, holding 11,893 individual sound samples.
+## Pipelines (status)
 
-```
-make extract-audio    # → audio/samples/sample_NNNN.wav
-                      # → audio/sample_table.json (GBA-decomp compatible)
-                      # → audio/song_to_bank.json
-```
+| Subsystem        | Status | Output |
+|---|---|---|
+| ROM decryption       | ✓ Done   | `roms/fpr-24423_decrypted.bin` |
+| SFFS volume extract  | ✓ Done   | 350 files under `extracted/ic{9,11}/` |
+| FARC + gzip extract  | ✓ Done   | 425 inner files (95 aet + 165 stx + 165 shd) |
+| Texture → PNG        | ✓ Done   | 177 PNG files in `textures_png/` |
+| DTPK sample extract  | ✓ Done   | 11,893 WAV samples (PCM + ADPCM, with loop points) |
+| AET animation parse  | ⚠ Metadata only | 5,017 strings + 1,177 sprite refs in `build/aet_manifest.json` |
+| MIDI from DTPK       | ⚠ Best-effort | Structurally placeholder — see `docs/aica_trace_methodology.md` |
+| MIDI from AICA capture | ✓ Working | 4,989 KEYON events with full register snapshot |
+| BeatScript parse     | ✓ Done | 2,929 scripts, 112 opcodes, dispatcher at `0x0c1008f0` |
+| Function attribution | ⚠ Partial | 166-file source manifest, 6 functions confirmed |
+| C reconstruction     | ⚠ Started | `seqsel_init.c` (full), `seqsel_bsd.c` (partial) |
 
-The output directory layout intentionally mirrors
-[arthurtilly/rhythmtengoku/audio](https://github.com/arthurtilly/rhythmtengoku/tree/master/audio)
-so that down the line, audio assets can be rebuilt with their tooling
-(`tools/sample_parser.py`, etc.) and integrated into either decomp.
+## Documentation index
 
-## Code Pipeline (analysis phase)
+- [`docs/arcade_internals.md`](docs/arcade_internals.md) — Task hierarchy, options, file paths
+- [`docs/sound_pipeline_complete_map.md`](docs/sound_pipeline_complete_map.md) — BeatScript → AICA full chain
+- [`docs/beatscript_dispatcher_found.md`](docs/beatscript_dispatcher_found.md) — Bytecode interpreter
+- [`docs/beatscript_function_mapping.md`](docs/beatscript_function_mapping.md) — Verified function pointers
+- [`docs/cross_ref_gba.md`](docs/cross_ref_gba.md) — Arcade ↔ GBA correlation
+- [`docs/handclap_vs_clappy_trio.md`](docs/handclap_vs_clappy_trio.md) — Worked example of game comparison
+- [`docs/symbol_names.yaml`](docs/symbol_names.yaml) — 166 source files × 95 recovered symbols
+- [`docs/progress.md`](docs/progress.md) — Historical progress notes
 
-```
-make decrypt          # decrypt PIC-encrypted program ROM
-make analyze          # find function entries (~6,430 candidates)
-make disasm           # produce SH-4 + ARM7 .s files
-```
-
-Currently produces disassembly only — no rebuilt ROM yet.
-
-## Building (placeholder)
+## Make targets
 
 ```sh
-make all              # one-shot: decrypt + analyze + disasm + extract
+make all                # full pipeline (decrypt + extract + organize)
+make decrypt            # NAOMI PIC decryption
+make extract-rom        # SFFS unpack
+make extract-graphics   # FARC + gzip + PowerVR2 → 177 PNGs
+make extract-audio      # DTPK → WAV samples
+make generate-games     # build games/ + system/ folder trees
+make game-<name>        # show one game's files + decomp status
+make system-<name>      # show one subsystem's files + decomp status
+make per-game-list      # list all 80 arcade games
+make per-system-list    # list all 19 non-game subsystems
+make disasm             # re-run sh-elf-objdump
+make clean              # remove all build artifacts
 ```
-
-## Status
-
-🚧 **Pre-alpha** — analysis tooling and asset extraction only.
-
-| Subsystem        | Progress | Notes                                     |
-|------------------|----------|-------------------------------------------|
-| ROM mapping      | ✅       | All 91 DTPKs located                      |
-| PIC decryption   | ✅       | Subkeys known, decrypted ROM available    |
-| Sample extraction| ✅       | 11,893 WAVs with loops + format flags     |
-| Sequence/MIDI    | ⚠ Best-effort | Track Composition Entry partially decoded |
-| C reconstruction | ❌ 0%    | 6,430 functions identified, none ported   |
-| Sprite/FARC      | ❌       | Located but not extracted                 |
 
 ## Credits
 
-- **DTPK format reverse engineering**: [Preppy](https://github.com/Preppy/DTPKDump) (AM2-DTPK.txt)
-- **DSF conversion reference**: KingShriek (`dsfdtpk`)
-- **GBA decompilation** (cross-reference): [arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
-- **AICA ADPCM tables**: MAME `aica.cpp`
-- **This project**: 角凛太朗 (Toritan123)
+- DTPK format RE: [Preppy](https://github.com/Preppy/DTPKDump) (`AM2-DTPK.txt`)
+- DSF conversion reference: KingShriek (`dsfdtpk`)
+- GBA decomp cross-reference: [arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
+- AICA ADPCM tables: MAME `aica.cpp`
+- External RE notes: third-party docs (Names.txt etc.)
+- This project: 角凛太朗 (Toritan123) + Claude
