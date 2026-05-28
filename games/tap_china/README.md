@@ -1,0 +1,32 @@
+# tap_china
+
+**Arcade name:** `tap_china`  ↔  **GBA equivalent:** `tap_trial`
+
+## Arcade source files
+- (no SH-4 source filenames recovered for this game)
+
+## GBA reference
+GBA source: `~/rt/games/tap_trial/` (available)
+  - `engine.c`
+  - `macros.inc`
+  - `subroutines.bs`
+  - `tap_trial.bs`
+  - `tap_trial_2.bs`
+  - `tap_trial_2_prologue_engine.c`
+  - `tap_trial_2_text.c`
+  - `tap_trial_prologue_engine.c`
+  - `tap_trial_text.c`
+  - `tap_trial_unused.bs`
+
+## Extracted assets
+- Textures: 0 directory(ies)
+- FARC archives: 1
+  - `extracted/ic11/spr_tap_china.farc`
+- MIDI sequences: 0
+
+## Decompilation status
+- `_init.c`: not identified
+- `_data.c`: not identified
+
+Source stubs (one per recovered file) live alongside this README.
+Each stub contains a comment header pointing back to the SH-4 address.
