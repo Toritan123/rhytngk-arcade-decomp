@@ -64,9 +64,32 @@ extern void fn_0c0a0190(int arg0, int arg1, u32 arg2, int arg3);
 /* AICA register-write dispatcher (sound pipeline final layer) */
 extern void fn_0c0a1a6c(u32 a4, u32 a5, u32 a6, u32 a7);
 
-/* fn11's external callees (read state->field_10->field_X) */
-extern void fn_0c090910(void);
-extern void fn_0c090058(int arg);
+/* fn11's external callees — fully enumerated from pool walk */
+extern void fn_0c090910(void);              /* enter-substate notify */
+extern void fn_0c090058(int arg);           /* substate-arg toggle */
+extern void fn_0c09ce58(void *p);           /* per-field-18 cleanup */
+extern void fn_0c0a2478(int handle, u16 port); /* register pair A */
+extern void fn_0c09f710(u16 port);          /* register pair B */
+extern void fn_0c09d300(u16 port);          /* register pair C */
+extern void fn_0c09ced0(u16 port);          /* register pair D */
+extern void fn_0c08e0e8(int arg);           /* register epilogue */
+extern void fn_0c097afc(int arg);           /* no-substate prep */
+extern void fn_0c097b3c(int idx);           /* per-index loop (0..3) */
+extern void fn_0c09dfd4(void);              /* mid-init step */
+extern void fn_0c09c83c(void *config_ptr);  /* config consumer (constant ptr arg) */
+extern void fn_0c08f074(int arg);           /* late-init toggle */
+extern void *fn_0c09cdc0(void);             /* allocator (returns new buffer) */
+extern void fn_0c0a0190(int a0, void *buf, void *ctx0, int a3);
+                                            /* primary init helper, +1 stacked arg */
+
+/* Data constants referenced from pool */
+extern const u8 g_seqdata_2615f8[];         /* default config (context-given path) */
+extern const u8 g_seqdata_261600[];         /* default config (null-context path) */
+extern const u8 g_config_08fbb0[];          /* passed to fn_0c09c83c */
+
+/* Globals written by fn11 */
+extern void *g_var_2c6ce8;                  /* selected config pointer */
+extern void *g_var_3d4d9c;                  /* mirror of state[+0x18] */
 
 /* fn13's source queries — same pair as riq_title_validate_inputs! */
 extern int  fn_0c0693b0(void);        /* input source A */
@@ -312,63 +335,223 @@ void seqsel_bsd_fn10(u8 byte_val)
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * fn11 — source 0x0C06FE92  (~542 bytes — the MAIN BSD UPDATE)
+ * fn11 — source 0x0C06FE92  (544 bytes — task (re)spawn entry)
  *
- * Per-frame top-level update for the SeqselBSD task.  Walks the state
- * struct's child pointer (state->field_10), and if its sub-fields are
- * populated, dispatches to fn_0c090910 / fn_0c090058 and then into
- * deeper sub-handlers.
+ * Full body transcription.  This is the BSD task's "spawn / respawn"
+ * function: takes a context struct (with init data) and an aux pointer
+ * (passed to the registered callback).  Sets up sound-system register
+ * pairs, zeroes state arrays, copies context arrays into the state
+ * struct, and invokes a user callback.
  *
- * Behaviour (prologue + first arms):
- *   r10 = arg0 (caller's r4 — context pointer?)
- *   r11 = arg1 (caller's r5)
- *   r8  = g_seqsel_state ptr (cached for whole function)
- *   r1  = (*r8)->field_10                            ; sub-struct ptr
- *   if (r1 == NULL):
- *       goto skip_branch                              ; (label at 0xc06ff16)
+ * Layout of the context struct (inferred from accesses):
+ *   ctx[+0x00]  void*  primary descriptor (NULL → skip alloc path)
+ *   ctx[+0x04]  fn*    callback(aux) (NULL → skip callback)
+ *   ctx[+0x10]  i32*   source array A (16-bit values, -1 sentinel)
+ *   ctx[+0x14]  i32*   source array B (16-bit values, -1 sentinel)
+ *   ctx[+0x18]  ?
+ *   ctx[+0x24]  void*  override config pointer (written to g_var_2c6ce8)
  *
- *   fn_0c090910()                                     ; sub-call A
- *   fn_0c090058(1)                                    ; sub-call B with arg=1
- *
- *   r1 = (*r8)->field_10                              ; reload
- *   r1 = r1->field_12                                 ; struct[+12]
- *   if (r1 == NULL):
- *       goto next_arm
- *
- *   ... [continues for ~480 more bytes, walking state field arrays,
- *        dispatching to several sub-functions per state byte] ...
- *
- * This is the function that, on every frame, drives the entire
- * sequencer-selector state machine.  Full body is too large to
- * inline-comment here; the top-level structure is documented above.
+ * State-struct fields touched:
+ *   state[+0x010]  void*  remembered context (= r10)
+ *   state[+0x014]  void*  remembered aux     (= r11)
+ *   state[+0x018]  void*  allocated buffer or NULL
+ *   state[+0x020 + i*4]  i32  zero-filled then copy of context_field_10[i] (24 entries)
+ *   state[+0x080 + i*4]  i32  copy of zero values (3 entries, nested loop)
+ *   state[+0x4E2]        u16  reset to 0 just before storing context/aux
+ *   state[+0x07C + 0x04] i32  zero (after main copy)
+ *   state[+0x07C + 0x08] i32  zero
+ *   state[+0x07C + 0x0C] i32  zero
  *
  * Saved regs: r8-r11, r14, PR.
- * Stack: ~32 bytes of frame storage.
+ * Stack: 4 bytes for one extra arg pushed to fn_0c0a0190.
  * ──────────────────────────────────────────────────────────────────────── */
 void seqsel_bsd_fn11(void *context, void *aux)
 {
-    void *r10 = context;
-    void *r11 = aux;
-    (void)r10; (void)r11;
+    u8  *state = (u8 *)g_seqsel_state;
 
-    void **state_ptr = (void **)g_seqsel_state;
-    void *sub = ((void **)(*state_ptr))[4];   /* (*state)->field_10 / 16 bytes in */
-    if (sub == NULL) {
-        /* skip_branch */
-        return;
+    /*
+     * ── Phase 1: substate-driven setup (skipped if no substate exists) ──
+     *
+     * state[+0x10] is a sub-struct pointer that exists when a session is
+     * currently active.  Asm:
+     *
+     *   r1 = *(g_seqsel_state)
+     *   r1 = r1[+0x10]                                  ; sub-struct ptr
+     *   if (r1 == NULL) goto phase2_skip
+     */
+    void **state_w = (void **)state;
+    void  *sub     = state_w[4];                        /* state[+0x10] */
+
+    if (sub != NULL) {
+
+        /* enter-substate prep: two unconditional calls */
+        fn_0c090910();
+        fn_0c090058(1);
+
+        /* if substate has a field-0x0C callback, call it */
+        void *sub_cb = ((void **)sub)[3];                /* sub[+0x0C] */
+        if (sub_cb != NULL) {
+            ((void (*)(void))sub_cb)();
+        }
+
+        /* publish a default config pointer to the global before we
+         * potentially override it from the context below */
+        g_var_2c6ce8 = (void *)g_seqdata_2615f8;
+
+        /* if state[+0x18] holds an existing buffer, release it via cleanup */
+        void *old_buf = state_w[6];                      /* state[+0x18] */
+        if (old_buf != NULL) {
+            fn_0c09ce58(old_buf);
+        }
+
+        /* sound-system register pair setup
+         *
+         * Each call queries the active port via fn_0c097f88() then
+         * registers it with a different table.  r9 holds the handle
+         * loaded from g_snd_glob1; r8 caches the port-query function. */
+        int handle = *(int *)g_snd_glob1;
+
+        u16 port_a = fn_0c097f88();
+        fn_0c0a2478(handle, port_a);
+
+        u16 port_b = fn_0c097f88();
+        fn_0c09f710(port_b);
+
+        u16 port_c = fn_0c097f88();
+        fn_0c09d300(port_c);
+
+        u16 port_d = fn_0c097f88();
+        fn_0c09ced0(port_d);
+
+        /* register epilogue */
+        fn_0c08e0e8(0);
     }
 
-    fn_0c090910();
-    fn_0c090058(1);
+    /* ── Phase 2: common path (always runs) ── */
 
-    /* re-read sub-struct chain */
-    void *sub2 = ((void **)(*state_ptr))[4];
-    if (sub2 == NULL) return;
-    void *sub3 = ((void **)sub2)[3];          /* sub2->field_12 */
-    if (sub3 == NULL) return;
+    fn_0c097afc(0);
 
-    /* ... (remaining ~480 bytes of state-array walks + per-byte dispatch
-     *      — TBD; see asm 0x0C06FEBC-0x0C0700AE for full body) */
+    /* per-index loop: call fn_0c097b3c(0..3) */
+    for (int i = 0; i < 4; i++) {
+        fn_0c097b3c(i);
+    }
+
+    fn_0c09dfd4();
+
+    /* consume a constant config block */
+    fn_0c09c83c((void *)g_config_08fbb0);
+
+    fn_0c08f074(1);
+
+    /*
+     * ── Phase 3: state commit (record context and aux, clear flag) ──
+     *
+     * Asm:
+     *   r2 = *(g_seqsel_state)
+     *   r0 = (u16) 0x04E2
+     *   *(u16*)(r2 + 0x4E2) = 0
+     *   r2[+0x10] = r10
+     *   r2[+0x14] = r11
+     */
+    state_w = (void **)g_seqsel_state;
+    *(u16 *)((u8 *)state_w + 0x04E2) = 0;
+    state_w[4] = context;                               /* state[+0x10] */
+    state_w[5] = aux;                                    /* state[+0x14] */
+
+    /* ── Phase 4: context-given vs null-context split ── */
+
+    if (context == NULL) {
+        /* null-context path: install default config, then exit */
+        g_var_2c6ce8 = (void *)g_seqdata_261600;
+        goto exit;
+    }
+
+    /* context-given path: override g_var_2c6ce8 with context's override */
+    g_var_2c6ce8 = ((void **)context)[9];                /* context[+0x24] */
+
+    /*
+     * If context[+0] is NULL, set state[+0x18] = NULL and skip allocation;
+     * otherwise allocate via fn_0c09cdc0, store at state[+0x18], then
+     * call the primary init helper.
+     */
+    if (((void **)context)[0] != NULL) {
+        void *new_buf = fn_0c09cdc0();
+        ((void **)g_seqsel_state)[6] = new_buf;          /* state[+0x18] */
+
+        /* Stack-arg call:
+         *   stack[0] = 0x0200
+         *   fn_0c0a0190(0, new_buf, context[0], 32)
+         */
+        fn_0c0a0190(0, new_buf, ((void **)context)[0], 32);
+    } else {
+        ((void **)g_seqsel_state)[6] = NULL;
+    }
+
+    /* publish state[+0x18] to a second global mirror */
+    g_var_3d4d9c = ((void **)g_seqsel_state)[6];
+
+    /* ── Phase 5: zero-fill state array (24 × i32 at +0x20) ── */
+    {
+        i32 *arr = (i32 *)((u8 *)g_seqsel_state + 0x20);
+        for (int i = 0; i < 24; i++) {
+            arr[i] = 0;
+        }
+    }
+
+    /*
+     * ── Phase 6: copy context_field_10[] (up to 24 entries, -1 sentinel) ──
+     *
+     * The original asm uses a slightly tangled control flow that emits
+     * each non-(-1) entry from context[+0x10] into state[+0x20+i*4].
+     * (The first u32 of state[+0x20+i*4] is set to 0 then patched.)
+     */
+    {
+        i32 *src   = ((i32 **)context)[4];               /* context[+0x10] */
+        i32 *dst   = (i32 *)((u8 *)g_seqsel_state + 0x20);
+        int  i     = 0;
+        while (i < 24) {
+            i32 v = src[i];
+            if (v == -1) break;
+            dst[i] = 0;                                  /* note: original writes 0 here, not v */
+            i++;
+        }
+    }
+
+    /* ── Phase 7: nested loop — populate state[+0x80] array (3 entries) ── */
+    {
+        i32 *src   = ((i32 **)context)[5];               /* context[+0x14] */
+        u8  *st    = (u8 *)g_seqsel_state;
+        for (int i = 0; i < 3; i++) {
+            i32 v = src[i];
+            if (v == -1) break;
+            *(i32 *)(st + 0x80 + i * 4) = v;
+        }
+    }
+
+    /* ── Phase 8: callback ── */
+    {
+        void (*cb)(void *aux) = ((void (**)(void *))context)[1]; /* context[+0x04] */
+        if (cb != NULL) {
+            cb(aux);
+        }
+    }
+    goto exit;
+
+  /* (Reached when context[0] is NULL AND we went through Phase 7's
+   * "after_copy" branch — the original does another small reset here.) */
+
+exit:
+    /*
+     * Final state cleanup: zero state[+0x80], state[+0x84], state[+0x88]
+     * (three i32 fields at offset 0x7C+0x04 .. 0x7C+0x0C).
+     */
+    {
+        u8 *st = (u8 *)g_seqsel_state;
+        *(u32 *)(st + 0x80) = 0;
+        *(u32 *)(st + 0x84) = 0;
+        *(u32 *)(st + 0x88) = 0;
+    }
+    /* function returns void */
 }
 
 /* ────────────────────────────────────────────────────────────────────────
