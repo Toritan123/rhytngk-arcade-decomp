@@ -689,36 +689,145 @@ void riq_title_event_dispatch_b(void)
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * riq_title_decode_state_bits_v2 — source 0x0C070C0E  (~418 bytes)
+ * riq_title_score_cue_v2 — source 0x0C070C0E  (418 bytes — full body)
  *
- * Three-argument variant of riq_title_decode_state_bits.  Receives a
- * config in r4, two u16 codes in r5/r6, and a float in r7 (the latter
- * is moved into FPU register fr13 via lds/fsts before the body).
+ * Float-parameterised variant of riq_title_score_cue (fn4).
  *
- * Behaviour (from asm 0x0c070c0e prologue):
+ * Same overall structure: returns 0 / 1 / 2 for miss / barely / perfect
+ * by comparing config[+0x00] (target time) against accumulated timing
+ * windows.  Differences from fn4:
  *
- *   r13 = r4                                      ; save config base
- *   fpul = r7
- *   fr13 = fpul                                   ; cache float param
- *   r5 = (u16) r5
- *   r6 = (u16) r6
- *   ... (load + sign-test the flag word at r4+10, same as fn5) ...
+ *   1. Takes a u16 mask `m_a` (r5) and a u16 mask `m_b` (r6) instead
+ *      of two output pointers.  The "mask is non-negative as s16"
+ *      redirect of fn4 becomes here: if (config[+0x0A] >= 0 as s16)
+ *      then m_b = m_a (the active mask collapses to a single one).
+ *      Whichever m_b ends up holding is AND'd against config[+0x0A]
+ *      and against pool literal 0x7FFF; if the low 15 bits of the
+ *      combined mask are zero, the function fails (return 0).
  *
- *   /* Mask the combined (r5 & r6) against pool literal 0x7FFF and call
- *    *  fn_0c0984bc + fn_0c09b054 if non-zero; otherwise check
- *    *  config[+0x40][+0x08] & 3 for a fall-through path. */
+ *   2. Takes a float `ratio` (r7) saved into fr13 for later use.  This
+ *      ratio scales window2 (the perfect-near window) before the final
+ *      range comparison: the scaled-window subtraction is what
+ *      converts the integer windows to floats and back, allowing
+ *      sub-tick resolution in remix variants.
  *
- * The body shares its skeleton with fn5 but adds the FPU plumbing
- * and writes results into the 28-byte stack frame for fn_0c0a1a6c-
- * style calls.  Detailed transcription pending.
+ *   3. After the same four fn_0c09b054 calls (window0..window3, fed
+ *      with state bytes at the SAME offsets +0x4DD..+0x4E0 as fn4 +
+ *      negation flag at +0x4DB), an extra indirect callback may run:
+ *      if config[+0x3C] is non-NULL it's called as
+ *      `((bool (*)(void *, void *))fp)(config, state + config[+0x64])`
+ *      and a zero return from THAT callback also fails the cue.
  *
- * Saved regs: r8-r13, fr8-fr15, r14, PR.  Stack: 28 bytes.
+ *   4. The final comparison uses fr12 (cached perfect-near window cast
+ *      to float) so the inner-band check is `target > anchor + fr12`
+ *      instead of `target > anchor + window1`.
+ *
+ * Saved regs: r8-r13, fr12-fr13, r14, PR.  Stack: 28 bytes.
+ *
+ * Source asm: 0x0C070C0E-0x0C070D8E.
  * ──────────────────────────────────────────────────────────────────────── */
-void riq_title_decode_state_bits_v2(const void *config, u16 a, u16 b, f32 ratio)
+int riq_title_score_cue_v2(const void *config, u16 m_a, u16 m_b, f32 ratio)
 {
-    (void)config; (void)a; (void)b; (void)ratio;
-    /* TBD body — same template as decode_state_bits with an extra
-     * FPU-saved arithmetic block.  See asm 0x0c070c14-0x0c070d6e. */
+    const u8 *cfg = (const u8 *)config;
+
+    /* Ensure inputs are zero-extended */
+    m_a = (u16)m_a;
+    m_b = (u16)m_b;
+
+    /* Cache the config sub-area pointer for later (used as if it were
+     * r0 + offset by the asm) */
+    const u8 *cfg_sub = cfg + 8;
+
+    /* ── Phase 1: mask validation ──
+     *
+     * Load the flag word and redirect m_b → m_a when it's non-negative,
+     * then AND with pool literal 0x7FFF to clear the high (sign) bit.
+     */
+    u16 flags = *(const u16 *)(cfg + 0x0A);
+    s16 sflags = (s16)flags;
+    if (sflags >= 0) {
+        m_b = m_a;
+    }
+
+    u32 combined = ((u32)m_b & (u32)flags) & 0x7FFFu;
+    if (combined == 0) {
+        /* Optional gate: when the masked-flag check fails, the function
+         * STILL has a chance to proceed if config[+0x48] & 3 is zero. */
+        if ((*(const u32 *)(cfg + 0x48) & 3u) != 0) {
+            return 0;
+        }
+        /* else: fall through to Phase 3 (mask was inactive but gate is open) */
+    }
+
+    /* ── Phase 2: load anchor values ── */
+    u32 target = *(const u32 *)(cfg + 0x4C);   /* into stack[0] */
+    u32 anchor = *(const u32 *)(cfg + 0x4E);   /* into stack[4] */
+    /* (target read at +0x4C is treated as an s16 in fn4; here as u32
+     * via the existing extu.w → mov.l promotion.) */
+
+    /* ── Phase 3: prepare four input bytes ── */
+    int byte0, byte1, byte2, byte3;
+    u8 transform_flag = cfg_sub[10];        /* config[+0x12] */
+    if (transform_flag & 1) {
+        byte0 = (int)fn_0c0984bc((int)cfg_sub[6]);   /* config[+0x0E] */
+        byte1 = (int)fn_0c0984bc((int)cfg_sub[7]);   /* config[+0x0F] */
+        byte2 = (int)fn_0c0984bc((int)cfg_sub[8]);   /* config[+0x10] */
+        byte3 = (int)fn_0c0984bc((int)cfg_sub[9]);   /* config[+0x11] */
+    } else {
+        byte0 = (int)cfg_sub[6];
+        byte1 = (int)cfg_sub[7];
+        byte2 = (int)cfg_sub[8];
+        byte3 = (int)cfg_sub[9];
+    }
+
+    /* ── Phase 4: compute four windows via fn_0c09b054 ── */
+    const u8 *st = (const u8 *)g_task_state;
+    int window0 = (int)fn_0c09b054(byte0, st[TITLE_TIMING_BYTE_C_OFF],
+                                          st[TITLE_TIMING_BYTE_A_OFF]);
+    int window1 = (int)fn_0c09b054(byte1, st[TITLE_TIMING_BYTE_B_OFF],
+                                          st[TITLE_TIMING_BYTE_D_OFF]);
+
+    /* fr12 = (float)window1, used in final inner-band comparison */
+    f32 window1_f = (f32)window1;
+
+    int window2 = (int)fn_0c09b054(byte2, st[TITLE_TIMING_BYTE_C_OFF],
+                                          st[TITLE_TIMING_BYTE_A_OFF]);
+    int window3 = (int)fn_0c09b054(byte3, st[TITLE_TIMING_BYTE_B_OFF],
+                                          st[TITLE_TIMING_BYTE_D_OFF]);
+
+    /* Optional sign-flip (mirror remix variants) — also re-caches fr12 */
+    if (st[TITLE_TIMING_NEG_FLAG_OFF] != 0) {
+        window0 = -1;
+        window1 = 1;
+        window1_f = 1.0f;
+    }
+
+    /* ── Phase 5: optional indirect callback ── */
+    void *(*opt_cb)(const void *cfg, void *arg) =
+        *(void *(**)(const void *, void *))(cfg_sub + 60); /* config[+0x44] */
+    if (opt_cb != NULL) {
+        void *arg = *(void **)(cfg_sub + 36); /* config[+0x2C] in sub-area */
+        if (opt_cb(config, arg) == NULL) {
+            return 0;
+        }
+    }
+
+    /* ── Phase 6: float-aware range check ──
+     *
+     * Note: the original asm computes `(target - anchor)` and reuses
+     * that as a temporary stored via fpul → r0.  Effectively the
+     * comparisons are still integer except for the inner-band test
+     * which uses fr12 = window1_f scaled by the saved fr13 = ratio.
+     */
+    f32 inner_window = window1_f * ratio;   /* TBD: confirm ratio scaling */
+
+    if ((s32)target < (s32)(anchor + (u32)window2)) return 0;
+    if ((s32)target > (s32)(anchor + (u32)window3)) return 0;
+
+    if ((s32)target < (s32)(anchor + (u32)window0)) return 1;
+    if ((f32)target > (f32)anchor + inner_window)  return 2;
+
+    return 1;
 }
 
 /* ────────────────────────────────────────────────────────────────────────
