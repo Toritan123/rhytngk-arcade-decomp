@@ -209,6 +209,12 @@ extern void fn_0c0a01b4(void *new_slot,
                         int arg1, int arg2,
                         void *override_data); /* fn12 init helper */
 
+/* fn6 fixed output globals — counterparts of fn_0c068fb0(event_id) lookups
+ * in fn5; fn6 always writes to the same three slots. */
+extern u16 g_var_3d5c12;                    /* primary OR target */
+extern u16 g_var_3d5c14;                    /* secondary OR target */
+extern u16 g_var_3d5c08;                    /* tertiary OR target */
+
 /* ────────────────────────────────────────────────────────────────────────
  * Additional state-struct field offsets (extending the map above)
  * ──────────────────────────────────────────────────────────────────────── */
@@ -599,57 +605,87 @@ void riq_title_event_dispatch_a(int event_id)
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * riq_title_event_dispatch_b — source 0x0C070B12  (~252 bytes)
+ * riq_title_event_dispatch_b — source 0x0C070B12  (252 bytes — full body)
  *
- * Slightly smaller sibling of dispatch_a.  Walks the same state[+0x1C]
- * sub-struct but performs WRITES into several of its fields (offsets
- * +0x4E, +0x6A, +0x6C, +0x74 within the sub-struct) before invoking
- * fn_0c0902a8.
+ * Simplified variant of event_dispatch_a (fn5).  Walks the same chain
+ * rooted at state[+0x1C] and runs the same score_cue evaluation, but
+ * the output slots are FIXED global u16s (g_var_3d5c08/12/14) instead
+ * of being looked up by event_id via fn_0c068fb0.
  *
- * Behaviour (from asm 0x0c070b12 prologue):
+ * Because there is no event_id, every chain node is unconditionally
+ * processed (no top-bit gating).
  *
- *   r1 = *(g_task_state)
- *   r8 = r1[+0x1C]
- *   if (r8 == NULL) goto epilogue                  ; (label at 0xc070bd0)
+ * For each node:
+ *   - Pre-update node header: +0x6A = +0x4E + +0x6C, zero +0x70/+0x74/+0x76
+ *   - Call score_cue (fn_0c0902a8) with local u16[2] accumulator
+ *   - If score != 0: OR acc[1] into g_var_3d5c12 and g_var_3d5c14, OR
+ *     acc[0] into g_var_3d5c08, then publish (score, acc[1], acc[0])
+ *     into node[+0x70/+0x74/+0x76].
+ *   - If score == 0 AND node[+0x48] bit 0 set:
+ *       - If node->prev (node[+0]) is NULL → emit acc[1] to g_var_3d5c12
+ *         (no-op when acc[1] == 0).
+ *       - Else if prev->gate (node->prev[+0x48] bit 0) is set → skip.
+ *       - Else → emit acc[1] to g_var_3d5c12.
  *
- *   r12 = r14 + 2                                  ; small frame slot
- *   r13 = global cache  (pool 0xc070bec = 0x0c3d5c12)
+ * Saved regs: r8-r13, r14, PR.  Stack: 4 bytes (the u16[2] accumulator).
  *
- *   r10 = r8[+0x04]                                ; primary descriptor
- *   r11 = r10
- *
- *   /* compute and store: *(r8 + 0x6A) = *(r8+0x4E) + *(r8+0x6C) */
- *   {
- *       u16 a = *(u16 *)(r8 + 0x4E);
- *       u16 b = *(u16 *)(r8 + 0x6C);
- *       *(u16 *)(r8 + 0x6A) = a + b;
- *   }
- *
- *   /* zero state slot +0x70 (u32) and state slot +0x74 (u16) */
- *   *(u32 *)(r8 + 0x70) = 0;     /* aliased as (r9 + 0x30 where r9 = r8+0x40) */
- *   *(u16 *)(r8 + 0x74) = 0;
- *
- *   /* ... body continues (~200 more bytes) reading +0x4E and writing
- *    *     +0x76, +0x78, then calls fn_0c0902a8 with the resulting
- *    *     values, finally restoring state. */
- *
- * Saved regs: r8-r13, r14, PR.  Stack: 4 bytes.
+ * Source asm: 0x0C070B12-0x0C070BE6.  Branch shape matches fn5 minus
+ * the ancestor-walk loop and the per-event_id output-table lookup.
  * ──────────────────────────────────────────────────────────────────────── */
 void riq_title_event_dispatch_b(void)
 {
     u8 *state = (u8 *)g_task_state;
-    void *sub = *(void **)(state + 0x1c);
-    if (sub == NULL) return;
+    u8 *node  = *(u8 **)(state + 0x1C);
+    if (node == NULL) return;
 
-    u8 *sb = (u8 *)sub;
-    {
-        u16 a = *(u16 *)(sb + 0x4E);
-        u16 b = *(u16 *)(sb + 0x6C);
-        *(u16 *)(sb + 0x6A) = a + b;
+    u16 acc[2];
+
+    while (node != NULL) {
+        u8 *saved_next = *(u8 **)(node + 0x04);
+
+        /* Pre-update node header */
+        *(u16 *)(node + 0x6A) = *(u16 *)(node + 0x4E)
+                              + *(u16 *)(node + 0x6C);
+        *(u32 *)(node + 0x70) = 0;
+        *(u16 *)(node + 0x74) = 0;
+        *(u16 *)(node + 0x76) = 0;
+
+        acc[0] = 0;
+        acc[1] = 0;
+
+        int score = (int)((intptr_t)fn_0c0902a8((int)(intptr_t)node));
+
+        if (score != 0) {
+            /* ── Scoring path ── */
+            u16 v_high = acc[1];
+            u16 v_low  = acc[0];
+
+            g_var_3d5c12 |= v_high;
+            g_var_3d5c14 |= v_high;
+            g_var_3d5c08 |= v_low;
+
+            *(u32 *)(node + 0x70) = (u32)score;
+            *(u16 *)(node + 0x74) = v_high;
+            *(u16 *)(node + 0x76) = v_low;
+        } else if (*(u32 *)(node + 0x48) & 1) {
+            /* ── No-score path: optionally emit acc[1] to g_var_3d5c12 ── */
+            u8 *prev = *(u8 **)node;
+            int do_emit = 0;
+
+            if (prev == NULL) {
+                do_emit = 1;
+            } else if ((*(u32 *)(prev + 0x48) & 1) == 0) {
+                do_emit = 1;
+            }
+            /* else: prev->gate bit set → skip emission */
+
+            if (do_emit && acc[1] != 0) {
+                g_var_3d5c12 |= acc[1];
+            }
+        }
+
+        node = saved_next;
     }
-    *(u32 *)(sb + 0x70) = 0;
-    *(u16 *)(sb + 0x74) = 0;
-    /* TBD: remaining ~200 bytes (sub-field updates + fn_0c0902a8 call). */
 }
 
 /* ────────────────────────────────────────────────────────────────────────
