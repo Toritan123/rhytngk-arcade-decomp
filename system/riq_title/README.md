@@ -11,7 +11,7 @@
 - `src/riq/riq_title/riq_title_bsd.c`   — BSD task lifecycle (not started)
 
 ### Live decompilation in `src/riq_title/`
-- `src/riq_title/riq_title_init.c`  ✓ **first pass complete** (14/14 functions)
+- `src/riq_title/riq_title_init.c`  ✓ **first pass complete** (14/14 functions); fn4–fn7 fully transcribed
 - `src/riq_title/riq_title_bsd.c`   (not started)
 
 ## Function summary
@@ -22,10 +22,10 @@
 | fn1  | 0x0C070236 | ~440 B | `riq_title_dispatcher()` — gated state-machine dispatcher |
 | fn2  | 0x0C0705EE | ~28 B | `riq_title_set_enabled()` — calls fn_0c0900c8(0) |
 | fn3  | 0x0C07060A | ~28 B | `riq_title_set_enabled_on()` — calls fn_0c0900c8(1) |
-| fn4  | 0x0C0707B6 | ~456 B | `riq_title_decode_state_bits()` — bit decoder with two u16 outputs |
-| fn5  | 0x0C07097E | ~404 B | `riq_title_event_dispatch_a()` — sub-state event dispatcher |
-| fn6  | 0x0C070B12 | ~252 B | `riq_title_event_dispatch_b()` — sibling with field writes |
-| fn7  | 0x0C070C0E | ~418 B | `riq_title_decode_state_bits_v2()` — variant with FPU param |
+| fn4  | 0x0C0707B6 | ~456 B | `riq_title_score_cue()` ✓ full body — miss/barely/perfect scorer |
+| fn5  | 0x0C07097E | ~404 B | `event_dispatch_a()` ✓ full body — chain-walking dispatcher with top-bit gate |
+| fn6  | 0x0C070B12 | ~252 B | `event_dispatch_b()` ✓ full body — simplified variant using fixed globals |
+| fn7  | 0x0C070C0E | ~418 B | `riq_title_score_cue_v2()` ✓ full body — float-parameterised variant of fn4 |
 | fn8  | 0x0C070DB0 | ~102 B | `riq_title_invoke_state_cb()` — callback + chain unlink |
 | fn9  | 0x0C070E16 | ~80 B | `riq_title_clear_chain()` — walk chain + clear pointers |
 | fn10 | 0x0C070E66 | ~74 B | `riq_title_arm_session()` — clear state + set armed flag |
@@ -62,9 +62,8 @@
 
 ## Refinement remaining
 
-- **fn4 / fn5 / fn6 / fn7**: bodies are large (250-460 bytes each).
-  The C versions in this file capture prologue + one or two arms; the
-  full step-by-step state walks are TBD.
+- ~~**fn4 / fn5 / fn6 / fn7**: full bodies TBD~~ ✓ done (commits
+  `64ea1ae`, `e84296d`, `380a563`, `112b52f`).
 - **fn8**: the linked-list "next->prev" fix-up is TBD.
 - **fn11**: secondary allocation + slot field copies + fn_0c0a01b4
   invocation are TBD (~80 of 128 bytes).
