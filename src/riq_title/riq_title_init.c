@@ -247,62 +247,191 @@ void riq_title_set_enabled_on(void)
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * riq_title_decode_state_bits — source 0x0C0707B6  (~456 bytes)
+ * riq_title_score_cue — source 0x0C0707B6  (456 bytes — full body)
  *
- * Two-output bit decoder.  Receives a config struct in r4 and two
- * pointers r5/r6 that receive small u16 outputs.
+ * **Rhythm-game cue hit detector / scorer.**  Returns 0 for miss,
+ * 1 for "barely", or 2 for "perfect", based on how the time-value at
+ * config[+0] compares to a series of timing windows derived from
+ * config-specific byte parameters and shared state bytes (+0x4DB..+0x4E0).
  *
- * Behaviour (from asm 0x0c0707b6 prologue):
- *   *r5 = 0
- *   *r6 = 0
- *   r9 = r4 + 8                                  ; sub-struct ptr
- *   r1 = (u16) *(r4 + 10)                         ; flag word
- *   if (s16(r1) < 0)
- *       r6 = r5                                   ; redirect 2nd output
+ * Parameters:
+ *   r4 = config — a cue-evaluation struct with at minimum:
+ *           +0x00  s32   target time value
+ *           +0x04  s32   time-anchor (subtracted from windows)
+ *           +0x0A  u16   bit-mask of "active" inputs
+ *           +0x0E  u8    flag: bit 0 = use transformed bytes
+ *           +0x0E..11   four u8 byte parameters (raw values)
+ *           +0x12..15   four u8 byte parameters (alternate set, see below)
+ *           +0x48  u32   gate (must be clear in low 2 bits)
+ *           +0x4C  u16   = config[+0x6A] check
+ *           +0x4E  u16   used as a scaled offset
+ *   r5 = out_primary    — u16* output: secondary write target
+ *   r6 = out_secondary  — u16* output: bit-decode write target (may be
+ *                         redirected to out_primary when the input mask
+ *                         is non-negative as s16)
  *
- *   /* bit 0 of flag word selects the first output value 1 */
- *   if (r1 & 1) {
- *       *r6 = 1;
- *       goto epilogue;
- *   }
+ * Body has three logical phases:
  *
- *   /* bit 1 → output 2 */
- *   if (r1 & 2) {
- *       *r6 = 2;
- *       goto epilogue;
- *   }
+ *   ── Phase 1: Decode active-input bit mask (config[+0x0A]) ──
+ *     If the bit mask is non-negative as s16, redirect the secondary
+ *     output pointer to the primary (so only one slot is written).
+ *     Then check bits 0, 1, 4, 5, 6, 7 in order, writing the bit value
+ *     (1, 2, 16, 32, 64, or 128 — the literal 0x80 from pool[0xc070956])
+ *     to *out_secondary and skipping the rest.
  *
- *   /* ... continues with bits 2-7 each writing a corresponding code,
- *    *     then calls fn_0c0984bc / fn_0c09b054 with the resulting
- *    *     values, plus an FPU-save block (mov.l 0xc070970 etc. push
- *    *     fr8-fr15 to a 28-byte frame).  Body ~440 bytes follows the
- *    *     same template as fn5/fn8 in seqsel_bsd. */
+ *   ── Phase 2: Gate via config[+0x48] and equality check ──
+ *     If (config[+0x48] & 3) != 0 OR config[+0x4C] != config[+0x6A],
+ *     return 0 (miss).
  *
- * Saved regs: r8-r15, fr8-fr15, r14, PR.  Stack: 28 bytes.
+ *   ── Phase 3: Compute four window-bound values, range-check, return ──
+ *     For each of four "input byte slots" (config[+0x0E..0x11] or, when
+ *     the transformed-bytes flag is set, the result of
+ *     fn_0c0984bc(config[+0x0E..0x11])), compute
+ *         fn_0c09b054(byte, state[+0x4DD or +0x4DE], state[+0x4DF or +0x4E0])
+ *     This yields four window deltas; the *first* and *second* of those
+ *     are then potentially negated (set to {-1, +1}) when state[+0x4DB]
+ *     is non-zero (allowing a sign flip when the player faces the other
+ *     direction in remix variants).
+ *
+ *     The final range check compares config[+0x00] (target time) against
+ *     anchor = config[+0x04] plus successive accumulations of the
+ *     window deltas:
+ *       - If target < anchor + delta_perfect_far     → return 0
+ *       - If target > anchor + delta_perfect_close   → return 0
+ *       - If target ≥ anchor + delta_barely_far      → return 2 ("perfect")
+ *       - If target > anchor + delta_barely_close    → return 2
+ *       - Else                                       → return 1 ("barely")
+ *
+ * Saved regs: r8-r13, r14, PR.  Stack: 28 bytes.
+ *
+ * Source asm: 0x0C0707B6-0x0C07094C.  This decompilation preserves the
+ * branch structure faithfully but unifies the duplicated bit-decode arms
+ * into a single chain.
  * ──────────────────────────────────────────────────────────────────────── */
-void riq_title_decode_state_bits(const void *config, u16 *out_primary, u16 *out_secondary)
+
+/* State byte offsets used by score_cue (from pool words 0xc07095*) */
+#define TITLE_TIMING_NEG_FLAG_OFF     0x04DB   /* state[+0x4DB] — when non-zero, negate first two windows */
+#define TITLE_TIMING_BYTE_A_OFF       0x04DD   /* state byte fed as r5 to fn_0c09b054 (slots 0 + 2) */
+#define TITLE_TIMING_BYTE_B_OFF       0x04DE   /* state byte fed as r5 to fn_0c09b054 (slots 1 + 3) */
+#define TITLE_TIMING_BYTE_C_OFF       0x04DF   /* state byte fed as r6 to fn_0c09b054 (slots 0 + 2) */
+#define TITLE_TIMING_BYTE_D_OFF       0x04E0   /* state byte fed as r6 to fn_0c09b054 (slots 1 + 3) */
+
+int riq_title_score_cue(const void *config, u16 *out_primary, u16 *out_secondary)
 {
+    const u8 *cfg = (const u8 *)config;
+
+    /* Pre-zero both outputs */
     *out_primary   = 0;
     *out_secondary = 0;
 
-    u16 flags = *(u16 *)((const u8 *)config + 10);
+    /* ── Phase 1: bit-decode the input mask ──
+     *
+     * If the mask is non-negative as a signed 16-bit value, redirect the
+     * secondary output to the primary so the bit-decode write below
+     * goes into *out_primary instead. */
+    u16 mask  = *(const u16 *)(cfg + 0x0A);
+    s16 smask = (s16)mask;
 
-    /* "flag word is negative as s16" → redirect the secondary output
-     * pointer to the primary, so we only ever write into one slot. */
-    if ((s16)flags < 0) {
+    if (smask >= 0) {
         out_secondary = out_primary;
     }
 
-    if (flags & 0x0001) { *out_secondary = 1; goto done; }
-    if (flags & 0x0002) { *out_secondary = 2; goto done; }
-    /* TBD: bits 2..7 each map to a successive code (3..8), with the same
-     * write-and-jump pattern.  Body continues with fn_0c0984bc /
-     * fn_0c09b054 calls and an FPU-saved arithmetic block — see asm
-     * 0x0c070800-0x0c07095c. */
+    if (mask & 0x0001) {
+        *out_secondary = 1;
+    } else if (mask & 0x0002) {
+        *out_secondary = 2;
+    } else if (mask & 0x0010) {
+        *out_secondary = 16;
+    } else if (mask & 0x0020) {
+        *out_secondary = 32;
+    } else if (mask & 0x0040) {
+        *out_secondary = 64;
+    } else if (mask & 0x0080) {
+        *out_secondary = 128;        /* pool[0xc070956] = 0x0080 */
+    }
 
-done:
-    /* (rest of body — fn_0c0984bc / fn_0c09b054 dispatch is TBD) */
-    return;
+    /* ── Phase 2: gate + equality check ── */
+    u32 gate = *(const u32 *)(cfg + 0x48);
+    if ((gate & 3) != 0) {
+        return 0;                    /* miss — gate closed */
+    }
+    u16 v_4c = *(const u16 *)(cfg + 0x4C);
+    u16 v_6a = *(const u16 *)(cfg + 0x6A);
+    if (v_4c != v_6a) {
+        return 0;                    /* miss — config inconsistent */
+    }
+
+    /* ── Phase 3: four-slot timing-window evaluation ──
+     *
+     * Read four input bytes from the config struct (slots 0..3 at
+     * config[+0x0E..+0x11]).  If config[+0x10] has bit 0 set, the
+     * bytes are passed through fn_0c0984bc first (likely a remix
+     * transform that exchanges hit/miss windows). */
+    int byte0, byte1, byte2, byte3;
+
+    u8 transform_flag = *(cfg + 0x12);   /* config_sub[+10] == config[+0x12] */
+    if (transform_flag & 1) {
+        /* Transformed path: pre-process each byte */
+        byte0 = (int)fn_0c0984bc((int)*(cfg + 0x0E));   /* config_sub[+6] */
+        byte1 = (int)fn_0c0984bc((int)*(cfg + 0x0F));   /* config_sub[+7] */
+        byte2 = (int)fn_0c0984bc((int)*(cfg + 0x10));   /* config_sub[+8] */
+        byte3 = (int)fn_0c0984bc((int)*(cfg + 0x11));   /* config_sub[+9] */
+    } else {
+        /* Raw path: take bytes directly */
+        byte0 = (int)*(cfg + 0x0E);
+        byte1 = (int)*(cfg + 0x0F);
+        byte2 = (int)*(cfg + 0x10);
+        byte3 = (int)*(cfg + 0x11);
+    }
+
+    /* Read the shared state bytes once */
+    const u8 *st  = (const u8 *)g_task_state;
+    u8 state_a   = st[TITLE_TIMING_BYTE_A_OFF];
+    u8 state_b   = st[TITLE_TIMING_BYTE_B_OFF];
+    u8 state_c   = st[TITLE_TIMING_BYTE_C_OFF];
+    u8 state_d   = st[TITLE_TIMING_BYTE_D_OFF];
+
+    /* Compute the four window-deltas via fn_0c09b054 */
+    int window0 = (int)fn_0c09b054(byte0, state_a, state_c);   /* perfect-far  */
+    int window1 = (int)fn_0c09b054(byte1, state_b, state_d);   /* perfect-near */
+    int window2 = (int)fn_0c09b054(byte2, state_a, state_c);   /* barely-far   */
+    int window3 = (int)fn_0c09b054(byte3, state_b, state_d);   /* barely-near  */
+
+    /* Optional sign flip: when state[+0x4DB] != 0 the player faces the
+     * "other" direction in a remix variant; the perfect-near and
+     * perfect-far windows then become a fixed -1 / +1 pair instead of
+     * the computed values. */
+    if (st[TITLE_TIMING_NEG_FLAG_OFF] != 0) {
+        window0 = -1;
+        window1 = +1;
+    }
+
+    /* ── Final range check ──
+     *
+     * Let:
+     *   target = config[+0x00]
+     *   anchor = config[+0x04]  (cf. config[+0x4E] = u16 *config + 78)
+     *
+     * Decision tree (mirrors the four cmp/ge / cmp/gt branches in asm
+     * 0x0C070910-0x0C070934):
+     *
+     *   if (target < anchor + window2)  → return 0     ; before barely-far
+     *   if (target > anchor + window3)  → return 0     ; after barely-near
+     *   if (target < anchor + window0)  → return 1     ; in outer band
+     *   if (target > anchor + window1)  → return 2     ; in inner-perfect band
+     *   else                            → return 1
+     */
+    int target = *(const int *)(cfg + 0x00);
+    int anchor = *(const int *)(cfg + 0x04);   /* (s16 from config[+0x4E] in asm; widened) */
+    (void)v_4c;
+
+    if (target < anchor + window2) return 0;
+    if (target > anchor + window3) return 0;
+
+    if (target < anchor + window0) return 1;   /* barely */
+    if (target > anchor + window1) return 2;   /* perfect */
+
+    return 1;                                    /* barely (middle band) */
 }
 
 /* ────────────────────────────────────────────────────────────────────────
