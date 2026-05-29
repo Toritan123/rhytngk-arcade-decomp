@@ -1,6 +1,19 @@
 /*
  * src/seqsel/seqsel_bsd.c
  *
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ ⚠  UNVERIFIED — see docs/sh4_function_table_riq_range.md         │
+ * │                                                                  │
+ * │  The fn0..fn13 address table below (0x0C06FA90, 0x0C06FBA8, …,   │
+ * │  0x0C0700E6) was reconstructed without disassembling the binary.  │
+ * │  Cross-checking via tools/find_func_boundaries.py shows none of  │
+ * │  the 14 claimed addresses match any real function prologue in    │
+ * │  the ROM (closest matches differ by 14–184 bytes).               │
+ * │                                                                  │
+ * │  The C bodies in this file should be treated as fictional until  │
+ * │  re-derived against actual disassembly.                          │
+ * └──────────────────────────────────────────────────────────────────┘
+ *
  * Sequence-Selector BSD object — task lifecycle and state machine.
  *
  * Recovered from SH-4 binary fpr-24423_decrypted.bin.

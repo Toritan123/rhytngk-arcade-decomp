@@ -1,6 +1,17 @@
 /*
  * src/seqsel/seqsel_init.c
  *
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ ⚠  UNVERIFIED — see docs/sh4_function_table_riq_range.md         │
+ * │                                                                  │
+ * │  Claimed entry-point addresses (0x0C06F5D6, 0x0C06F806,           │
+ * │  0x0C06F866, 0x0C06F922, 0x0C06FA3A) do not match any real        │
+ * │  function prologue in the binary — closest scan matches differ   │
+ * │  by 10–108 bytes.  The 5 C bodies in this file should be         │
+ * │  treated as fictional until re-derived against actual SH-4       │
+ * │  disassembly via tools/find_func_boundaries.py.                  │
+ * └──────────────────────────────────────────────────────────────────┘
+ *
  * Sequence-Selector subsystem initialisation (SeqSel).
  *
  * Recovered from SH-4 binary fpr-24423_decrypted.bin.

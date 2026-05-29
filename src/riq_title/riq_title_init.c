@@ -1,6 +1,28 @@
 /*
  * src/riq_title/riq_title_init.c
  *
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ ⚠  UNVERIFIED — DO NOT TRUST THE FUNCTION BOUNDARIES BELOW.       │
+ * │                                                                  │
+ * │  The fn0..fn11 address table in this file (0x0C0701BA, 0x0C070236, │
+ * │  0x0C0707B6, 0x0C070DB0, 0x0C070EB0, …) was reconstructed without │
+ * │  disassembling the binary.  Cross-checking with capstone via      │
+ * │  tools/find_func_boundaries.py shows that the majority of those   │
+ * │  addresses point INSIDE real functions rather than at their       │
+ * │  prologues — the C bodies written here do not correspond to any   │
+ * │  single function in the ROM.                                      │
+ * │                                                                  │
+ * │  Verified function table for this address range lives at          │
+ * │     docs/sh4_function_table_riq_range.md                          │
+ * │  (42 distinct functions detected between 0x0C070000 and           │
+ * │  0x0C071100, not 14).                                             │
+ * │                                                                  │
+ * │  This file is kept for diff-reference only and should be          │
+ * │  rewritten from scratch against the verified table.  Do NOT       │
+ * │  cite any function in this file as "decompiled" until it has      │
+ * │  been re-derived against actual disassembly.                      │
+ * └──────────────────────────────────────────────────────────────────┘
+ *
  * Title-screen task initialisation.  Counterpart of `src/seqsel/seqsel_init.c`
  * for the title-screen subsystem.
  *

@@ -34,6 +34,10 @@ aica_keyon_states.bin
 build/ic11/
 build/ic11_farc_contents/
 
+# ── SH-4 function-boundary table (regenerable via find_func_boundaries.py) ────
+build/sh4_functions.json
+build/farc_index_v3.json
+
 # ── Captured WAV audio (copyrighted game audio, large files) ──────────────────
 # Root-level captures from Flycast/MAME sessions:
 rhytngk_*.wav

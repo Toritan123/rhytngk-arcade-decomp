@@ -54,6 +54,7 @@ PYTHON ?= python3
 .PHONY: all help setup decrypt split disasm \
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
+        find-funcs \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -184,6 +185,17 @@ system-%:
 #  Step 6: Re-disassemble (the asm/ tree is checked in, so this is
 #  optional; only needed to update after toolchain changes)
 # ──────────────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────────────
+#  SH-4 function-boundary derivation (capstone-based)
+# ──────────────────────────────────────────────────────────────────────
+
+find-funcs: $(BUILD_DIR)/sh4_functions.json
+
+$(BUILD_DIR)/sh4_functions.json: $(DECRYPTED_IC8) \
+                                  $(TOOLS_DIR)/find_func_boundaries.py | setup
+	@echo "  FUNCS    (capstone prologue scan)"
+	@$(PYTHON) $(TOOLS_DIR)/find_func_boundaries.py
 
 disasm: $(BUILD_DIR)/.disasm.stamp
 
