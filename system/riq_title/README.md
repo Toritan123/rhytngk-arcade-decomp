@@ -1,65 +1,76 @@
 # riq_title — Title Screen Task
 
-**Subsystem role:** Title screen task — handles the title screen and input validation.
+**Subsystem role:** Title screen task — handles the title screen, input validation, and state-chain management.
 
 **Source root:** `src/riq/riq_title/`
 
 ## Files
 
 ### Recovered from ROM (`__FILE__` strings)
-- `src/riq/riq_title/riq_title_init.c`  — task init (~14 functions)
-- `src/riq/riq_title/riq_title_bsd.c`   — BSD task lifecycle
+- `src/riq/riq_title/riq_title_init.c`  — task init (14 functions)
+- `src/riq/riq_title/riq_title_bsd.c`   — BSD task lifecycle (not started)
 
 ### Live decompilation in `src/riq_title/`
-- `src/riq_title/riq_title_init.c`  ⚠ **first pass partial** (2/14 functions)
+- `src/riq_title/riq_title_init.c`  ✓ **first pass complete** (14/14 functions)
 - `src/riq_title/riq_title_bsd.c`   (not started)
 
-## Status
+## Function summary
 
-**riq_title_init.c**: first 2 functions decompiled:
-- `riq_title_validate_inputs()` @ 0x0C0701BA  — 2-source -1/1/other dispatch
-- `riq_title_dispatcher()`      @ 0x0C070236  — gated state-machine dispatcher
+| Fn  | Address     | Size  | Role |
+|---|---|---|---|
+| fn0  | 0x0C0701BA | ~88 B | `riq_title_validate_inputs()` — 2-source -1/1/else dispatch |
+| fn1  | 0x0C070236 | ~440 B | `riq_title_dispatcher()` — gated state-machine dispatcher |
+| fn2  | 0x0C0705EE | ~28 B | `riq_title_set_enabled()` — calls fn_0c0900c8(0) |
+| fn3  | 0x0C07060A | ~28 B | `riq_title_set_enabled_on()` — calls fn_0c0900c8(1) |
+| fn4  | 0x0C0707B6 | ~456 B | `riq_title_decode_state_bits()` — bit decoder with two u16 outputs |
+| fn5  | 0x0C07097E | ~404 B | `riq_title_event_dispatch_a()` — sub-state event dispatcher |
+| fn6  | 0x0C070B12 | ~252 B | `riq_title_event_dispatch_b()` — sibling with field writes |
+| fn7  | 0x0C070C0E | ~418 B | `riq_title_decode_state_bits_v2()` — variant with FPU param |
+| fn8  | 0x0C070DB0 | ~102 B | `riq_title_invoke_state_cb()` — callback + chain unlink |
+| fn9  | 0x0C070E16 | ~80 B | `riq_title_clear_chain()` — walk chain + clear pointers |
+| fn10 | 0x0C070E66 | ~74 B | `riq_title_arm_session()` — clear state + set armed flag |
+| fn11 | 0x0C070EB0 | ~128 B | `riq_title_spawn_slot()` — allocate + commit new chain slot |
 
-Remaining functions in the file (located but not decompiled):
+## State-struct field map (extending the seqsel map)
 
-| Address | Size | Notes |
+| Offset | Type | Name |
 |---|---|---|
-| 0x0C0705EE | ~28 B  | small predicate |
-| 0x0C07060A | ~428 B | big state update |
-| 0x0C0707B6 | ~456 B | more state logic |
-| 0x0C07097E | ~404 B | |
-| 0x0C070B12 | ~252 B | |
-| 0x0C070C0E | ~418 B | |
-| 0x0C070DB0 | ~102 B | |
-| 0x0C070E16 |  ~80 B | |
-| 0x0C070E66 |  ~74 B | |
-| 0x0C070EB0+|        | more functions |
+| +0x00B0 | u8 | `title_input_flag` (enable bit for dispatcher) |
+| +0x00BA | u8 | cleared by fn9, read by fn11 |
+| +0x0090 | u8 | `title_armed_flag` (fn10 sets, fn11 gates on) |
+| +0x00AE | u8 | cleared by fn10 |
+| +0x001C | void* | state-chain head pointer |
+| +0x0020+ | i32[16] | per-index slot table (used by fn11) |
+| +0x002A8 | const void* | config-table pointer (read by fn11) |
+| +0x04DB | u8 | fn4 stores result low byte |
+| +0x05E8..F0 | u8 | title_state_a..d |
 
-## Key external addresses recovered
+## Cross-subsystem shared functions confirmed
 
-| Address    | Role |
-|---|---|
-| `0x0C3D4D80` | `g_task_state` — same shared state struct as seqsel |
-| `0x0C0693B0` | input source A query |
-| `0x0C069434` | input source B query |
-| `0x0C090604` | action handler (when either source returns 1) |
-| `0x0C06932C` | dispatcher gate predicate |
-| `0x0C0693C4` | state check A (same fn used by seqsel_bsd!) |
-| `0x0C069448` | state check B |
-| `0x0C08FCB4` | fallback action |
-
-## State-struct field map additions
-
-Building on the existing seqsel/seqsel_bsd field map:
-
-| Offset    | Type    | Name |
+| Address | Role | Used in |
 |---|---|---|
-| +0x00B0   | u8      | `title_input_flag` (enable bit for dispatcher) |
-| +0x05E8   | u8      | `title_state_a` |
-| +0x05E9   | u8      | `title_state_b` |
-| +0x05EA   | u8      | `title_state_c` |
-| +0x05F0   | u8      | `title_state_d` |
+| `0x0C0693B0` | input source A | seqsel, riq_title |
+| `0x0C069434` | input source B | seqsel, riq_title |
+| `0x0C0693C4` | engine state predicate | seqsel, riq_title |
+| `0x0C06932C` | engine gate | seqsel, riq_title |
+| `0x0C0984BC` | register helper | riq_title fn4/fn7/fn11 |
+| `0x0C09B054` | shared callable | riq_title fn4/fn7 |
+| `0x0C0902A8` | event dispatcher | riq_title fn5/fn6 |
+| `0x0C09CE58` | slot cleanup | seqsel_bsd fn11, riq_title fn8 |
+| `0x0C090910` | enter-substate notify | seqsel_bsd fn11, riq_title fn10 |
+| `0x0C09CDC0` | allocator | seqsel_bsd fn11, riq_title fn11 |
+
+## Refinement remaining
+
+- **fn4 / fn5 / fn6 / fn7**: bodies are large (250-460 bytes each).
+  The C versions in this file capture prologue + one or two arms; the
+  full step-by-step state walks are TBD.
+- **fn8**: the linked-list "next->prev" fix-up is TBD.
+- **fn11**: secondary allocation + slot field copies + fn_0c0a01b4
+  invocation are TBD (~80 of 128 bytes).
+
+These would be the next pass after seqsel is fully refined.
 
 ## References
-- `src/seqsel/seqsel_init.c` — methodological reference for this decompilation
+- `src/seqsel/seqsel_init.c`, `src/seqsel/seqsel_bsd.c` — methodology reference
 - `docs/arcade_internals.md` — `adv::TaskTitle` is the C++ class for this task
