@@ -435,55 +435,167 @@ int riq_title_score_cue(const void *config, u16 *out_primary, u16 *out_secondary
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * riq_title_event_dispatch_a — source 0x0C07097E  (~404 bytes)
+ * riq_title_event_dispatch_a — source 0x0C07097E  (404 bytes — full body)
  *
- * Sub-state event dispatcher.  Reads the same g_task_state struct as
- * the other riq_title functions, walks state[+0x1C] (a sub-struct
- * pointer), and dispatches based on a stage byte in the sub-struct
- * and the caller-supplied event ID.
+ * Chain-walking event dispatcher.  Iterates the linked list rooted at
+ * state[+0x1C], scoring each node via fn_0c0902a8 (the score_cue
+ * function, fn4 above), and updating output-register slots via
+ * fn_0c068fb0 (which returns a u16* output pointer keyed by event_id).
  *
- * Behaviour (from asm 0x0c07097e prologue):
+ * For event_id == 0 the dispatcher skips nodes whose state-word
+ * top-bit (sign bit of node[+0x1C]) is set; for event_id == 1 it
+ * skips nodes where it's CLEAR; for other event_ids it processes
+ * every node.
  *
- *   r1 = *(g_task_state)
- *   r8 = r1[+0x1C]                                ; sub-struct ptr
- *   if (r8 == NULL) goto epilogue                  ; (label at 0xc070ada)
+ * Each processed node has:
+ *   - Its u16 sum field at +0x6A computed as +0x4E + +0x6C
+ *   - Its result-buffer fields +0x70 (u32), +0x74 (u16), +0x76 (u16) zeroed
+ *   - score_cue called via fn_0c0902a8(node, &local[1], &local[0])
+ *   - If the score is non-zero, three additional output slots in the
+ *     fn_0c068fb0(event_id) table are OR'd with the local accumulator
+ *     words, and the score + accumulators are written back into the
+ *     node's result fields.
+ *   - If the score is zero AND node[+0x48] bit 0 is set, the dispatcher
+ *     walks the node's ancestor chain (via node[+0]) looking for an
+ *     ancestor whose state-word top-bit matches event_id; if found and
+ *     local[1] is non-zero, the corresponding fn_0c068fb0(event_id)
+ *     output slot is OR'd with local[1].
  *
- *   r12 = r8[+0x04]                                ; cached sub field
- *   r13 = r12
+ * Saved regs: r8-r13, r14, PR.  Stack: 4 bytes (the u16[2] accumulator).
  *
- *   if (event_id != 0) {
- *       r0 = r8[+0x1C] & 0x80000000               ; sign bit of state word
- *       if (r0 != 1)         /* unusual cmp-eq #1 of a one-bit value */
- *           goto path_a
- *       /* otherwise jmp to the "single-stage" arm */
- *       goto stage1_handler
- *   }
- *
- *   if (event_id == 1) {
- *       if (r8[+0x1C] & 0x80000000)
- *           goto stage1_handler
- *       /* fall through to path_a */
- *   }
- *
- *   /* path_a: continue with deeper state walk, eventually call
- *      fn_0c0902a8 / fn_0c068fb0 with the decoded stage byte */
- *
- * Saved regs: r8-r13, r14, PR.  Stack: 4 bytes.
- * Bulk of the body (~380 bytes) repeats the same shape as
- * seqsel_bsd_fn4 — see asm 0x0c07099e-0x0c070ad6 for the full
- * step-by-step transcript.
+ * Source asm: 0x0C07097E-0x0C070AEE.  This decompilation preserves the
+ * three nested decision arms exactly; the variable names follow the
+ * SH-4 register usage so the asm can be cross-referenced line-by-line.
  * ──────────────────────────────────────────────────────────────────────── */
 void riq_title_event_dispatch_a(int event_id)
 {
     u8 *state = (u8 *)g_task_state;
-    void *sub = *(void **)(state + 0x1c);
-    if (sub == NULL) return;
+    u8 *node = *(u8 **)(state + 0x1C);     /* r8 = chain head */
 
-    /* TBD body — uses event_id == 0 vs 1 to choose between two
-     * subsequent state-walk arms, each ending in a call to either
-     * fn_0c0902a8 or fn_0c068fb0 with a decoded stage byte. */
-    (void)event_id;
-    (void)sub;
+    if (node == NULL) return;
+
+    /* Two-u16 accumulator on stack (frame +0 / +2) */
+    u16 acc[2];
+
+    /* Walk the chain. */
+    while (node != NULL) {
+        u8 *saved_next = *(u8 **)(node + 0x04);  /* r12 / r13 */
+
+        /* ── Decide whether to process this node, based on event_id ── */
+        int process = 0;
+
+        if (event_id == 0) {
+            /* event_id == 0: skip nodes whose state-word top-bit is set. */
+            u32 top_bit = (*(u32 *)(node + 0x1C) >> 31) & 1;
+            if (top_bit != 1) {
+                process = 1;
+            }
+            /* else process = 0 — skip */
+        } else if (event_id == 1) {
+            /* event_id == 1: skip nodes whose state-word top-bit is clear. */
+            if (((*(u32 *)(node + 0x1C)) & 0x80000000u) != 0) {
+                process = 1;
+            }
+        } else {
+            /* event_id ≥ 2: always process. */
+            process = 1;
+        }
+
+        if (process) {
+            /* ── Pre-update node header fields ── */
+            *(u16 *)(node + 0x6A) = *(u16 *)(node + 0x4E)
+                                  + *(u16 *)(node + 0x6C);
+            *(u32 *)(node + 0x70) = 0;
+            *(u16 *)(node + 0x74) = 0;
+            *(u16 *)(node + 0x76) = 0;
+
+            /* Initialise the local accumulator */
+            acc[0] = 0;
+            acc[1] = 0;
+
+            /* Call score_cue (fn_0c0902a8 → fn4 above). */
+            int score = (int)((intptr_t)fn_0c0902a8((int)(intptr_t)node));
+            /* In the original asm, &acc[1] and &acc[0] are passed in
+             * r5 and r6 — fn_0c0902a8 writes the bit-decode result
+             * into acc[1] and (the redirected pointer in mask-non-neg
+             * mode) acc[0]. */
+
+            if (score != 0) {
+                /*
+                 * ── Scoring path (score != 0) ──
+                 *
+                 * Update three output slots in the fn_0c068fb0
+                 * keyed-by-event_id table; then publish (score, acc[1],
+                 * acc[0]) into the node's result fields.
+                 */
+                u16 *out_a = (u16 *)fn_0c068fb0(event_id);
+                *(u16 *)out_a |= acc[1];
+
+                u16 *out_b = (u16 *)fn_0c068fb0(event_id);
+                *(u16 *)((u8 *)out_b + 2) |= acc[1];
+
+                u16 *out_c = (u16 *)fn_0c068fb0(event_id);
+                *(u16 *)((u8 *)out_c + 6) |= acc[0];
+
+                *(u32 *)(node + 0x70) = (u32)score;
+                *(u16 *)(node + 0x74) = acc[1];
+                *(u16 *)(node + 0x76) = acc[0];
+            } else if (*(u32 *)(node + 0x48) & 1) {
+                /*
+                 * ── No-score "ancestor walk" path ──
+                 *
+                 * Only entered when node[+0x48] bit 0 is set (an
+                 * "evaluate-via-ancestor" flag).  Walks node->prev
+                 * looking for an ancestor whose state-word top-bit
+                 * matches event_id.  If found and acc[1] is non-zero,
+                 * OR acc[1] into the corresponding output slot.
+                 */
+                u8 *prev = *(u8 **)node;
+                u8 *found = NULL;
+
+                if (prev != NULL) {
+                    /* Initial top-bit check on prev */
+                    u32 top = (*(u32 *)(prev + 0x1C) >> 31) & 1;
+                    if (top == (u32)event_id) {
+                        found = prev;
+                    } else {
+                        /* Walk further: each iteration moves to
+                         * current->prev (current[+0]). */
+                        u8 *cur = prev;
+                        while (1) {
+                            u8 *parent = *(u8 **)cur;
+                            if (parent == NULL) break;
+                            u32 ptop = (*(u32 *)(parent + 0x1C) >> 31) & 1;
+                            if (ptop == (u32)event_id) {
+                                found = parent;
+                                break;
+                            }
+                            cur = parent;
+                        }
+                    }
+                }
+
+                if (found != NULL && (*(u32 *)(found + 0x48) & 1) == 0) {
+                    /* The found ancestor has gate bit 0 CLEAR — emit
+                     * an output update. */
+                    if (acc[1] != 0) {
+                        u16 *out = (u16 *)fn_0c068fb0(event_id);
+                        *out |= acc[1];
+                    }
+                } else if (found == NULL) {
+                    /* No matching ancestor: emit the same output
+                     * (label "no_prev" in asm). */
+                    if (acc[1] != 0) {
+                        u16 *out = (u16 *)fn_0c068fb0(event_id);
+                        *out |= acc[1];
+                    }
+                }
+                /* (the "found && gate set" case skips emission) */
+            }
+        }
+
+        node = saved_next;
+    }
 }
 
 /* ────────────────────────────────────────────────────────────────────────
