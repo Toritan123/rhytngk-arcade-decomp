@@ -54,7 +54,7 @@ PYTHON ?= python3
 .PHONY: all help setup decrypt split disasm \
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
-        find-funcs find-funcs-v2 find-funcs-v3 \
+        find-funcs find-funcs-v2 find-funcs-v3 call-graph \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -211,6 +211,13 @@ $(BUILD_DIR)/sh4_functions_v3.json: $(DECRYPTED_IC8) \
                                   $(TOOLS_DIR)/sh4_cfg.py | setup
 	@echo "  FUNCS    (recursive-descent CFG: pools + multi-entry)"
 	@$(PYTHON) $(TOOLS_DIR)/find_func_boundaries_v3.py
+
+call-graph: $(BUILD_DIR)/sh4_callgraph_v3.json
+
+$(BUILD_DIR)/sh4_callgraph_v3.json: $(BUILD_DIR)/sh4_functions_v3.json \
+                                  $(TOOLS_DIR)/sh4_callgraph.py
+	@echo "  CALLGR   (static call graph + dispatch-table scan)"
+	@$(PYTHON) $(TOOLS_DIR)/sh4_callgraph.py
 
 disasm: $(BUILD_DIR)/.disasm.stamp
 
