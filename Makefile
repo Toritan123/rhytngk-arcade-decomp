@@ -54,7 +54,7 @@ PYTHON ?= python3
 .PHONY: all help setup decrypt split disasm \
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
-        find-funcs \
+        find-funcs find-funcs-v2 \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -196,6 +196,13 @@ $(BUILD_DIR)/sh4_functions.json: $(DECRYPTED_IC8) \
                                   $(TOOLS_DIR)/find_func_boundaries.py | setup
 	@echo "  FUNCS    (capstone prologue scan)"
 	@$(PYTHON) $(TOOLS_DIR)/find_func_boundaries.py
+
+find-funcs-v2: $(BUILD_DIR)/sh4_functions_v2.json
+
+$(BUILD_DIR)/sh4_functions_v2.json: $(DECRYPTED_IC8) \
+                                  $(TOOLS_DIR)/find_func_boundaries_v2.py | setup
+	@echo "  FUNCS    (prologue scan + call-graph leaf discovery)"
+	@$(PYTHON) $(TOOLS_DIR)/find_func_boundaries_v2.py
 
 disasm: $(BUILD_DIR)/.disasm.stamp
 

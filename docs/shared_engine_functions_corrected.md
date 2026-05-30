@@ -83,6 +83,16 @@ A large indexed accessor keyed on a byte index (r4) and a byte mode
 flag (r5).  Claimed "register helper" 0x0984BC is +166 deep inside —
 well past the prologue.
 
+> **CORRECTION (scanner v2).**  The address `0x0C0984BC` lands inside
+> this function's body, but it is **NOT** un-callable.  The v2
+> call-graph scan plus a direct check shows `0x0C0984BC` is stored in
+> the literal pools of ~20 functions and genuinely `jsr`-ed (e.g. the
+> clean caller `mov #24,r4; mov.l 0xc064f70,r1; jsr @r1` at
+> `0x0C064E7E`, where `*(0x0C064F70) == 0x0C0984BC`).  So `0x0984BC`
+> is a real shared-tail / multi-entry call target — the "interior"
+> observation holds, but the implied "therefore not a real call
+> target" does not.  See `docs/scanner_v2_notes.md`.
+
 ### 0x0C09B016 (166 B) — array scan loop
 ```
 mov   #0,r11                 ; i = 0
