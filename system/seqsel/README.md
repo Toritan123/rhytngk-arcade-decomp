@@ -89,9 +89,19 @@ struct seqsel_spawn_context {
 };
 ```
 
-## Key external addresses recovered (full pool walk of fn11)
+## Key external addresses recovered (full pool walk of fn11) — UNVERIFIED
 
-| Address | Role |
+> ⚠ These addresses and role names were inferred from a literal-pool
+> walk of a function (fn11) whose own boundaries are now known to be
+> fictional (see the UNVERIFIED banner in `src/seqsel/seqsel_bsd.c`).
+> Spot-checks via `tools/find_func_boundaries.py` show several of
+> these land *inside* larger functions rather than at entries — e.g.
+> `0x0C09CDC0` ("allocator") is +28 into the type-tag dispatcher at
+> 0x0C09CDA4, and `0x0C090910` ("enter-substate notify") is +56 into
+> 0x0C0908D8.  See `docs/shared_engine_functions_corrected.md`.
+> Treat the whole table below as unverified until re-derived.
+
+| Address | Role (claimed, unverified) |
 |---|---|
 | `0x0C090910` | enter-substate notify |
 | `0x0C090058` | substate-arg toggle |

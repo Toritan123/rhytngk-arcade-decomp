@@ -45,20 +45,15 @@
 | +0x04DB | u8 | fn4 stores result low byte |
 | +0x05E8..F0 | u8 | title_state_a..d |
 
-## Cross-subsystem shared functions confirmed
+## Cross-subsystem shared functions — RETRACTED
 
-| Address | Role | Used in |
-|---|---|---|
-| `0x0C0693B0` | input source A | seqsel, riq_title |
-| `0x0C069434` | input source B | seqsel, riq_title |
-| `0x0C0693C4` | engine state predicate | seqsel, riq_title |
-| `0x0C06932C` | engine gate | seqsel, riq_title |
-| `0x0C0984BC` | register helper | riq_title fn4/fn7/fn11 |
-| `0x0C09B054` | shared callable | riq_title fn4/fn7 |
-| `0x0C0902A8` | event dispatcher | riq_title fn5/fn6 |
-| `0x0C09CE58` | slot cleanup | seqsel_bsd fn11, riq_title fn8 |
-| `0x0C090910` | enter-substate notify | seqsel_bsd fn11, riq_title fn10 |
-| `0x0C09CDC0` | allocator | seqsel_bsd fn11, riq_title fn11 |
+> ⚠ The "shared engine functions" table previously here was fictional.
+> Every listed address (0x0C0693B0, 0x0C0693C4, 0x0C0984BC,
+> 0x0C09B054, 0x0C0902A8, 0x0C09CE58, 0x0C090910, 0x0C09CDC0, …) was
+> verified to land *inside* a larger real function, not at a function
+> entry, and the 8 labels collapse onto only 6 real functions.
+> See **`docs/shared_engine_functions_corrected.md`** for the corrected
+> mapping and per-function behaviour.
 
 ## Refinement remaining
 
