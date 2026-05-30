@@ -125,5 +125,30 @@ The "cross-subsystem shared engine function" tables should be removed
 from `system/riq_title/README.md` and `system/seqsel/README.md`.  The
 real shared helpers (if any sharing exists at all) are the 6 functions
 above, whose true call-sites and purposes still need to be established
-by tracing actual `bsr`/`jsr` callers — which in turn needs the
-scanner-v2 leaf-function pass described in `dispatcher_hunt_v2.md`.
+by tracing actual `bsr`/`jsr` callers.
+
+## ⚠ Second-order correction (scanner v3)
+
+The 6 "real function" starts in the table above were derived by
+backward-scanning each claimed address to the nearest `sts.l pr`.  That
+is itself a few bytes too late — the true entry is the FIRST
+`mov.l rN,@-r15` of the register-save sequence.  The control-flow-aware
+scanner (`docs/scanner_v3_notes.md`) gives the corrected entries:
+
+| this-doc start | TRUE v3 start | size | alt-entries |
+|---|---|---|---|
+| 0x0C0693A6 | **0x0C069398** | 248 | 8 |
+| 0x0C090296 | **0x0C090294** | 64  | 1 |
+| 0x0C0908D8 | **0x0C0908D0** | 652 | 3 |
+| 0x0C098416 | **0x0C09840C** | 980 | 10 |
+| 0x0C09B016 | **0x0C09B008** | 188 | 4 |
+| 0x0C09CDA4 | **0x0C09CD9C** | 292 | 4 |
+
+Also: the addresses this doc called "interior, not callable as a
+standalone function" (0x0C0984BC, 0x0C0693C4, 0x0C0902A8, 0x0C09CDC0,
+0x0C09CE58, …) ARE callable — they are **alt-entries**, genuine
+secondary entry points into these multi-entry functions, reached by
+`jsr` from real call sites (0x0C0984BC from ~400).  The "lands inside a
+larger function" observation holds; the "therefore not a real call
+target" conclusion does not.  Hand-written SH-4 functions routinely
+have multiple entry points.
