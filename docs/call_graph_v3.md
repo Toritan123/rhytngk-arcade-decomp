@@ -79,6 +79,38 @@ Several tables end with a dword above `CODE_END` (0x0C1B0000) — e.g.
 tables are *seeded* with code pointers and then patched/terminated with
 runtime RAM pointers, consistent with the indirection model above.
 
+### Who references the tables? (static pool refs)
+
+For each table we scan the code region for a dword holding an address in
+`[base-32, end)` — a literal-pool pointer at (or a few entries before)
+the table, the shape used for PC-relative indexed dispatch.
+
+* **Only 17 of 123 tables (14%) have any static pool reference.**
+* **106 of 123 (86%) have none** — they are installed into / reached
+  through runtime-constructed RAM pointers, exactly like the dispatcher.
+  This is the same indirection pattern at the data level.
+
+Worked example, directly tied to the dispatcher: the function containing
+the dispatcher caller `0x0C0EF9B0` carries a pool literal `0x0C103E48`
+(stored at `0x0C0EFA84`).  That points at a handler table immediately
+below the dispatcher `0x0C103E80`:
+
+```
+0c103e4c: 0c112ec0   0c103e50: 0c118de0   0c103e54: 0c118dc0  ← hub
+0c103e58: 0c11cda0   0c103e5c: 0c11b7a0   0c103e60: 0c11ba20
+0c103e64: 0c11b960   0c103e68: 0c129ee0  ← hub   0c103e6c: 0c11c2e0
+```
+
+Every entry is a real function; `0x0C118DC0` and `0x0C129EE0` are among
+the top hub functions. So this is a verified handler table feeding the
+dispatcher, reached by loading its base from a pool and indexing.
+
+Caveat: the static refs land at small offsets from the structurally
+detected base (±a few entries), because the structural detector's run
+boundary (maximal run of valid-entry dwords) can differ slightly from
+the base the code actually loads. Treat the detected base as approximate
+until the indexing instruction is read.
+
 ### Hub functions (most static callers)
 
 The opposite end: a handful of low-level helpers absorb hundreds of

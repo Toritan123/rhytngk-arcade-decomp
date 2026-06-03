@@ -144,6 +144,32 @@ def main() -> int:
 
     table_entries = sum(t["count"] for t in tables)
 
+    # ── Static references to each table ──────────────────────────────
+    # A table is "statically referenced" if some code-region dword holds
+    # an address inside [base-32, end) — i.e. a literal-pool pointer at
+    # (or a few entries before) the table base, used for PC-relative
+    # indexed dispatch.  Tables with NO such reference are installed /
+    # reached purely through runtime-constructed RAM pointers.
+    if data and tables:
+        spans = [(int(t["addr_hex"], 16), t["count"]) for t in tables]
+        ref_addrs: list[list[int]] = [[] for _ in spans]
+        a = base
+        while a + 4 <= code_end:
+            w = le32(data, a, base)
+            if base <= w < code_end:
+                for i, (b, c) in enumerate(spans):
+                    if b - 0x20 <= w < b + c * 4:
+                        ref_addrs[i].append(a)
+                        break
+            a += 4
+        for i, t in enumerate(tables):
+            t["static_refs_hex"] = [f"{r:08x}" for r in ref_addrs[i]]
+        n_referenced = sum(1 for t in tables if t["static_refs_hex"])
+    else:
+        n_referenced = 0
+        for t in tables:
+            t["static_refs_hex"] = []
+
     # ── Is the dispatcher / any table referenced by a code dword? ────
     # (i.e. could a static scan have found it?)  Scan code dwords for the
     # dispatcher entry and each table base.
@@ -174,6 +200,8 @@ def main() -> int:
         "dispatcher_dword_refs_in_code": disp_dword_refs,
         "n_dispatch_tables": len(tables),
         "n_table_entries": table_entries,
+        "n_tables_static_ref": n_referenced,
+        "n_tables_runtime_only": len(tables) - n_referenced,
         "min_table_len": MIN_TABLE,
     }
 
@@ -202,6 +230,8 @@ def main() -> int:
     print()
     print(f"dispatch tables (>= {MIN_TABLE} consecutive entries): "
           f"{len(tables)}  ({table_entries} entries)")
+    print(f"  static pool reference     : {n_referenced}")
+    print(f"  runtime-only (no static)  : {len(tables) - n_referenced}")
     if tables:
         big = sorted(tables, key=lambda t: -t["count"])[:8]
         for t in big:
