@@ -18,11 +18,14 @@ options:
 
 # Program ROM (fpr-24423.ic8) layout
 # After PIC decryption (subkey1=0xf5e4, subkey2=0x9c6a), this is plain SH-4 code.
-# NAOMI mounts cart at 0x0c000000 (cached) / 0xa0000000 (uncached).
+# Address base VERIFIED against the EstexNT/rhythmtengokuarcade matching
+# decomp: file offset 0 (the "NAOMI" header) loads at vaddr 0x0C01FB00,
+# so vaddr = file_offset + 0x0C01FB00.  The cart header occupies the
+# first 0x500 bytes; the SH-4 entry (func_0c020000) begins at file 0x500.
+# (Earlier guesses of 0x0C000000 / 0x0C010000 here were both wrong.)
 segments:
   - { start: 0x000000, type: header, name: cart_header }
-  - { start: 0x000800, type: bin,    name: boot_stub }
-  - { start: 0x010000, type: asm,    name: main_code, vram: 0x0c010000 }
+  - { start: 0x000500, type: asm,    name: main_code, vram: 0x0c020000 }
 
 # Data ROMs - tracked separately as DTPK packages
 data_roms:

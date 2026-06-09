@@ -16,7 +16,7 @@ except ImportError:
     raise SystemExit('capstone-engine required: pip install capstone')
 
 
-def disasm_range(rom: bytes, start: int, end: int, vram_base: int = 0x0c010000):
+def disasm_range(rom: bytes, start: int, end: int, vram_base: int = 0x0c01fb00):
     """Disassemble [start, end) and return list of (vram_addr, bytes, mnem, ops)."""
     md = Cs(CS_ARCH_SH, CS_MODE_SH4 + CS_MODE_LITTLE_ENDIAN)
     md.detail = False
@@ -40,7 +40,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('input', help='Decrypted SH-4 ROM (raw binary)')
     p.add_argument('output_dir', help='Directory to write per-function .s files')
-    p.add_argument('--vram-base', type=lambda x: int(x, 0), default=0x0c010000)
+    p.add_argument('--vram-base', type=lambda x: int(x, 0), default=0x0c01fb00)
     p.add_argument('--symbols', help='Optional symbol map (addr label) per line')
     p.add_argument('--start', type=lambda x: int(x, 0), default=0x10000)
     p.add_argument('--end',   type=lambda x: int(x, 0), default=None)

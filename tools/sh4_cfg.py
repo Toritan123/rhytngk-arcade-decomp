@@ -36,8 +36,14 @@ Public API:
 from __future__ import annotations
 from dataclasses import dataclass, field
 
-ROM_BASE = 0x0C010000
-CODE_END = 0x0C1B0000
+# Virtual address of file offset 0 of the decrypted image.  Verified
+# against the EstexNT/rhythmtengokuarcade matching decomp: the NAOMI
+# header sits at file offset 0 and that repo's linker (rta.ld) places it
+# at 0x0C01FB00, and func_0c020140 lands at file offset 0x640
+# (0x0C01FB00 + 0x640 == 0x0C020140).  (Earlier 0x0C010000 was a guess
+# from the pre-ground-truth analysis and was wrong by 0xFB00.)
+ROM_BASE = 0x0C01FB00
+CODE_END = 0x0C1BFB00          # same file region as before (+0xFB00)
 
 
 def le16(data: bytes, addr: int) -> int:

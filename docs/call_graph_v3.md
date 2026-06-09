@@ -1,21 +1,27 @@
 # Call graph & dispatch tables (scanner v3)
 
+> **Regenerated 2026-06-09 on the corrected base (`0x0C01FB00`).**  An
+> earlier version of this doc reported numbers computed on the
+> `0x0C010000` base, which was wrong by `0xFB00` and *corrupted the call
+> graph* (pool-resolved targets landed `0xFB00` off in file space).  All
+> figures below are post-correction; see
+> `docs/base_address_correction.md`.
+
 `tools/sh4_callgraph.py` builds a static call graph from the v3 function
 set (`build/sh4_functions_v3.json`) and scans the code region for
 function-pointer tables.  It exists to answer the long-standing
-question from `docs/dispatcher_hunt_v2.md` — *who calls the generic
-dispatcher, and what is the engine's call-flow shape?*
+question — *who calls the generic dispatcher, and what is the engine's
+call-flow shape?*
 
 Run it with `make call-graph` (output: `build/sh4_callgraph_v3.json`,
 git-ignored, regenerable).
 
 ## Method
 
-* **Valid entries** = every top-level start **plus** every alt-entry —
-  14,239 in total.  Each alt-entry is mapped to its owning top-level
+* **Valid entries** = every top-level start **plus** every alt-entry
+  (10,414 total).  Each alt-entry is mapped to its owning top-level
   function (`owner`), so a call landing on a secondary entry is credited
-  to the function that contains it.  This matters: the engine `jsr`s
-  interior entries constantly (see `shared_engine_functions_corrected.md`).
+  to the function that contains it.
 * **Static edge** u→v = function u's v3 CFG contains a real
   `bsr` / `jsr @rN` / `jmp @rN` whose resolved target, via `owner`, is a
   known entry v.  Pool dwords are never decoded (v3 is CFG-accurate), so
@@ -27,89 +33,68 @@ git-ignored, regenerable).
 
 | metric | value |
 |---|---|
-| top-level functions | 10,968 |
-| valid entries (incl. alt) | 14,239 |
-| static call edges | 20,365 |
-| roots (no static caller) | **8,230 (75%)** |
-| leaves (no static callee) | 3,844 |
-| dispatch tables (≥8) | **123** (1,141 entries) |
+| top-level functions | 10,227 |
+| valid entries (incl. alt) | 10,414 |
+| static call edges | 18,786 |
+| roots (no static caller) | **6,064 (59.3%)** |
+| leaves (no static callee) | 3,676 |
+| dispatch tables (≥8) | **158** (1,530 entries) |
 
-**Three-quarters of all functions have no static caller.**  They are
-not dead code — they are reached only through *runtime-constructed,
+**Roughly 60% of all functions have no static caller.**  They are not
+dead code — they are reached only through *runtime-constructed,
 RAM-resident* function pointers (object vtables, registered callbacks,
-sequencer command tables copied into RAM).  This is the defining shape
-of the engine: it is overwhelmingly indirection-driven, which is why
-earlier static-only caller hunts kept coming up empty.
+sequencer command tables copied into RAM).  The engine is heavily
+indirection-driven, which is why earlier static-only caller hunts kept
+coming up empty.  (The pre-correction doc put this at 75–90%, inflated
+by the corrupted graph; the real figure is lower but the qualitative
+conclusion stands.)
 
-### The generic dispatcher 0x0C103E80
+### The generic dispatcher 0x0C113980
 
-The dispatcher (true entry `0x0C103E80`; the label `0x0C103E92` cited in
-earlier docs is interior code, **not** an entry per v3) is a multi-entry
-function with alt-entries `0x0C103E88` and `0x0C103EB0`.
+(Old frame: `0x0C103E80`.)  A 196-byte trampoline that saves the caller
+args (`r4/r5/r6 → r8/r9/r10`), loads a pointer from its pool, and
+`jsr`s through it.
 
-* **As a code dword it appears 0 times** — no code-segment reference to
-  its address exists, so no static scan could ever have found a "caller"
-  pointing at `0x0C103E80`.
-* Its **primary entry has no direct static caller**.  It is invoked
-  through RAM pointers like everything else at the top of the call graph.
-* Its two **alt-entries** *do* have static callers — exactly two:
-  `0x0C0ED6B8` → `0x0C103E88` and `0x0C0EF9B0` → `0x0C103EB0`.  So the
-  honest statement is: the dispatcher's *body* is reached statically at
-  two interior points, but its *front door* is reached only by
-  indirection.  (This corrects the earlier blanket "zero static callers"
-  claim — alt-entry-aware resolution finds two.)
+* **Zero static callers.**  Its address appears as a code dword exactly
+  **once**, and it has no resolved `bsr`/`jsr` edge pointing at it — so
+  it is invoked through a runtime RAM pointer, like the rest of the
+  call-graph roots.
+* It has **no alt-entries** in the corrected set.  (The pre-correction
+  doc claimed two alt-entries with two static callers; both were
+  artifacts of the `0xFB00`-off frame and are gone after regeneration.)
 
 ### Dispatch tables
 
-v3's multi-entry-aware function set finally resolves the engine's
-function-pointer tables; v2's noisier set found none.  123 runs of ≥8
-consecutive valid entries, 1,141 entries total (max 20, median ~9), all
-inside the code region.  Largest:
+158 runs of ≥8 consecutive valid entries, 1,530 entries total (max 25),
+all inside the code region.  Largest:
 
 | table base | entries | terminated by |
 |---|---|---|
-| `0x0C05F418` | 20 | `0x0C3D5C1C` (RAM ptr) |
-| `0x0C071EB4` | 16 | code (`0x4F222FE6`) |
-| `0x0C0ABEA0` | 14 | `0x0C3D4F24` (RAM ptr) |
-| `0x0C05FEF0` | 12 | code |
-| `0x0C09AE30` | 12 | `0x0C3D5328` (RAM ptr) |
+| `0x0C048544` | 25 | code (`0x2FE62F86` = prologue) |
+| `0x0C0483A0` | 24 | code (`0x2F962F86`) |
+| `0x0C06EF18` | 20 | `0x0C3D5C1C` (RAM ptr) |
+| `0x0C0819B4` | 16 | code (`0x4F222FE6`) |
+| `0x0C0D8E38` | 15 | `0x6111D1C8` |
 
-Several tables end with a dword above `CODE_END` (0x0C1B0000) — e.g.
-`0x0C3D…`, which is a RAM address.  That is the tell: these static
-tables are *seeded* with code pointers and then patched/terminated with
-runtime RAM pointers, consistent with the indirection model above.
+Several tables end with a dword above `CODE_END` (`0x0C1BFB00`) — e.g.
+`0x0C3D…`, a RAM address.  That is the tell: these static tables are
+*seeded* with code pointers and terminated/patched with runtime RAM
+pointers, consistent with the indirection model.
 
-### Who references the tables? (static pool refs)
+### None of the tables has a static pool reference
 
 For each table we scan the code region for a dword holding an address in
-`[base-32, end)` — a literal-pool pointer at (or a few entries before)
-the table, the shape used for PC-relative indexed dispatch.
+`[base-32, end)` — a literal-pool pointer at (or just before) the table,
+the shape used for PC-relative indexed dispatch.
 
-* **Only 17 of 123 tables (14%) have any static pool reference.**
-* **106 of 123 (86%) have none** — they are installed into / reached
-  through runtime-constructed RAM pointers, exactly like the dispatcher.
-  This is the same indirection pattern at the data level.
+* **0 of 158 tables** have any such static reference.
 
-Worked example, directly tied to the dispatcher: the function containing
-the dispatcher caller `0x0C0EF9B0` carries a pool literal `0x0C103E48`
-(stored at `0x0C0EFA84`).  That points at a handler table immediately
-below the dispatcher `0x0C103E80`:
-
-```
-0c103e4c: 0c112ec0   0c103e50: 0c118de0   0c103e54: 0c118dc0  ← hub
-0c103e58: 0c11cda0   0c103e5c: 0c11b7a0   0c103e60: 0c11ba20
-0c103e64: 0c11b960   0c103e68: 0c129ee0  ← hub   0c103e6c: 0c11c2e0
-```
-
-Every entry is a real function; `0x0C118DC0` and `0x0C129EE0` are among
-the top hub functions. So this is a verified handler table feeding the
-dispatcher, reached by loading its base from a pool and indexing.
-
-Caveat: the static refs land at small offsets from the structurally
-detected base (±a few entries), because the structural detector's run
-boundary (maximal run of valid-entry dwords) can differ slightly from
-the base the code actually loads. Treat the detected base as approximate
-until the indexing instruction is read.
+So the tables, like the dispatcher, are reached purely through
+runtime-constructed RAM pointers — the same indirection pattern at the
+data level.  (The pre-correction doc reported "17/123 with static refs"
+and a worked example at `0x0C103E48`; both were false near-matches
+produced by the `0xFB00`-shifted file mapping and do not survive
+regeneration.)
 
 ### Hub functions (most static callers)
 
@@ -118,28 +103,27 @@ direct calls each.  These are the engine's shared primitives.
 
 | function | static callers |
 |---|---|
-| `0x0C118B20` | 554 |
-| `0x0C1A1A40` | 452 |
-| `0x0C11B520` | 410 |
-| `0x0C0A199C` | 398 |
-| `0x0C09F1E4` | 350 |
-| `0x0C09840C` | 325 |
-| `0x0C0A17D8` | 308 |
-| `0x0C097F88` | 276 |
+| `0x0C118DC0` | 372 |
+| `0x0C1A1A40` | 332 |
+| `0x0C0A1A6C` | 321 |
+| `0x0C0984BC` | 276 |
+| `0x0C11B760` | 259 |
+| `0x0C0A17F0` | 256 |
+| `0x0C097F88` | 252 |
+| `0x0C098310` | 233 |
 
-`0x0C09840C` is the indexed-table accessor from
-`shared_engine_functions_corrected.md` (its alt-entry `0x0C0984BC` is
-itself `jsr`-ed from hundreds of sites; those calls are credited to the
-parent here).
+`0x0C0984BC` — the helper the earliest docs already cited as "called
+from hundreds of sites" — shows 276 static callers here.  Note it was
+*already* in the true frame in those docs, so it needed no shift; that
+coincidence is what made the off-by-`0xFB00` bug hard to spot.
 
 ## Caveats
 
-* "Static caller" counts undirected indirection — a function with zero
-  static callers is almost always live via a RAM pointer, not dead.
-* 69 outgoing targets don't resolve to a known entry (computed
-  `jmp @rN` into data tails, or seeds the scanner missed); they're
-  dropped from the edge set, not invented.
+* "Static caller" counts only direct edges — a function with zero static
+  callers is almost always live via a RAM pointer, not dead.
+* 3 outgoing targets don't resolve to a known entry; dropped, not
+  invented.
 * Table detection is purely structural (consecutive valid entries), so a
   run could be a coincidental dword sequence; the RAM-pointer
-  terminators on the largest tables are good corroboration but each
-  table still needs a real call-site trace to confirm its role.
+  terminators on several tables corroborate, but each table still needs a
+  real call-site trace to confirm its role.

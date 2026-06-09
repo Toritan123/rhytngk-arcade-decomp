@@ -1,5 +1,13 @@
 # BeatScript Dispatcher — FOUND
 
+> ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
+> document may be in the pre-correction frame — **0xFB00 too low**. The
+> verified base is `0x0C01FB00` (file offset 0), confirmed against the
+> `EstexNT/rhythmtengokuarcade` ground truth. Re-check any address against
+> `build/sh4_functions_v3.json` before relying on it. See
+> `docs/base_address_correction.md`.
+
+
 After multiple failed search attempts (documented in
 `docs/beatscript_dispatcher_hunt.md`), the BeatScript interpreter
 was located by searching for `cmp/eq #0x28` and `cmp/eq #0x29`

@@ -45,7 +45,7 @@ V3 = ROOT / "build" / "sh4_functions_v3.json"
 ROM = ROOT / "roms" / "fpr-24423_decrypted.bin"
 OUT = ROOT / "build" / "sh4_callgraph_v3.json"
 
-DISPATCHER = 0x0C103E80          # true entry (interior label 0x0C103E92)
+DISPATCHER = 0x0C113980          # true entry (corrected base; was 0x0C103E80 under the old +0xFB00-off base)
 MIN_TABLE = 8                    # min consecutive entries to call a "table"
 
 

@@ -50,10 +50,12 @@ except ImportError:
 ROM = Path(__file__).resolve().parent.parent / "roms" / "fpr-24423_decrypted.bin"
 OUT = Path(__file__).resolve().parent.parent / "build" / "sh4_functions_v2.json"
 
-ROM_BASE = 0x0C010000
+# vaddr of file offset 0 — verified against EstexNT/rhythmtengokuarcade
+# (was 0x0C010000, wrong by 0xFB00; see tools/sh4_cfg.py).
+ROM_BASE = 0x0C01FB00
 # Code lives in the first ~1.7 MB of the 64 MB image; everything past
 # this is sound/graphics data.  Constrain call-target acceptance to it.
-CODE_END = 0x0C1B0000
+CODE_END = 0x0C1BFB00
 
 
 def le16(buf: bytes, off: int) -> int:

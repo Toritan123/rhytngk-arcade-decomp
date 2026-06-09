@@ -48,7 +48,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('input',  help='Decrypted SH-4 ROM')
     p.add_argument('output', help='Symbol map output (addr name)')
-    p.add_argument('--vram-base', type=lambda x: int(x, 0), default=0x0c010000)
+    p.add_argument('--vram-base', type=lambda x: int(x, 0), default=0x0c01fb00)
     p.add_argument('--start',     type=lambda x: int(x, 0), default=0x10000)
     p.add_argument('--end',       type=lambda x: int(x, 0), default=None)
     args = p.parse_args()

@@ -45,7 +45,7 @@ except ImportError:
 ROM = Path(__file__).resolve().parent.parent / "roms" / "fpr-24423_decrypted.bin"
 OUT = Path(__file__).resolve().parent.parent / "build" / "sh4_functions.json"
 
-ROM_BASE = 0x0C010000  # NAOMI main RAM start where the decrypted image is loaded
+ROM_BASE = 0x0C01FB00  # vaddr of file offset 0; verified vs EstexNT decomp (was 0x0C010000, off by 0xFB00)
 
 
 # ──────────────────────────────────────────────────────────────────────
