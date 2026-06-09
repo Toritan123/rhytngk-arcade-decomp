@@ -104,6 +104,27 @@ alt-entry + 4 boundary-merge misses).  Run it after any scanner change —
 if a future edit re-introduces a base or decode error, the matches stop
 landing and this target goes red.
 
+## Boundary discrepancies (the 4 non-matches), investigated
+
+Recall is 97.8% — 174 START + 1 alt-entry + 4 misses out of 179.  All
+four misses were disassembled by hand; **three are the ground truth
+being slightly wrong, not us**:
+
+| GT entry | our entry | verdict |
+|---|---|---|
+| `0x0C021AF6` | `0x0C021AF4` | GT split at `sts.l pr`; the function actually starts one save earlier at `mov.l r14,@-r15`. **Ours is correct.** |
+| `0x0C0223EC` | `0x0C0223E8` | Multi-reg prologue `r8,r9,r14,pr`; GT split at the `r14` save. **Ours (first `r8` save) is correct.** |
+| `0x0C022470` | `0x0C02246C` | Multi-reg prologue `r8,r9,r10,r11,…`; GT split at the `r10` save. **Ours (first `r8` save) is correct.** |
+| `0x0C0227D0` | — (merged) | Genuine gap: a function with **no standard prologue and no static caller** (pool-ref count 0, not a resolved call target).  Reached indirectly, so prologue-seeding can't find it. |
+
+So on close inspection the v3 scanner is at parity-or-better with an
+independent human disassembly: 178/179 entries are ours-correct, and the
+single true gap is a no-prologue, indirectly-reached function — a known
+limitation of prologue-based seeding, not a base or decode error.  These
+four are encoded as *explained* misses in
+`tools/validate_groundtruth.py`; if a future change introduces a *new*
+(unexplained) miss, the target prints a WARN.
+
 ## Consequence for the other docs
 
 Any doc under `docs/` or `system/` that predates this correction may

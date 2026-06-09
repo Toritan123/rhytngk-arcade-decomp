@@ -29,6 +29,19 @@ GT = ROOT / "tools" / "ground_truth_estex.txt"
 V3 = ROOT / "build" / "sh4_functions_v3.json"
 THRESHOLD = 0.95
 
+# Misses we have hand-investigated (see docs/base_address_correction.md
+# "Boundary discrepancies").  Three are cases where the ground truth split
+# a few bytes LATE — at the `sts.l pr` instead of the first `mov.l rN,
+# @-r15` of a multi-register prologue — so OUR entry is the more correct
+# one.  One is a genuine no-prologue / no-static-caller function we cannot
+# seed automatically.
+EXPLAINED = {
+    0x0C021AF6: "GT split at sts.l pr; our entry 0x0C021AF4 (first r14 save) is earlier/correct",
+    0x0C0223EC: "GT split at r14 save; our entry 0x0C0223E8 (first r8 save) is earlier/correct",
+    0x0C022470: "GT split at r10 save; our entry 0x0C02246C (first r8 save) is earlier/correct",
+    0x0C0227D0: "genuine gap: no-prologue, no-static-caller fn (indirectly reached)",
+}
+
 
 def load_gt() -> list[int]:
     out = []
@@ -68,20 +81,27 @@ def main() -> int:
             missed.append(v)
 
     recall = (start_hit + alt_hit) / len(gt) if gt else 0.0
+    unexplained = [m for m in missed if m not in EXPLAINED]
     print(f"ground truth      : {len(gt)} entries "
           f"(EstexNT/rhythmtengokuarcade)")
     print(f"v3 base           : 0x{doc['rom_base']:08X}")
     print(f"  exact START     : {start_hit}")
     print(f"  alt-entry       : {alt_hit}")
-    print(f"  missed          : {miss}")
+    print(f"  missed          : {miss} "
+          f"({len(missed) - len(unexplained)} explained, "
+          f"{len(unexplained)} unexplained)")
     print(f"recall            : {recall*100:.1f}%  "
           f"(threshold {THRESHOLD*100:.0f}%)")
-    if missed and (verbose or miss <= 12):
-        print("  missed addrs    : " + ", ".join(f"{m:08x}" for m in missed))
+    for m in missed:
+        why = EXPLAINED.get(m, "*** UNEXPLAINED — investigate ***")
+        print(f"    {m:08x}: {why}")
 
     if recall < THRESHOLD:
         print("FAIL: recall below threshold", file=sys.stderr)
         return 1
+    if unexplained:
+        print(f"WARN: {len(unexplained)} new unexplained miss(es)",
+              file=sys.stderr)
     print("OK")
     return 0
 
