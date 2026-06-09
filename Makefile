@@ -54,7 +54,7 @@ PYTHON ?= python3
 .PHONY: all help setup decrypt split disasm \
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
-        find-funcs find-funcs-v2 find-funcs-v3 call-graph \
+        find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -80,6 +80,7 @@ help:
 	@echo "  make per-system-list  — list all non-game subsystems"
 	@echo "  make game-<name>      — show one game's files + status"
 	@echo "  make system-<name>    — show one subsystem's files + status"
+	@echo "  make validate-gt      — check v3 funcs vs EstexNT ground truth"
 	@echo "  make disasm           — re-run SH-4 + ARM7 objdump"
 	@echo "  make check-tools      — verify required tools are installed"
 	@echo "  make clean            — remove all build artifacts"
@@ -211,6 +212,10 @@ $(BUILD_DIR)/sh4_functions_v3.json: $(DECRYPTED_IC8) \
                                   $(TOOLS_DIR)/sh4_cfg.py | setup
 	@echo "  FUNCS    (recursive-descent CFG: pools + multi-entry)"
 	@$(PYTHON) $(TOOLS_DIR)/find_func_boundaries_v3.py
+
+validate-gt: $(BUILD_DIR)/sh4_functions_v3.json $(TOOLS_DIR)/ground_truth_estex.txt
+	@echo "  VALIDATE (v3 vs EstexNT ground truth)"
+	@$(PYTHON) $(TOOLS_DIR)/validate_groundtruth.py
 
 call-graph: $(BUILD_DIR)/sh4_callgraph_v3.json
 

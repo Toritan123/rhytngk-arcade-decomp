@@ -93,6 +93,17 @@ wrong) file mapping.
 * `tools/splat.yaml` — `main_code` vram + the header/entry layout
   (it had a *third*, also-wrong, guess of `0x0C000000`).
 
+## Regression guard
+
+The 179 ground-truth entries are now committed as
+`tools/ground_truth_estex.txt` (addresses only — no ROM bytes — plus the
+source commit `c2c1cda`).  `make validate-gt`
+(`tools/validate_groundtruth.py`) re-checks the v3 set against them and
+fails if recall drops below 95%.  Current: **97.8%** (174 START + 1
+alt-entry + 4 boundary-merge misses).  Run it after any scanner change —
+if a future edit re-introduces a base or decode error, the matches stop
+landing and this target goes red.
+
 ## Consequence for the other docs
 
 Any doc under `docs/` or `system/` that predates this correction may
