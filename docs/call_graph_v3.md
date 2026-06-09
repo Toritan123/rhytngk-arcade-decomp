@@ -28,6 +28,10 @@ git-ignored, regenerable).
   these are real edges, not pool noise.
 * **Dispatch table** = a maximal run of ≥8 consecutive code-region
   dwords that are *all* valid entries.
+* **Table reachability** is checked against *both* SH-4 addressing modes:
+  literal-pool pointers (`mov.l @(d,pc)` dwords) **and** `mova
+  @(disp,pc),r0` PC-relative address computations.  A table reached by
+  neither is genuinely runtime-only.
 
 ## Results
 
@@ -59,6 +63,12 @@ args (`r4/r5/r6 → r8/r9/r10`), loads a pointer from its pool, and
   **once**, and it has no resolved `bsr`/`jsr` edge pointing at it — so
   it is invoked through a runtime RAM pointer, like the rest of the
   call-graph roots.
+* **That one dword is a self-reference.**  Traced to file: the single
+  occurrence sits at `0x0C113A40`, which is *inside the dispatcher's own
+  body* (`[0x0C113980, 0x0C113A44)`) — it is the trampoline's own literal
+  pool, not an external caller materialising its address.  So the count
+  of *external* references is **0**.  Nothing in the static image names
+  the dispatcher; it is installed and called entirely through RAM.
 * It has **no alt-entries** in the corrected set.  (The pre-correction
   doc claimed two alt-entries with two static callers; both were
   artifacts of the `0xFB00`-off frame and are gone after regeneration.)
@@ -81,20 +91,47 @@ Several tables end with a dword above `CODE_END` (`0x0C1BFB00`) — e.g.
 *seeded* with code pointers and terminated/patched with runtime RAM
 pointers, consistent with the indirection model.
 
-### None of the tables has a static pool reference
+### Where the tables physically sit
 
-For each table we scan the code region for a dword holding an address in
-`[base-32, end)` — a literal-pool pointer at (or just before) the table,
-the shape used for PC-relative indexed dispatch.
+Cross-referencing each table base against the v3 function `[start,end)`
+ranges:
 
-* **0 of 158 tables** have any such static reference.
+* **154 of 158** tables sit *inside* a function body — embedded data in
+  that function's trailing literal area (e.g. table `0x0C020420` lives
+  inside `func_0c02039c`).
+* **4** sit in inter-function gaps as standalone data blocks.
 
-So the tables, like the dispatcher, are reached purely through
+So these are overwhelmingly function-local data, not free-floating
+sections.
+
+### None of the tables is reached by EITHER SH-4 addressing mode
+
+A table can be addressed two ways on SH-4, and we now check **both**:
+
+1. **Literal-pool pointer** — a code dword holding an address in
+   `[base-32, end)`, loaded with `mov.l @(d,pc)`.  We scan every code
+   dword.
+2. **`mova @(disp,pc),r0`** (`0xC7dd`) — a PC-relative address
+   *computation* that leaves no pool dword.  This is the canonical way to
+   reach an inline jump/dispatch table, so checking it is essential.  We
+   resolve all **1,093** `mova` instructions in the code region.
+
+Result:
+
+* **0 of 158 tables** have a pool-dword reference.
+* **0 of 158 tables** are the target of any `mova` (all 1,093 `mova`s
+  point elsewhere — 882 to data inside their own function, the inline
+  switch tables, none to a function-pointer table).
+* **158 of 158** are therefore runtime-only across *both* addressing
+  modes.
+
+This is the stronger claim the earlier dword-only scan could not make:
+the tables, like the dispatcher, are reached purely through
 runtime-constructed RAM pointers — the same indirection pattern at the
-data level.  (The pre-correction doc reported "17/123 with static refs"
-and a worked example at `0x0C103E48`; both were false near-matches
-produced by the `0xFB00`-shifted file mapping and do not survive
-regeneration.)
+data level, now confirmed against the complete SH-4 addressing surface.
+(The pre-correction doc reported "17/123 with static refs" and a worked
+example at `0x0C103E48`; both were false near-matches produced by the
+`0xFB00`-shifted file mapping and do not survive regeneration.)
 
 ### Hub functions (most static callers)
 

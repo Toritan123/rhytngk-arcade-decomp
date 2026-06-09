@@ -54,6 +54,16 @@ def le32(data: bytes, addr: int, base: int) -> int:
     return int.from_bytes(data[o:o + 4], "little")
 
 
+def le16(data: bytes, addr: int, base: int) -> int:
+    o = addr - base
+    return data[o] | (data[o + 1] << 8)
+
+
+def mova_target(addr: int, disp: int) -> int:
+    """SH-4 `mova @(disp,pc),r0` resolves to ((pc+4)&~3)+disp*4."""
+    return ((addr + 4) & ~3) + disp * 4
+
+
 def main() -> int:
     if not V3.exists():
         sys.stderr.write(f"ERROR: {V3} not found — run `make find-funcs-v3`\n")
@@ -65,6 +75,16 @@ def main() -> int:
 
     starts = [f["start"] for f in funcs]               # sorted top-level
     by_start = {f["start"]: f for f in funcs}
+    starts_sorted = sorted(starts)
+    fn_end = {f["start"]: f["end"] for f in funcs}
+
+    def containing_fn(addr: int) -> int | None:
+        """Top-level function whose [start,end) contains addr, else None."""
+        i = bisect.bisect_right(starts_sorted, addr) - 1
+        if i < 0:
+            return None
+        s = starts_sorted[i]
+        return s if s <= addr < fn_end[s] else None
 
     # Every valid entry point: top-level start OR alt-entry.  Map each to
     # its owning top-level function so a call to an alt-entry is credited
@@ -170,6 +190,57 @@ def main() -> int:
         for t in tables:
             t["static_refs_hex"] = []
 
+    # ── mova references to each table ────────────────────────────────
+    # The dword scan above only finds tables addressed through a literal
+    # POOL pointer.  SH-4's other, equally common way to reach an inline
+    # table is `mova @(disp,pc),r0` (0xC7dd) — a PC-relative address
+    # computation that leaves NO pool dword.  Scan every mova and see
+    # whether its resolved target lands in any table span.  If a table is
+    # reached by neither a pool dword NOR a mova, the runtime-RAM-pointer
+    # conclusion is genuinely solid (not just an artifact of checking one
+    # addressing mode).
+    n_mova_total = 0
+    if data and tables:
+        spans = [(int(t["addr_hex"], 16), t["count"]) for t in tables]
+        mova_refs: list[list[int]] = [[] for _ in spans]
+        a = base
+        while a + 2 <= code_end:
+            w = le16(data, a, base)
+            if (w & 0xFF00) == 0xC700:                  # mova @(disp,pc),r0
+                n_mova_total += 1
+                t_addr = mova_target(a, w & 0xFF)
+                for i, (b, c) in enumerate(spans):
+                    if b - 0x20 <= t_addr < b + c * 4:
+                        mova_refs[i].append(a)
+                        break
+            a += 2
+        for i, t in enumerate(tables):
+            t["mova_refs_hex"] = [f"{r:08x}" for r in mova_refs[i]]
+        n_mova_ref_tables = sum(1 for t in tables if t["mova_refs_hex"])
+    else:
+        n_mova_ref_tables = 0
+        for t in tables:
+            t["mova_refs_hex"] = []
+
+    # ── Physical placement of each table ─────────────────────────────
+    # Is the table embedded inside a function's [start,end) (i.e. data in
+    # that function's body / trailing literal area), or sitting in an
+    # inter-function gap?  Embedded tables belong to a specific function;
+    # gap tables are standalone data blocks.
+    n_inside = 0
+    for t in tables:
+        owner_fn = containing_fn(int(t["addr_hex"], 16))
+        t["in_function_hex"] = f"{owner_fn:08x}" if owner_fn else None
+        if owner_fn is not None:
+            n_inside += 1
+    n_gap = len(tables) - n_inside
+
+    # A table that is reached by NEITHER a pool dword NOR a mova is
+    # genuinely runtime-only across both SH-4 addressing modes.
+    n_truly_runtime_only = sum(
+        1 for t in tables
+        if not t["static_refs_hex"] and not t["mova_refs_hex"])
+
     # ── Is the dispatcher / any table referenced by a code dword? ────
     # (i.e. could a static scan have found it?)  Scan code dwords for the
     # dispatcher entry and each table base.
@@ -186,6 +257,21 @@ def main() -> int:
 
     disp_dword_refs = appears_as_dword(DISPATCHER)
 
+    # Where is the dispatcher's address materialised?  Find each dword and
+    # check whether it sits inside the dispatcher's OWN body (its literal
+    # pool — a self-reference, not an external caller) or elsewhere.
+    disp_dword_locs: list[int] = []
+    disp_self_refs = 0
+    if data:
+        a = base
+        while a + 4 <= code_end:
+            if le32(data, a, base) == DISPATCHER:
+                disp_dword_locs.append(a)
+                if containing_fn(a) == disp_owner:
+                    disp_self_refs += 1
+            a += 4
+    disp_external_dword_refs = len(disp_dword_locs) - disp_self_refs
+
     summary = {
         "n_functions": n,
         "n_valid_entries": len(valid_entries),
@@ -198,10 +284,18 @@ def main() -> int:
         "dispatcher_owner_hex": f"{disp_owner:08x}" if disp_owner else None,
         "dispatcher_static_callers": len(disp_callers),
         "dispatcher_dword_refs_in_code": disp_dword_refs,
+        "dispatcher_dword_self_refs": disp_self_refs,
+        "dispatcher_dword_external_refs": disp_external_dword_refs,
+        "dispatcher_dword_locs_hex": [f"{x:08x}" for x in disp_dword_locs],
         "n_dispatch_tables": len(tables),
         "n_table_entries": table_entries,
         "n_tables_static_ref": n_referenced,
-        "n_tables_runtime_only": len(tables) - n_referenced,
+        "n_tables_mova_ref": n_mova_ref_tables,
+        "n_mova_total": n_mova_total,
+        "n_tables_runtime_only_dword": len(tables) - n_referenced,
+        "n_tables_runtime_only_both": n_truly_runtime_only,
+        "n_tables_inside_function": n_inside,
+        "n_tables_in_gap": n_gap,
         "min_table_len": MIN_TABLE,
     }
 
@@ -224,14 +318,21 @@ def main() -> int:
     print(f"dispatcher {DISPATCHER:#010x} (owner "
           f"{disp_owner:#010x}):" if disp_owner else "dispatcher: unknown")
     print(f"  static callers           : {len(disp_callers)}")
-    print(f"  appears as code dword    : {disp_dword_refs} time(s)")
-    print(f"  → reached only via runtime RAM pointers (indirection)"
-          if len(disp_callers) == 0 else "")
+    print(f"  appears as code dword    : {disp_dword_refs} time(s) "
+          f"({disp_self_refs} self/own-pool, "
+          f"{disp_external_dword_refs} external)")
+    if disp_external_dword_refs == 0:
+        print(f"  → no external reference; reached only via runtime RAM "
+              f"pointers (indirection)")
     print()
     print(f"dispatch tables (>= {MIN_TABLE} consecutive entries): "
           f"{len(tables)}  ({table_entries} entries)")
-    print(f"  static pool reference     : {n_referenced}")
-    print(f"  runtime-only (no static)  : {len(tables) - n_referenced}")
+    print(f"  placement                 : {n_inside} inside a fn body, "
+          f"{n_gap} in inter-fn gaps")
+    print(f"  reached by pool dword     : {n_referenced}")
+    print(f"  reached by mova           : {n_mova_ref_tables} "
+          f"(of {n_mova_total} mova total in code)")
+    print(f"  runtime-only (BOTH modes) : {n_truly_runtime_only}")
     if tables:
         big = sorted(tables, key=lambda t: -t["count"])[:8]
         for t in big:
