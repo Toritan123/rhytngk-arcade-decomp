@@ -3,13 +3,21 @@
 # Source: https://github.com/EstexNT/rhythmtengokuarcade
 #   commit c2c1cda7d9a7f15fcee232d8a4abeced3b273634 (2024-04-28)
 # These are the `func_0cXXXXXX` entries split out under that repo's
-# asm/code_0c0*/ directories — an INDEPENDENT manual/matching
-# disassembly of the same decrypted fpr-24423.ic8.  They are the
-# external check that fixed our base address (0x0C01FB00) and that
-# validate tools/find_func_boundaries_v3.py.  Addresses only — no
-# ROM bytes — so safe to commit.
+# asm/entry.s and asm/code_0c0*/ directories — an INDEPENDENT
+# manual/matching disassembly of the same decrypted fpr-24423.ic8.
+# They are the external check that fixed our base address (0x0C01FB00)
+# and that validate tools/find_func_boundaries_v3.py.  Addresses only
+# — no ROM bytes — so safe to commit.
+#
+# These 181 functions COMPLETELY cover the window [0x0C020000,
+# 0x0C026FDC); everything above 0x0C026FDC is still one bindata blob in
+# EstexNT's decomp.  Within the window the set is exhaustive, so it
+# checks our scanner's PRECISION (no invented functions) as well as its
+# recall (see tools/validate_groundtruth.py).
 #
 # vaddr      translation_unit
+0x0C020000  entry
+0x0C020100  entry
 0x0C020140  code_0c020140
 0x0C0201A0  code_0c020140
 0x0C020200  code_0c020140

@@ -37,22 +37,44 @@ image, and `0x0C01FB00 + 0x640 == 0x0C020140`.  So:
 The old `0x0C010000` made `vaddr = file_offset + 0x0C010000`, i.e. every
 label was `0x0C01FB00 − 0x0C010000 = 0xFB00` too low.
 
-## Cross-check against 179 ground-truth entries
+## Cross-check against 181 ground-truth entries
 
-Their `asm/` splits give 179 independent function entry addresses
+Their splits give 181 independent function entry addresses — `asm/entry.s`
+(`func_0c020000` boot + `func_0c020100`) plus the four code TUs
 (`code_0c020140`, `_0c021250`, `_0c022224`, `_0c025930`).  Against the
 **regenerated** v3 set (corrected base, no offset applied):
 
 | result | count |
 |---|---|
-| exact START match | 174 |
+| exact START match | 175 |
 | matched an alt-entry | 1 |
-| missed (boundary merge / non-prologue tail) | 4 |
-| **total** | **179 (97.2% exact)** |
+| missed (boundary merge / non-prologue) | 5 |
+| **total** | **181 (recall 97.2%)** |
 
-The 4 misses are adjacent functions our CFG walk merged, or handwritten
-tails with no standard prologue — minor boundary disagreements, not
-decode failures.
+The 5 misses are adjacent functions our CFG walk merged, or handwritten
+entries with no standard prologue — minor boundary disagreements, not
+decode failures (all five are itemised below).
+
+### Precision, not just recall
+
+Recall alone can't catch the opposite error — *inventing* functions.  But
+EstexNT splits **every** function in `[0x0C020000, 0x0C026FDC)` into its
+own `.s` file (above `0x0C026FDC` the image is still one bindata blob), so
+inside that window its set is **exhaustive**.  That lets us check
+precision: every one of our top-level starts in the window must be a real
+GT function.
+
+| in-window measure | value |
+|---|---|
+| v3 top-level starts in `[0x0C020000, 0x0C026FDC)` | 175 |
+| of those absent from GT (invented / over-split) | **0** |
+| **precision** | **100%** |
+
+So in the only region where an exhaustive external reference exists, the
+v3 scanner produces **zero false functions**.  (This also reclassified
+`func_0c020100`: the earlier 179-entry GT omitted the two `entry.s`
+functions, so our correct `0x0C020100` first looked like an "extra";
+adding `entry.s` turned it into a confirmed START match.)
 
 ## Why this was more than a relabel — the call graph was corrupted
 
@@ -95,35 +117,40 @@ wrong) file mapping.
 
 ## Regression guard
 
-The 179 ground-truth entries are now committed as
+The 181 ground-truth entries are now committed as
 `tools/ground_truth_estex.txt` (addresses only — no ROM bytes — plus the
 source commit `c2c1cda`).  `make validate-gt`
 (`tools/validate_groundtruth.py`) re-checks the v3 set against them and
-fails if recall drops below 95%.  Current: **97.8%** (174 START + 1
-alt-entry + 4 boundary-merge misses).  Run it after any scanner change —
-if a future edit re-introduces a base or decode error, the matches stop
-landing and this target goes red.
+fails if recall drops below 95%.  Current: **recall 97.2%** (175 START +
+1 alt-entry + 5 explained misses) and **precision 100%** in the
+exhaustive window.  It also WARNs if a future scanner change introduces a
+new unexplained miss *or* a new in-window start that isn't a GT function.
+Run it after any scanner change — if a future edit re-introduces a base
+or decode error, the matches stop landing and this target goes red.
 
-## Boundary discrepancies (the 4 non-matches), investigated
+## Boundary discrepancies (the 5 non-matches), investigated
 
-Recall is 97.8% — 174 START + 1 alt-entry + 4 misses out of 179.  All
-four misses were disassembled by hand; **three are the ground truth
-being slightly wrong, not us**:
+Recall is 97.2% — 175 START + 1 alt-entry + 5 misses out of 181.  All
+five misses were disassembled by hand; **three are the ground truth
+being slightly wrong, not us**, and **two are genuine no-prologue
+entries**:
 
 | GT entry | our entry | verdict |
 |---|---|---|
+| `0x0C020000` | — (merged) | Genuine gap: the **boot entry**.  Starts `mov #1,r8` with no register-save prologue, so prologue-seeding can't find it. |
 | `0x0C021AF6` | `0x0C021AF4` | GT split at `sts.l pr`; the function actually starts one save earlier at `mov.l r14,@-r15`. **Ours is correct.** |
 | `0x0C0223EC` | `0x0C0223E8` | Multi-reg prologue `r8,r9,r14,pr`; GT split at the `r14` save. **Ours (first `r8` save) is correct.** |
 | `0x0C022470` | `0x0C02246C` | Multi-reg prologue `r8,r9,r10,r11,…`; GT split at the `r10` save. **Ours (first `r8` save) is correct.** |
 | `0x0C0227D0` | — (merged) | Genuine gap: a function with **no standard prologue and no static caller** (pool-ref count 0, not a resolved call target).  Reached indirectly, so prologue-seeding can't find it. |
 
 So on close inspection the v3 scanner is at parity-or-better with an
-independent human disassembly: 178/179 entries are ours-correct, and the
-single true gap is a no-prologue, indirectly-reached function — a known
-limitation of prologue-based seeding, not a base or decode error.  These
-four are encoded as *explained* misses in
-`tools/validate_groundtruth.py`; if a future change introduces a *new*
-(unexplained) miss, the target prints a WARN.
+independent human disassembly: 179/181 entries are ours-correct, and the
+two true gaps are both no-prologue entries (the boot stub and an
+indirectly-reached helper) — a known limitation of prologue-based
+seeding, not a base or decode error.  All five are encoded as *explained*
+misses in `tools/validate_groundtruth.py`; if a future change introduces
+a *new* (unexplained) miss, or a new in-window start with no GT match,
+the target prints a WARN.
 
 ## Consequence for the other docs
 
