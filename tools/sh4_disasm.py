@@ -67,9 +67,9 @@ def decode(w: int, pc: int) -> tuple[str, str]:
         if d4 == 0xf: return "mac.l", f"@{R(m)}+,@{R(n)}+"
         if d4 == 0xa:
             sub = (w >> 4) & 0xF
-            return {0x0: "sts", 0x1: "sts", 0x2: "sts"}.get(sub, "sts"), \
-                   {0x0: f"mach,{R(n)}", 0x1: f"macl,{R(n)}",
-                    0x2: f"pr,{R(n)}"}.get(sub, R(n))
+            src = {0x0: "mach", 0x1: "macl", 0x2: "pr",
+                   0x5: "fpul", 0x6: "fpscr"}.get(sub)
+            return ("sts", f"{src},{R(n)}") if src else (".word", f"0x{w:04x}")
         if d4 == 0x2:
             sub = (w >> 4) & 0xF
             src = {0x0: "sr", 0x1: "gbr", 0x2: "vbr", 0x3: "ssr"}.get(sub, "?")
@@ -124,11 +124,14 @@ def decode(w: int, pc: int) -> tuple[str, str]:
             return mn, R(n)
         if low == 0x0b: return "jsr", f"@{R(n)}"
         if low == 0x2b: return "jmp", f"@{R(n)}"
-        stsl = {0x02: "mach", 0x12: "macl", 0x22: "pr"}
+        stsl = {0x02: "mach", 0x12: "macl", 0x22: "pr",
+                0x52: "fpul", 0x62: "fpscr"}
         if low in stsl: return "sts.l", f"{stsl[low]},@-{R(n)}"
-        ldsl = {0x06: "mach", 0x16: "macl", 0x26: "pr"}
+        ldsl = {0x06: "mach", 0x16: "macl", 0x26: "pr",
+                0x56: "fpul", 0x66: "fpscr"}
         if low in ldsl: return "lds.l", f"@{R(n)}+,{ldsl[low]}"
-        lds = {0x0a: "mach", 0x1a: "macl", 0x2a: "pr"}
+        lds = {0x0a: "mach", 0x1a: "macl", 0x2a: "pr",
+               0x5a: "fpul", 0x6a: "fpscr"}
         if low in lds: return "lds", f"{R(n)},{lds[low]}"
         ctrl = {0x0e: "sr", 0x1e: "gbr", 0x2e: "vbr", 0x3e: "ssr"}
         if low in ctrl: return "ldc", f"{R(n)},{ctrl[low]}"
