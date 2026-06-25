@@ -88,6 +88,41 @@ This is the classic `while (!done()) frame();` shape.  `func_0c037a90`
 (`r8`) is the **per-iteration body** (the frame/tick).  The four calls
 before the loop are subsystem initialisation.
 
+## Main loop internals
+
+**Loop predicate — `func_0c037a90` [scanner].**  A trivial global poll:
+
+```c
+u8 should_exit(void) { return *(u8 *)0x0C4655F8; }   // zero-extended byte
+```
+
+So `main`'s loop is `while (*(u8*)0x0C4655F8 == 0) frame();` — it runs
+until a **global quit-flag byte at `0x0C4655F8`** turns non-zero.  That
+address is inside BSS, in the same `0x0C46xxxx` region where the pointer
+tracer saw runtime tables built (`docs/ptr_installs.md`).
+
+**Loop body — `func_0c0208f0` [verified].**  A fixed **per-frame
+pipeline**: nine subsystem calls in order, nothing else.
+
+| # | call | region |
+|---|---|---|
+| 1 | `func_0c0f2164` | `0x0C0Fxxxx` cluster |
+| 2 | `func_0c03c652` | |
+| 3 | `func_0c0f1a70` | `0x0C0Fxxxx` cluster |
+| 4 | `func_0c0f1608` | `0x0C0Fxxxx` cluster |
+| 5 | `func_0c020440` | in-window [verified] |
+| 6 | `func_0c02074c` | in-window [verified] |
+| 7 | `func_0c0ef608` | |
+| 8 | `func_0c020304` | in-window [verified] |
+| 9 | `func_0c0f1ac8` | `0x0C0Fxxxx` cluster |
+
+The recurring `0x0C0Fxxxx` cluster (4 of the 9 stages) is one subsystem
+updated several times per frame — most likely the graphics/object engine,
+though that label is from address-clustering, not yet from the bodies.
+The order is the frame's update schedule; naming each stage means reading
+its body (e.g. start with the in-window `func_0c020304/0440/074c`, which
+have EstexNT-confirmed boundaries).
+
 ## What this nails down
 
 * The first three functions EstexNT names only by address now have
@@ -98,6 +133,8 @@ before the loop are subsystem initialisation.
   `r12 = 0x0C3D4D74`**, **CCR `0xFF00001C` = `0x105`**.
 * The engine globals seen in the hub analysis are now tied to that BSS
   range — independent paths reaching the same memory map.
+* The main loop is fully shaped: a 9-stage per-frame pipeline gated by a
+  **global quit-flag byte at `0x0C4655F8`** (also in BSS).
 
 ## Caveats
 
@@ -105,7 +142,7 @@ before the loop are subsystem initialisation.
   lie above `0x0C026FDC`, outside the exhaustively-verified window; their
   *addresses* are reliable literal-pool call targets, but their function
   *boundaries* are from our scanner, not EstexNT.
-* Role names for the four init calls and the two loop functions are read
-  from call position, not yet from their bodies — characterising
-  `func_0c0208f0` (the frame body) and `func_0c037a90` (the loop
-  predicate) is the natural next step.
+* The nine frame-pipeline stages and the four init calls are identified by
+  call position; their individual roles still need a body-by-body read.
+  The in-window stages (`func_0c020304`, `func_0c020440`, `func_0c02074c`)
+  are the natural starting point, since EstexNT confirms their boundaries.
