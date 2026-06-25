@@ -88,6 +88,33 @@ This is the classic `while (!done()) frame();` shape.  `func_0c037a90`
 (`r8`) is the **per-iteration body** (the frame/tick).  The four calls
 before the loop are subsystem initialisation.
 
+## The four pre-loop init calls
+
+Two of `main`'s four init calls are in-window [verified]:
+
+* **`func_0c02095c` — init 1, boot-config processor [verified].**  `main`
+  doesn't reset `r4`/`r5` before this call, so it inherits `main`'s
+  arguments: it runs as `func_0c02095c(boot_mode, boot_ptr)`.  165
+  instructions that **iterate over a pointer container** (`r5` = array,
+  element stride 4; it computes the element count as `(end-start)/4`),
+  validating and dispatching each entry.  It leans on the shared hubs —
+  the `0x0C118DC0` fetch-and-add and the `0x0C1A1A40` encoder — plus the
+  `0x0C1Axxxx` / `0x0C133xxx` helper clusters.  Shape of a **boot-argument
+  / configuration parser** consuming the `0x0C2B1D2x` pointer the BIOS
+  hands `crt0`.  (Detailed role of each entry handler unread.)
+
+* **`func_0c0204e8` — init 4, master subsystem init [verified].**  Brackets
+  its work with **interrupt-mask changes** — `stc sr; and mask; or #0xE0;
+  ldc sr` raises `SR.IMASK` (interrupts off) around the bring-up, lowering
+  it again between groups — then fans out to ~34 init routines spanning
+  every subsystem cluster (`0x02exxx`, `0x030xxx`, `0x035xxx`, `0x037xxx`,
+  `0x0e5xxx`–`0x0ecxxx`, `0x0f0xxx`–`0x0f8xxx`, …).  This is the engine's
+  **"initialise everything"** call, with a little conditional logic
+  selecting an argument (`#9` vs `#0`) from a probed field.
+
+`func_0c037f00` (init 2) and `func_0c03c4cc(1)` (init 3) are out-of-window
+[scanner] and not yet read.
+
 ## Main loop internals
 
 **Loop predicate — `func_0c037a90` [scanner].**  A trivial global poll:
@@ -142,7 +169,8 @@ have EstexNT-confirmed boundaries).
   lie above `0x0C026FDC`, outside the exhaustively-verified window; their
   *addresses* are reliable literal-pool call targets, but their function
   *boundaries* are from our scanner, not EstexNT.
-* The nine frame-pipeline stages and the four init calls are identified by
-  call position; their individual roles still need a body-by-body read.
-  The in-window stages (`func_0c020304`, `func_0c020440`, `func_0c02074c`)
-  are the natural starting point, since EstexNT confirms their boundaries.
+* The two in-window init calls (`func_0c02095c`, `func_0c0204e8`) and the
+  three in-window frame stages (`func_0c020304/0440/074c`) are read in
+  `docs/frame_pipeline_stages.md` and above; the out-of-window targets
+  (init 2/3, the leaf updates) have reliable addresses but scanner-only
+  boundaries and remain unread.
