@@ -28,10 +28,9 @@ git-ignored, regenerable).
   these are real edges, not pool noise.
 * **Dispatch table** = a maximal run of ≥8 consecutive code-region
   dwords that are *all* valid entries.
-* **Table reachability** is checked against *both* SH-4 addressing modes:
-  literal-pool pointers (`mov.l @(d,pc)` dwords) **and** `mova
-  @(disp,pc),r0` PC-relative address computations.  A table reached by
-  neither is genuinely runtime-only.
+* **Table reachability** — see the correction below: these runs are the
+  literal pools of their containing function, read entry-by-entry with
+  `mov.l @(disp,pc),rN`, not memcpy'd jump tables or RAM-pointer vtables.
 
 ## Results
 
@@ -104,34 +103,56 @@ ranges:
 So these are overwhelmingly function-local data, not free-floating
 sections.
 
-### None of the tables is reached by EITHER SH-4 addressing mode
+### Correction: the "tables" are literal pools, read entry-by-entry
 
-A table can be addressed two ways on SH-4, and we now check **both**:
+An earlier version of this section claimed the 158 tables were "reached by
+neither addressing mode" (no pool-dword pointer at the base, no `mova`
+target) and were therefore runtime-only RAM-pointer dispatch.  **That was
+the wrong test and the wrong conclusion.**  Those two checks ask "does
+anything point *at the table as a unit*?" — but a literal pool has no
+base pointer; each slot is loaded *independently*.
 
-1. **Literal-pool pointer** — a code dword holding an address in
-   `[base-32, end)`, loaded with `mov.l @(d,pc)`.  We scan every code
-   dword.
-2. **`mova @(disp,pc),r0`** (`0xC7dd`) — a PC-relative address
-   *computation* that leaves no pool dword.  This is the canonical way to
-   reach an inline jump/dispatch table, so checking it is essential.  We
-   resolve all **1,093** `mova` instructions in the code region.
+The right test is whether `mov.l @(disp,pc),rN` (op `0xD`, the ordinary
+PC-relative pool load) lands *inside* the run.  It does, everywhere:
 
-Result:
+* **158 of 158 tables** are read by per-entry `mov.l @(pc)` loads (mean
+  ~12 loads per table, max 35).
 
-* **0 of 158 tables** have a pool-dword reference.
-* **0 of 158 tables** are the target of any `mova` (all 1,093 `mova`s
-  point elsewhere — 882 to data inside their own function, the inline
-  switch tables, none to a function-pointer table).
-* **158 of 158** are therefore runtime-only across *both* addressing
-  modes.
+So these runs are not memcpy'd jump tables and not RAM-pointer vtables —
+they are the **literal pools of their containing function**, holding
+function-pointer constants that the function loads one at a time and then
+`jsr`s or stores.  Worked example: table `0x0C023BF0` (8 entries, 7 of
+them function starts) is the pool of `func_0c023990`, whose body does
+`mov.l @(0x0C023C0C),r1; jsr @r1` to call through it.  (`tools/sh4_disasm.py`
+reproduces this.)  The `0xC3D…` RAM dwords that terminate several runs are
+just the next pool constants, not evidence of a copied table.
 
-This is the stronger claim the earlier dword-only scan could not make:
-the tables, like the dispatcher, are reached purely through
-runtime-constructed RAM pointers — the same indirection pattern at the
-data level, now confirmed against the complete SH-4 addressing surface.
-(The pre-correction doc reported "17/123 with static refs" and a worked
-example at `0x0C103E48`; both were false near-matches produced by the
-`0xFB00`-shifted file mapping and do not survive regeneration.)
+What survives unchanged: there is still **no single base reference** to
+any run (consistent with "no `mova`, no base dword"), because there is no
+base — that part of the old scan was correct, it was the *interpretation*
+that was wrong.
+
+### Do those recovered calls undermine the high root count?
+
+Because the v3 `outgoing` set never decodes pool dwords, the `jsr @rN`
+calls fed by these pool loads are **missing** from the static graph.
+`make pool-calls` (`tools/recover_pool_calls.py`) recovers them with a
+register pass and re-checks the roots:
+
+| | edges | roots | % roots |
+|---|---|---|---|
+| v3 static graph | 18,786 | 6,064 | 59.3 |
+| + recovered pool-load calls | +2,311 | 5,945 | **58.1** |
+
+Recovering ~2.3k pool-load calls rescues only **119** of 6,064 roots —
+about **1 percentage point**.  So the "≈60% of functions have no static
+caller, the engine is indirection-driven" conclusion is **not** an
+artifact of unresolved pool calls: the great majority of roots are not
+reached even by `mov.l @(pc)+jsr`, confirming they are entered through
+genuinely runtime-constructed RAM pointers.  (The pre-`0xFB00`-correction
+doc reported "17/123 tables with static refs" and an example at
+`0x0C103E48`; both were false near-matches from the shifted file mapping
+and do not survive regeneration.)
 
 ### Hub functions (most static callers)
 

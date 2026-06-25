@@ -55,7 +55,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        symbols-v3 ptr-installs \
+        symbols-v3 ptr-installs pool-calls \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -84,6 +84,7 @@ help:
 	@echo "  make validate-gt      — check v3 funcs vs EstexNT ground truth"
 	@echo "  make symbols-v3       — emit corrected-base symbol table (EstexNT naming)"
 	@echo "  make ptr-installs     — trace where code pointers are installed into RAM"
+	@echo "  make pool-calls       — recover mov.l @(pc)+jsr static call edges"
 	@echo "  make disasm           — re-run SH-4 + ARM7 objdump"
 	@echo "  make check-tools      — verify required tools are installed"
 	@echo "  make clean            — remove all build artifacts"
@@ -242,6 +243,14 @@ $(BUILD_DIR)/ptr_installs_v3.json: $(BUILD_DIR)/sh4_functions_v3.json \
                                  $(TOOLS_DIR)/trace_ptr_installs.py
 	@echo "  PTRINST  (trace code-pointer installs into RAM)"
 	@$(PYTHON) $(TOOLS_DIR)/trace_ptr_installs.py
+
+pool-calls: $(BUILD_DIR)/pool_calls_v3.json
+
+$(BUILD_DIR)/pool_calls_v3.json: $(BUILD_DIR)/sh4_functions_v3.json \
+                               $(DECRYPTED_IC8) \
+                               $(TOOLS_DIR)/recover_pool_calls.py
+	@echo "  POOLCAL  (recover mov.l @(pc)+jsr static edges)"
+	@$(PYTHON) $(TOOLS_DIR)/recover_pool_calls.py
 
 disasm: $(BUILD_DIR)/.disasm.stamp
 

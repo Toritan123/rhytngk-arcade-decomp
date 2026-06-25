@@ -76,20 +76,30 @@ known-entry set).
 ## The bigger picture — direct installs are the minority
 
 Only 90 direct function-pointer installs exist, yet ~6,000 functions have
-no static caller.  The arithmetic doesn't balance through individual
-`mov.l` stores alone, which points to the **dominant install mechanism
-being bulk copies**: the 158 static dispatch tables (`docs/call_graph_v3.md`)
-are templates the engine `memcpy`s into RAM wholesale, after which calls
-go through the RAM copy.  The RAM-pointer *terminators* already observed
-on several of those tables, and the fresh `0x0C43…`/`0x0C46…` install
-regions here, are consistent with that model.  Confirming it means
-tracing the block-copy helpers (a hub like the `0x0C0A0xxx` cluster, or a
-`memcpy` primitive) against the table bases — the natural next step.
+no static caller.  An earlier draft of this section guessed the gap was
+filled by **bulk-copying the 158 dispatch tables** into RAM.  That guess
+was **tested and rejected** (see `docs/call_graph_v3.md`): those 158 runs
+are not memcpy'd templates at all — they are literal pools read
+entry-by-entry with `mov.l @(pc)`, and recovering the `jsr` calls they
+feed (`make pool-calls`) rescues only ~119 roots (≈1pp).  So neither
+individual installs *nor* a table-copy mechanism *nor* pool-load calls
+account for the ~58% of functions with no static caller.
+
+The honest current picture: the dominant entry mechanism is genuinely
+**runtime-constructed RAM pointers** — pointers written into objects
+allocated at runtime (the 95 "via register" installs are exactly this:
+stores into an object pointer held in `r4`).  We can see the *shape* of
+that construction (descriptors, callback lists, `{ptr,type,fnptr}`
+records) but not resolve the destination statically, because the object
+addresses come from the allocator, not from a pool.  Pinning specific
+RAM callback slots to specific handlers would need either a runtime trace
+or modelling the allocator — a larger effort than static reading allows.
 
 ## Caveats
 
 * 113 is a **lower bound** on installs; the tracker is deliberately
-  conservative and ignores table-copy installs entirely.
+  conservative (clears registers on calls, models no arithmetic-built
+  addresses).
 * "Known function entry" depends on the v3 set; a missed no-prologue
   function would be miscounted as a non-entry install.
 * Resolved RAM destinations assume the base register wasn't reloaded
