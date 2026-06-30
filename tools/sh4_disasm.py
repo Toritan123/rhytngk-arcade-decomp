@@ -56,6 +56,12 @@ def decode(w: int, pc: int) -> tuple[str, str]:
         if w == 0x0058: return "sets", ""
         if d4 == 0x3:
             sub = (w >> 4) & 0xF
+            cache = {0x8: "pref", 0x9: "ocbi", 0xA: "ocbp",
+                     0xB: "ocbwb", 0xC: "movca.l"}
+            if sub in cache:
+                if sub == 0xC:
+                    return "movca.l", f"r0,@{R(n)}"
+                return cache[sub], f"@{R(n)}"
             return {0x0: "bsrf", 0x2: "braf"}.get(sub, ".word"), R(n)
         if d4 == 0x4: return "mov.b", f"{R(m)},@(r0,{R(n)})"
         if d4 == 0x5: return "mov.w", f"{R(m)},@(r0,{R(n)})"

@@ -106,6 +106,6 @@ SH-4, validated against EstexNT).
 Static analysis has reached the runtime-allocated-object wall: callback
 destinations and per-`cmd` sound/graphics semantics need either a runtime
 trace or allocator modelling.  Concrete next reads with solid footing:
-the `func_0c0e9590` command table, the GD-ROM driver `func_0c06d6b8`, or
-the TA geometry-submit path (needs a store-queue-setup locator, not a raw
-address scan — see `docs/pvr_register_interface.md`).
+the per-`sel` sound parameter names, or pushing further into the
+`0x0C0Fxxxx` TA-list builders that feed the store-queue submit
+(`func_0c0faaf8`, now located — see `docs/pvr_register_interface.md`).
