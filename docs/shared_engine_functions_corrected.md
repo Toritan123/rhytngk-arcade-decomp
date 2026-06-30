@@ -14,8 +14,8 @@ distinct engine helpers shared across subsystems, with names like
 "input source A", "engine state predicate", "event dispatcher",
 "allocator", "slot cleanup", etc.
 
-Disassembling each claimed address (see `docs_audit_vs_scan.md` for
-why they were suspect) shows that **every one of those addresses lands
+Disassembling each claimed address shows that **every one of those
+addresses lands
 inside a larger real function, not at a function entry**, and that the
 8 most-cited labels collapse onto only **6 real functions** — two
 "pairs" were actually two interior points of a single function.
@@ -99,7 +99,7 @@ well past the prologue.
 > `0x0C064E7E`, where `*(0x0C064F70) == 0x0C0984BC`).  So `0x0984BC`
 > is a real shared-tail / multi-entry call target — the "interior"
 > observation holds, but the implied "therefore not a real call
-> target" does not.  See `docs/scanner_v2_notes.md`.
+> target" does not.
 
 ### 0x0C09B016 (166 B) — array scan loop
 ```
@@ -141,7 +141,8 @@ The 6 "real function" starts in the table above were derived by
 backward-scanning each claimed address to the nearest `sts.l pr`.  That
 is itself a few bytes too late — the true entry is the FIRST
 `mov.l rN,@-r15` of the register-save sequence.  The control-flow-aware
-scanner (`docs/scanner_v3_notes.md`) gives the corrected entries:
+v3 scanner (`tools/find_func_boundaries_v3.py`) gives the corrected
+entries:
 
 | this-doc start | TRUE v3 start | size | alt-entries |
 |---|---|---|---|

@@ -8,8 +8,7 @@
 > `docs/base_address_correction.md`.
 
 
-After multiple failed search attempts (documented in
-`docs/beatscript_dispatcher_hunt.md`), the BeatScript interpreter
+After multiple failed search attempts, the BeatScript interpreter
 was located by searching for `cmp/eq #0x28` and `cmp/eq #0x29`
 (the `play_music_in` and `play_sfx` opcode checks).
 

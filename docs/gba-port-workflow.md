@@ -31,9 +31,9 @@ for the matching DTPK package name (e.g. `stage1_X` or `extra_X`).
 
 ### 2. Extract the sequence (manual)
 
-The DTPK Track Composition Entry parser is still incomplete (see
-`docs/progress.md` "Open Questions"). Until that's resolved, the
-sequence has to be transcribed manually from gameplay audio reference.
+The DTPK Track Composition Entry parser is still incomplete. Until
+that's resolved, the sequence has to be transcribed manually from
+gameplay audio reference.
 
 ### 3. Build the GBA instrument bank
 
