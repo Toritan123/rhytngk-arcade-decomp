@@ -1,22 +1,27 @@
 # AICA sound driver (SH-4 host side)
 
-`docs/subsystem_map.md` put the sound code in `0x0C0Exxxx` (AICA register
-+ wave-RAM references).  The AICA is the ARM7 sound chip on the G2 bus;
-the SH-4 can't touch it with plain loads/stores, so the host side is
-layered.  This reads those layers.  AICA register *addresses* are exact;
-the bus-primitive identification is structural.
+`docs/subsystem_map.md` put the sound code in `0x0C0E8xxx`–`0x0C0E9xxx`
+(the adjacent `0x0C0EAxxx` is the Maple/input driver, `docs/maple_input_driver.md`).
+The AICA is the ARM7 sound chip on the G2 bus; the SH-4 can't touch it
+with plain loads/stores, so the host side is layered.  This reads those
+layers and the module's public surface.  AICA register *addresses* are
+exact; the bus-primitive identification is structural.
 
 ## The layers
 
 ```
-func_0c0e9864   AICA sound-system init / reset        (0x0C0Exxxx)
-    │  uses ↓
-func_0c0e83a8   aica_write_reg(addr, val)             (0x0C0Exxxx)
-func_0c0e885c   aica_read_reg(addr) -> val            (0x0C0Exxxx)
-    │  wrap ↓
-func_0c0f8b34   4-byte transfer primitive             (0x0C0Fxxxx)
-    │  dispatches to ↓
-func_0c0fa25c / 2b0 / 304 / 358   (and func_0c0fa3ac touches G2-DMA 0xA05F7800)
+game code → func_0c0e9590   sound-control API (6 external callers)
+                 │
+func_0c03c1c8 (sound init, from master init func_0c0204e8)
+                 │ calls ↓
+func_0c0e9864   AICA sound-system init / reset
+                 │ uses ↓
+func_0c0e83a8   aica_write_reg(addr, val)
+func_0c0e885c   aica_read_reg(addr) -> val
+                 │ wrap ↓
+func_0c0f8b34   4-byte G2-bus transfer primitive
+                 │ dispatches to ↓
+func_0c0fa25c / 2b0 / 304 / 358   (func_0c0fa3ac drives G2-DMA 0xA05F7800)
 ```
 
 ### Register accessors — `func_0c0e83a8` / `func_0c0e885c`
@@ -26,7 +31,7 @@ primitive `func_0c0f8b34` with `size = 4`, `flag = 1`:
 
 ```c
 void aica_write_reg(u32 addr /*r4*/, u32 val) {   // func_0c0e83a8
-    u32 buf = val;                                 // (val saved to stack)
+    u32 buf = val;
     transfer(/*dst*/addr, /*src*/&buf, 4, 1);
 }
 u32 aica_read_reg(u32 addr) {                      // func_0c0e885c
@@ -44,8 +49,10 @@ DMA registers at `0xA05F7800`).
 
 ### Sound init / reset — `func_0c0e9864`
 
-A 165-instruction bring-up that uses the accessors above.  The AICA
-registers and shared RAM it touches (decoded from its pool):
+Reached from the boot spine: `main` → `func_0c0204e8` (master init,
+`docs/boot_and_main.md`) → `func_0c03c1c8` (sound init) → here (its only
+caller).  A 165-instruction bring-up; the AICA registers and shared RAM it
+touches (decoded from its pool):
 
 | target | addr | meaning |
 |---|---|---|
@@ -55,50 +62,51 @@ registers and shared RAM it touches (decoded from its pool):
 | wave RAM | `0xA0800050/60/80/5C` | ARM7-shared command / parameter slots |
 | driver state | `0x0C5414xx`, `0x0C5415xx` | BSS bookkeeping structs |
 
-Sketch:
+It **resets the AICA, clears its wave-RAM command area, initialises the
+host-side driver state, wires up the shared-RAM pointers, and arms the
+sound interrupt** — the classic ARM7-coprocessor handshake that readies
+the chip before any sound is played.
+
+### Public API — `func_0c0e9590`
+
+The module's most-called external entry (6 game-code callers).  Signature
+`(u32 id /*r4*/, u32 cmd /*r5*/, float param /*r6→fpul*/)`:
 
 ```c
-int aica_sound_init(int arg /*r13*/, int mode /*r12*/) {
-    n = helper(arg + 196);                  // size/slot check
-    if (n > 1779) return -1;                // range guards (-1, -2)
-    …
-    r = aica_read_reg(0xA0702C00);          // touch control
-    aica_write_reg(0xA0702C00, (r & ~1) | 1); //  set enable bit
-    for (s = 0xA0800050; s != end; s += 4)  // clear wave-RAM command slots
-        aica_write_reg(s, -1);
-    … init driver-state structs (stride 28 / 12, fill -1/0) …
-    … program shared-RAM pointers from arg base …
-    poll SCIEB (0xA070289C); 
-    return ok ? 0 : -128;
+void sound_control(u32 id, u32 cmd, float param) {  // func_0c0e9590
+    u32 packed = (id & 0xF) << 24;          // channel/voice in top byte
+    packed += <flag from pool 0x0C0E96B4>;
+    switch (cmd) { … long ladder vs ~20 word constants … }
+    … func_0c0e8bf4(…)  // issue to AICA (reads+writes regs/wave-RAM) …
 }
 ```
 
-So `func_0c0e9864` **resets the AICA, clears its wave-RAM command area,
-initialises the host-side driver state, wires up the shared-RAM pointers,
-and arms the sound interrupt** — the classic ARM7-coprocessor handshake
-that readies the chip before any sound is played.
+The float `param` (handled via `fpul`/`fsts`) is a continuous control —
+volume / pan / pitch — and `cmd` selects among ~20 sound operations in a
+compare ladder.  So this is the **general sound-control entry** (play /
+stop / set-volume / etc., chosen by `cmd`), funnelling through
+`func_0c0e8bf4`, the leaf that actually reads+writes the AICA (it appears
+in both accessor caller lists).  The exact `cmd` → operation mapping is
+unread; the dispatch shape and argument packing are clear.
 
 ## What this accounts for
 
-* The `0x0C0Exxxx` "sound" cluster from the subsystem map is now a
-  concrete three-layer driver: transfer primitive → register R/W →
-  init/reset.
+* The `0x0C0E8/9xxx` sound cluster is now a concrete stack: G2 transfer →
+  register R/W → init/reset → public control API, wired into the boot
+  sequence at `func_0c0204e8`.
 * Its driver state lives at `0x0C5414xx`/`0x0C5415xx`, inside the BSS the
   boot code clears — another global block placed.
 * It explains why AICA-register direct constants were *few* in the MMIO
-  scan (8): almost all AICA traffic flows through the two accessor
-  wrappers, so the register addresses appear in *their* pools, not at
-  every call site.
+  scan (8): almost all AICA traffic flows through the accessor wrappers,
+  so the register addresses appear in *their* pools, not at every site.
 
 ## Caveats
 
 * Cluster is scanner-bounded (outside the EstexNT window); register
   addresses are exact, boundaries are ours.
 * `func_0c0f8b34` is identified as the transfer primitive by how the
-  accessors call it (4-byte staged transfer) and its `func_0c0fa2xx`
-  G2 fan-out, not by a register constant in its own body — medium
-  confidence on "G2 specifically", high on "it is the bus transfer these
-  wrap".
-* The actual sound *playback* commands (note-on, sample pointers) are
-  written into the wave-RAM slots this init clears; tracing a play call is
-  the next step.
+  accessors call it and its `func_0c0fa2xx` G2 fan-out, not by a register
+  constant in its own body — medium confidence on "G2 specifically", high
+  on "it is the bus transfer these wrap".
+* `func_0c0e9590`'s per-`cmd` semantics aren't decoded; it is the API
+  surface, not yet a per-command spec.
