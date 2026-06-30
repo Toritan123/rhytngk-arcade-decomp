@@ -67,27 +67,50 @@ host-side driver state, wires up the shared-RAM pointers, and arms the
 sound interrupt** — the classic ARM7-coprocessor handshake that readies
 the chip before any sound is played.
 
-### Public API — `func_0c0e9590`
+### Public API — `func_0c0e9590` (parameter encoder)
 
-The module's most-called external entry (6 game-code callers).  Signature
-`(u32 id /*r4*/, u32 cmd /*r5*/, float param /*r6→fpul*/)`:
+The module's most-called external entry (6 game-code callers).  Decoded,
+it is **not** a play/stop dispatch but a **parameter-set encoder**: it
+packs `(voice, selector, float value)` into one AICA command word and
+tail-calls `func_0c0e8bf4` to issue it.  Signature
+`(u32 voice /*r4*/, u32 sel /*r5*/, float val /*r6→fpul*/)`:
 
 ```c
-void sound_control(u32 id, u32 cmd, float param) {  // func_0c0e9590
-    u32 packed = (id & 0xF) << 24;          // channel/voice in top byte
-    packed += <flag from pool 0x0C0E96B4>;
-    switch (cmd) { … long ladder vs ~20 word constants … }
-    … func_0c0e8bf4(…)  // issue to AICA (reads+writes regs/wave-RAM) …
+void aica_param_set(u32 voice, u32 sel, float val) {  // func_0c0e9590
+    int p = (int)val;                         // r6 → fpul, truncated
+    u32 cmd = ((voice & 0xF) << 24) + sel;    // [voice:4][value:8][sel:16]
+    if (sel & 0xFF00)                          // selectors with a high byte
+        switch (sel) {                         //   carry a scaled value:
+          /* 7-bit level   */ cmd += (p & 0x7F) << 16;        break;
+          /* signed 7-bit  */ cmd += ((p + 64) & 0x7F) << 16; break;
+          /* 4-bit index    */ cmd += (raw & 0xF)  << 16;      break;
+          /* 1-based 4-bit  */ cmd += ((p - 1) & 0xF) << 16;   break;
+          default:            cmd  = -2; /* unknown selector */
+        }
+    func_0c0e8bf4(cmd);                        // → AICA (read+write)
 }
 ```
 
-The float `param` (handled via `fpul`/`fsts`) is a continuous control —
-volume / pan / pitch — and `cmd` selects among ~20 sound operations in a
-compare ladder.  So this is the **general sound-control entry** (play /
-stop / set-volume / etc., chosen by `cmd`), funnelling through
-`func_0c0e8bf4`, the leaf that actually reads+writes the AICA (it appears
-in both accessor caller lists).  The exact `cmd` → operation mapping is
-unread; the dispatch shape and argument packing are clear.
+The `sel` constants are a binary-searched table of AICA parameter IDs (low
+byte always `0xA0`, high byte distinguishes the parameter).  The float
+`val` is range-scaled **per parameter class** before going into bits 16-23:
+
+| value scaling | meaning | selectors (`sel`) |
+|---|---|---|
+| `p & 0x7F` | 7-bit level (0-127) — volume / expression | `01A0 04A0 09A0 0AA0 10A0 19A0 1CA0` |
+| `(p + 64) & 0x7F` | signed 7-bit, centred — pan / balance | `05A0 06A0 07A0 11A0` |
+| `raw & 0xF` | 4-bit index | `1BA0` |
+| `(p - 1) & 0xF` | 1-based 4-bit index | `28A0 29A0 30A0` |
+| passthrough (no value) | flag-only selector | `02A0 03A0` |
+
+So `func_0c0e9590` is the host-side **"set sound parameter"** call: pick a
+voice, pick a parameter, give a float, and it encodes the AICA command
+(scaling the float to that parameter's field width) and hands it to
+`func_0c0e8bf4`, the leaf that reads+writes the AICA (it is in both
+accessor caller lists).  The exact parameter each `sel` names (which is
+volume vs expression vs pitch) needs the AICA-side decode of `cmd`, but
+the **scaling class** above already tells level-type from pan-type from
+index-type.
 
 ## What this accounts for
 

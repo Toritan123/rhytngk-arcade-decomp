@@ -89,8 +89,9 @@ not guesswork):
 | **DMA / GD-ROM** | `0x0C06Dxxx` | `func_0c06d6b8` | subsystem_map |
 
 Sound is the clearest layered stack: G2 transfer → AICA register R/W →
-init/reset → public `sound_control(id, cmd, float)` API, wired into the
-boot sequence at `func_0c0204e8`.
+init/reset → public `aica_param_set(voice, sel, float)` encoder
+(`func_0c0e9590`, decoded: packs a per-parameter-scaled value into one
+AICA command word), wired into the boot sequence at `func_0c0204e8`.
 
 ## 5. Tooling
 
