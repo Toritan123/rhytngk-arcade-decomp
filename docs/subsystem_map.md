@@ -32,8 +32,16 @@ binary by **what hardware it pokes**, not by guesswork.
   three functions above kick Maple DMA via `SB_MDSTAR` (`0xA05F6C04`),
   `SB_MDTSEL` (`0xA05F6C14`) and `SB_MDEN/MDST` (`0xA05F6C18`) — the
   textbook "read the controllers" sequence.
-* **`0x0C06Dxxx` = the DMA / GD-ROM transfer driver** (G2 and root DMA
-  registers `0xA05F70xx` / `0xA05F74xx`, ASIC status `0xA05F6900`).
+* **`0x0C06Dxxx` = the DMA transfer driver** (DMA register blocks
+  `0xA05F70xx` / `0xA05F74xx`, ASIC status `0xA05F6900`).  `func_0c06d6b8`
+  and `func_0c06d70c` both program the same 3-register channel:
+  `0xA05F7000` = control (`(addr>>16) | config@0x0C4EAE4C/50 | 0x8000`
+  go-bit), `0xA05F7004` = address (`addr & 0xFFFE`), `0xA05F7008` = length
+  (`r5`, low then high half); `func_0c06d70c` rounds the size up to whole
+  dwords first.  The register *layout* (control/addr/len, 16-bit halves)
+  is clear; which exact peripheral the `0xA05F7000` block is on NAOMI
+  (GD/G1 cart interface vs a board-specific DMA) is **not** pinned by this
+  read — flagged rather than guessed.
 * **`0x0C0Fxxxx` + `0x0C10xxxx` = graphics/display.**  PVR/TA register
   writes and the ASIC v-sync status reads concentrate here.  This is the
   subsystem the per-frame body (`func_0c0208f0`) calls **four times each
