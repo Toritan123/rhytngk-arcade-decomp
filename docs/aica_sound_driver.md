@@ -112,6 +112,43 @@ volume vs expression vs pitch) needs the AICA-side decode of `cmd`, but
 the **scaling class** above already tells level-type from pan-type from
 index-type.
 
+### Command ring buffer — `func_0c0e8bf4`
+
+`func_0c0e9590` hands its packed command word to `func_0c0e8bf4`, which is
+the **enqueue into the SH-4 → ARM7 command ring**, guarded by a software
+lock:
+
+```c
+int aica_enqueue(u32 cmd) {                  // func_0c0e8bf4
+    if (*(u32 *)0x0C541488 != 0) return -3;  // lock busy → drop
+    *(u32 *)0x0C541488 = -1;                 // take lock
+    if (cmd & 0x80) {                         // command-valid bit
+        u32 wp = *(u32 *)0x0C54148C;          // ring write pointer
+        if (aica_read_reg(wp) != 0)           // slot not yet consumed?
+            { unlock; return -1; }            //   queue full → fail
+        aica_write_reg(wp, cmd);              // write command into the slot
+        wp += 4;
+        if (wp == 0xA0800500) wp = 0xA0800400;// wrap
+        *(u32 *)0x0C54148C = wp;
+    }
+    *(u32 *)0x0C541488 = 0;                   // release lock
+    return 0;
+}
+```
+
+The ring lives **in AICA wave RAM at `0xA0800400 … 0xA0800500`** — a
+256-byte / **64-slot** circular buffer of 4-byte command words.  The
+`aica_read_reg(wp) != 0` test is flow control: a slot reads non-zero until
+the **ARM7 sound program (`aicadrv`) consumes and clears it**, so the
+SH-4 producer stalls (returns -1) rather than overrun.  The lock at
+`0x0C541488` serialises producers; the write pointer at `0x0C54148C`
+tracks the head — both in the sound driver's BSS state block.
+
+So the complete play path is: `aica_param_set` (encode) →
+`aica_enqueue` (ring write, locked, flow-controlled) → `aica_write_reg` →
+`func_0c0f8b34` (G2 transfer) → wave-RAM slot, with the ARM7 `aicadrv`
+draining the ring on the far side.
+
 ## What this accounts for
 
 * The `0x0C0E8/9xxx` sound cluster is now a concrete stack: G2 transfer →
