@@ -156,8 +156,52 @@ in the stream.
 - `0xFF` → Join Delay (reload saved track pointer = loop back).
 - `0xFF 0x2F` → end of track.
 
+### Verified against the aicadrv parser (2026-07)
+
+Read directly from the ARM7 parse core at file `0x63F4`–`0x64EC` (the
+authoritative interpreter), to replace guesses with what the code does:
+
+* **Running status** — byte with bit 7 set is a new status (saved at
+  `[chan+3]`, pointer advances); bit 7 clear reuses the saved status and
+  the byte is `d1`.  `d1 & 0x7F` → assembled-word bits 16–22; status →
+  bits 24–31.  *(matches the earlier spec)*
+* **Dispatch** is `(status & 0x70) >> 4` into the 8-entry table below;
+  each handler reads a *different* number of extra data bytes.  So byte
+  counts are **not** the MIDI-standard ones — they come from the handler
+  the status maps to.
+* **`0xA0` is NOTE-ON** (special-cased at `0x6478` → the KEYON path at
+  `0x6674`).  This is the important divergence from a MIDI reading, which
+  would expect note-on at `0x9X`.  A converter that assumes MIDI
+  semantics desyncs here — the likely cause of garbage output.
+* **No-delta flag confirmed** (`0x64BC`: `tst r6,#128; bne` back to the
+  fetch): if the *last data byte* has bit 7 set, the next command follows
+  immediately with no delta.
+* **Delta confirmed** (`0x64C4`–`0x64D8`): 1 byte if its bit 7 is clear;
+  otherwise 2 bytes `= (b0 << 7) | b1` with bit 14 cleared.  Added to the
+  per-channel tick accumulator at `[chan+0x14]` (`<< 16` fixed-point).
+
+**Open piece:** the exact extra-byte count of the two shared handlers
+(`0x90/A0/B0/F0` → `0x7364`, `0x80/C0` → `0x7370`) still needs a clean
+read (the file-offset ↔ AICA-address mapping needs care).  `tools/dtpk_to_midi.py`
+must be re-grounded on these before its output can be trusted — the
+protocol mechanics above are right, but the per-status semantics/byte
+counts are where it currently guesses.
+
 **Dispatch table at `aicadrv.bin + 0x664C`** (8 u32 entries, indexed
-by `(status & 0x70) >> 2`):
+by `(status & 0x70) >> 2`; handlers below are AICA addresses):
+
+| Index | Status | Handler (AICA) | file offset |
+|---|---|---|---|
+| 0 | 0x80–0x8F | 0x7370 | 0x6494 |
+| 1 | 0x90–0x9F | 0x7364 | 0x6488 |
+| 2 | 0xA0–0xAF | 0x7364 | 0x6488 |
+| 3 | 0xB0–0xBF | 0x7364 | 0x6488 |
+| 4 | 0xC0–0xCF | 0x7370 | 0x6494 |
+| 5 | 0xD0–0xDF | 0x7330 | 0x6454 |
+| 6 | 0xE0–0xEF | 0x7354 | 0x6478 |
+| 7 | 0xF0–0xFF | 0x7364 | 0x6488 |
+
+(Original 6-row sketch, superseded by the 8-row table above:)
 
 | Index | Status range | Handler address |
 |-------|--------------|-----------------|
