@@ -165,14 +165,13 @@ authoritative interpreter), to replace guesses with what the code does:
   `[chan+3]`, pointer advances); bit 7 clear reuses the saved status and
   the byte is `d1`.  `d1 & 0x7F` → assembled-word bits 16–22; status →
   bits 24–31.  *(matches the earlier spec)*
-* **Dispatch** is `(status & 0x70) >> 4` into the 8-entry table below;
-  each handler reads a *different* number of extra data bytes.  So byte
-  counts are **not** the MIDI-standard ones — they come from the handler
-  the status maps to.
-* **`0xA0` is NOTE-ON** (special-cased at `0x6478` → the KEYON path at
-  `0x6674`).  This is the important divergence from a MIDI reading, which
-  would expect note-on at `0x9X`.  A converter that assumes MIDI
-  semantics desyncs here — the likely cause of garbage output.
+* **Dispatch** is `(status & 0x70) >> 4` into the 8-entry table below.
+  (A static attempt to infer per-status *byte counts* from this failed —
+  see the emulator-settled counts further down; every status reads 1 byte.)
+* **`0xA0` routes to the KEYON path** (`0x6478` → `0x6674`).  But "note-on"
+  is misleading: that handler only acts on note values `{0, 32, 36}` and
+  returns on everything else (below), so `0xA0` is **not** a MIDI-style
+  pitched note-on.
 * **No-delta flag confirmed** (`0x64BC`: `tst r6,#128; bne` back to the
   fetch): if the *last data byte* has bit 7 set, the next command follows
   immediately with no delta.
@@ -180,12 +179,31 @@ authoritative interpreter), to replace guesses with what the code does:
   otherwise 2 bytes `= (b0 << 7) | b1` with bit 14 cleared.  Added to the
   per-channel tick accumulator at `[chan+0x14]` (`<< 16` fixed-point).
 
-**Open piece:** the exact extra-byte count of the two shared handlers
-(`0x90/A0/B0/F0` → `0x7364`, `0x80/C0` → `0x7370`) still needs a clean
-read (the file-offset ↔ AICA-address mapping needs care).  `tools/dtpk_to_midi.py`
-must be re-grounded on these before its output can be trusted — the
-protocol mechanics above are right, but the per-status semantics/byte
-counts are where it currently guesses.
+**Data-byte counts — settled by emulation, not static reading.**  A static
+attempt to map the dispatch pointers to handlers by matching spacing (load
+offset `0xF00`) gave a plausible table (`0x8X`=1, `0x9X/A/B`=2, note-on at
+`0xA0`).  **It was wrong.**  The authoritative source is
+`tools/trace_aicadrv.py`, which runs `aicadrv.bin` under the Unicorn ARM
+emulator (verified load offset **`0xEDC`**) and traces the actual stream
+pointer across each dispatch.  Result:
+
+* **Every status consumes exactly 1 data byte** (`d1`).  There is no `d2`
+  in any live path — the static "2-byte" handlers I mapped to were reached
+  by the wrong load offset.
+* In the note handler (`0x6674`), the note value `d1 & 0x7F` is compared
+  only against **0, 32 (0x20), 36 (0x24)**; every other value falls to
+  `0x67B4` (`movs sl,#0; ldmfd {pc}` — a plain return / no-op).  So note
+  bytes outside `{0,32,36}` **trigger no sound at all**.
+
+The consequence is blunt: the DTPK stream is **not** a pitched-note stream,
+so a naive stream→MIDI mapping *fabricates* melodies from bytes the driver
+ignores.  This is why the produced `.mid` files sound like nonsense.  A
+faithful MIDI would have to model what the `0x20`/`0x24` commands and the
+sample-playback path actually do (pitch comes from the program/sample
+definition per trigger, not from a MIDI note number) — which is what the
+Unicorn trace is for.  **Do not trust any byte-count table derived by
+static spacing (including the one an earlier draft of this section
+contained); use the emulator trace.**
 
 **Dispatch table at `aicadrv.bin + 0x664C`** (8 u32 entries, indexed
 by `(status & 0x70) >> 2`; handlers below are AICA addresses):
