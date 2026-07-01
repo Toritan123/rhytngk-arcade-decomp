@@ -109,7 +109,7 @@ lesson being that memory-mapped FIFOs in broad address ranges need an
 | `func_0c1082bc` | generic PVR reg read | direct, verified |
 | `func_0c0f1b50` | write SPG-block reg `0xA05F811C` | direct, verified |
 | `func_0c105478` | flag-gated shadow-register commit | structural |
-| `func_0c0faaf8` | TA geometry submit — store-queue burst | QACR0/1 + SQ + `pref`, verified idiom |
+| `func_0c0faaf8` | TA list setup — store-queue burst of 5 list headers (`docs/ta_sprite_rendering.md`) | QACR0/1 + SQ + `pref`, verified idiom |
 | `func_0c114300` | display-list / vertex-buffer builder (RAM) | corrected from a FIFO false-positive |
 
 All scanner-bounded (outside the EstexNT window); the register addresses
