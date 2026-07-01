@@ -56,6 +56,35 @@ All offsets are relative to the DTPK base.
 | 0x08   | 4    | Stereo flag (0 = mono, 0x80 = stereo)            |
 | 0x0C   | 4    | Length in bytes                                  |
 
+### Sample extraction accuracy (2026-07)
+
+Diagnosing "some extracted samples are just noise":
+
+* **Confirmed bug, fixed:** `pcm8_to_pcm16` in `tools/extract_dtpk.py`
+  used an incoherent formula (`(b-128)*256 if b>=128 else b*256`) that
+  folded the negative half of the waveform onto the positive half —
+  turning genuine 8-bit PCM into harsh distortion.  AICA 8-bit PCM is
+  **signed two's-complement**; the corrected decode raises the median
+  lag-1 autocorrelation of the 8-bit set from **~0.51 to ~0.83**.  The
+  8-bit bucket was where the noise concentrated (16-bit and ADPCM were
+  mostly clean), so this is the main fix.  *Re-run `make extract-audio`
+  to regenerate the WAVs with it.*
+
+* **Format flags are per the reference, not changed.**  The bit-23
+  (8-bit) / bit-24 (ADPCM) interpretation above matches Preppy's spec, so
+  classification was left as-is.  A statistical attempt to prove further
+  misclassification was **rejected as unreliable**: ADPCM is a
+  differential decoder, so decoding *anything* (even noise) as ADPCM
+  produces smooth, autocorrelated output — "sounds fine as ADPCM" is not
+  evidence a sample *is* ADPCM.
+
+* **Residual noise ≠ all bugs.**  After the 8-bit fix, some samples still
+  read noise-like, but low autocorrelation is also the honest signature of
+  genuinely noisy content (cymbals, hi-hats, noise SFX).  Separating true
+  mis-extraction from legitimately-noisy SFX needs the authoritative play
+  parameters (the program/playback tables + `aicadrv`), not a waveform
+  statistic.
+
 ## Sequencer Table (DTPK + 0x2C)
 
 | Offset | Size | Field                                            |
