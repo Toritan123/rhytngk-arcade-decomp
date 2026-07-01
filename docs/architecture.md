@@ -29,10 +29,13 @@ Engine globals live in that BSS and are now individually placed:
 |---|---|---|---|
 | control struct | `0x0C3D4DE4` | video/draw state bitfields | hub_functions |
 | table/state block | `0x0C5400xx` | 47-slot handler table, getters | hub_functions |
-| sound driver state | `0x0C5414xx`/`5415xx` | AICA host bookkeeping | aica_sound_driver |
+| graphics list state | `0x0C42xxxx` | TA-list management structs | pvr_register_interface |
+| DMA config | `0x0C4EAE4C/50` | DMA control-word bits | subsystem_map |
+| sound driver state | `0x0C5414xx`/`5415xx` | AICA host bookkeeping; ring lock+ptr `0x0C541488/8C` | aica_sound_driver |
 | Maple command buf | `0x0C542768…2778` | controller DMA list cursors | maple_input_driver |
 | frame-sync flag | `0x0C431E58` | list-processor wait flag | frame_pipeline_stages |
 | quit flag | `0x0C4655F8` | main-loop exit byte | boot_and_main |
+| AICA command ring | `0xA0800400…0500` | 64-slot SH-4→ARM7 sound queue (wave RAM) | aica_sound_driver |
 
 ## 2. Execution spine  (`docs/boot_and_main.md`)
 
@@ -83,15 +86,18 @@ not guesswork):
 | subsystem | region | entry / driver | doc |
 |---|---|---|---|
 | **input** (Maple) | `0x0C0EAxxx` | `func_0c0ea380` DMA transaction | maple_input_driver |
-| **graphics** (PVR/TA) | `0x0C0Fxxxx`+`0x0C10xxxx` | `func_0c1082a4/bc` reg R/W, `func_0c105478` commit | pvr_register_interface |
-| **sound** (AICA) | `0x0C0E8/9xxx` | `func_0c0e9590` API → `func_0c0e9864` init | aica_sound_driver |
+| **graphics** regs (PVR) | `0x0C0Fxxxx`+`0x0C10xxxx` | `func_0c1082a4/bc` reg R/W, `func_0c105478` commit | pvr_register_interface |
+| **graphics** TA submit | `0x0C0Fxxxx` | `func_0c0faaf8` store-queue burst (QACR + `pref`) | pvr_register_interface |
+| **sound** (AICA) | `0x0C0E8/9xxx` | `func_0c0e9590` API → ring → init `func_0c0e9864` | aica_sound_driver |
 | **G2 transfer** | `0x0C0Fxxxx` | `func_0c0f8b34` 4-byte bus xfer | aica_sound_driver |
-| **DMA / GD-ROM** | `0x0C06Dxxx` | `func_0c06d6b8` | subsystem_map |
+| **DMA** | `0x0C06Dxxx` | `func_0c06d6b8` (regs `0xA05F7000/04/08`) | subsystem_map |
 
-Sound is the clearest layered stack: G2 transfer → AICA register R/W →
-init/reset → public `aica_param_set(voice, sel, float)` encoder
-(`func_0c0e9590`, decoded: packs a per-parameter-scaled value into one
-AICA command word), wired into the boot sequence at `func_0c0204e8`.
+Sound is the fullest stack, read end to end: public
+`aica_param_set(voice, sel, float)` encoder (`func_0c0e9590`) → command
+ring enqueue (`func_0c0e8bf4`, 64-slot wave-RAM ring, locked) → AICA
+register R/W → G2 transfer, plus init/reset (`func_0c0e9864`) wired into
+`func_0c0204e8`.  Graphics has both halves: the register interface and the
+store-queue TA geometry submit.
 
 ## 5. Tooling
 
