@@ -152,10 +152,14 @@ def main():
                 if s['is_adpcm']:
                     pcm = decode_aica_adpcm(raw)
                 elif s['is_8bit']:
+                    # AICA 8-bit PCM is signed two's-complement (0x80 = -128,
+                    # 0xFF = -1). The old `(b-128)*256 if b>=128 else b*256`
+                    # folded the negative half onto the positive one and
+                    # turned real samples into harsh noise.
                     out = bytearray()
                     for b in raw:
-                        v = max(-32768, min(32767, (b - 128) * 256 if b >= 128 else b * 256))
-                        out += struct.pack('<h', v)
+                        signed = b - 256 if b >= 128 else b
+                        out += struct.pack('<h', signed * 256)
                     pcm = bytes(out)
                 else:
                     pcm = raw
