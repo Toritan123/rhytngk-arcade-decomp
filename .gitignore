@@ -93,3 +93,13 @@ extracted_farc/
 extracted_decompressed/
 textures_png/
 preview_textures/
+
+# ── Not decompilation data: keep out of the public repo (2026-07) ──────────────
+# Regenerable build intermediates (all of build/ is produced by `make`)
+build/
+# MAME/emulator logs and session history
+console_history
+mame_err_*.log
+*.log
+# Local launcher / helper scripts
+launch_rhytngk.command
