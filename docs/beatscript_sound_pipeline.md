@@ -1,5 +1,14 @@
 # BeatScript Sound Pipeline (play_sfx / play_music_in)
 
+> ⛔ **RETRACTED (2026-07).** This pipeline is built on a
+> mis-identification. `0x0C12CCC0` ("play_sfx_impl" below) is actually
+> `strcmp`, and the "dispatcher @ 0x0c1008f0 / func_0c1203e0" is the C++
+> Itanium-ABI name **demangler**, not the BeatScript interpreter — its
+> `0x28`/`0x29` bytes are demangler node tags, not `play_music_in` /
+> `play_sfx` opcodes. The whole "op 0x29 → play_sfx_impl → AICA" chain in
+> this document is invalid. See `docs/beatscript_engine.md` for the
+> evidence. Kept only as a record of the corrected error.
+
 > ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
 > document may be in the pre-correction frame — **0xFB00 too low**. The
 > verified base is `0x0C01FB00` (file offset 0), confirmed against the

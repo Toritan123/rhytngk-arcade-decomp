@@ -48,9 +48,14 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
   G2), PVR regs (`func_0c1082a4/bc`), TA draw path (list setup
   `func_0c0faaf8` → VRAM mgmt `func_0c0facc0` → vertex emitter
   `func_0c0e6548`, 96-byte TA params via store queues).
-- BeatScript command interpreter = **`func_0c1203e0`** (the only function
-  with both `cmp/eq #0x28` and `#0x29`); fetcher `func_0c120cc0`, sound
-  impl `func_0c12ccc0`; interpreter web spans 0x0C120xxx–0x0C12Cxxx.
+- **RETRACTED (2026-07):** `func_0c1203e0` is NOT the BeatScript
+  interpreter — it and its `0x0C120xxx` web are the C++ Itanium name
+  **demangler** (`cp-demangle.c`); the `#0x28`/`#0x29` are demangler node
+  tags, `func_0c120cc0` binary-searches the operator table at
+  `0x0C24D8B0`, `func_0c12ccc0` is `strcmp`. The real RIQ/BeatScript
+  sequence interpreter is **not yet located** — start from
+  `riq/riq_play/Criq_play.c` via the `__FILE__` map. See
+  `docs/beatscript_engine.md`.
 - Original source layout recovered from `__FILE__` strings:
   `src/original_source_tree.txt` (451 files, 69 dirs).
 
@@ -77,11 +82,14 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
 
 ## High-value next targets (deep-reasoning work first)
 
-1. **BeatScript opcode table**: read the interpreter web
-   (`func_0c1203e0`, `func_0c120680`, `func_0c1218c0`, fetcher
-   `func_0c120cc0`) and produce the full opcode → handler → semantics
-   table. Cross-name with the GBA decomp (arthurtilly/rhythmtengoku,
-   `data/beatscript_scene_data.*`) — shared design, best Rosetta stone.
+1. **Locate the real BeatScript/RIQ interpreter.** The `0x0C120xxx` web
+   is the C++ demangler, not gameplay (see `docs/beatscript_engine.md`).
+   Start from `riq/riq_play/Criq_play.c` via the `__FILE__` map
+   (`tools/map_funcs_to_files.py`); find the per-frame consumer of the
+   64-KB script regions (`docs/script_regions.md`) that dispatches on
+   small integer opcodes via a real jump table. Only then cross-name
+   against the GBA decomp's *tickflow* engine (arthurtilly/rhythmtengoku)
+   — tag any borrowed name `[hypothesis, GBA-analogy]`.
 2. **Matching C for the verified window** [0x0C020000, 0x0C026FDC): 181
    functions with EstexNT-confirmed boundaries; boot/main/frame stages
    already characterised — turn them into real .c files.

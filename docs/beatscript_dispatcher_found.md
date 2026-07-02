@@ -1,6 +1,18 @@
 # BeatScript Dispatcher — FOUND
 
-> ✅ **Corrected 2026-07 against the verified frame.** The command
+> ⛔ **RETRACTED (2026-07). This function is NOT the BeatScript
+> dispatcher.** `func_0c1203e0` and its whole `0x0C120xxx` web are the
+> C++ Itanium-ABI name **demangler** (gcc `cp-demangle.c`). The
+> `cmp/eq #0x28`/`#0x29` it was found by are demangler grammar node tags,
+> not `play_music_in`/`play_sfx`; `'L'`/`'T'`/`"sr"` are mangling
+> productions; `func_0c120cc0` binary-searches the C++ **operator table**
+> at `0x0C24D8B0`; and `func_0c12ccc0` is `strcmp`. Proof (operator
+> table + `"vtable for "`/`"typeinfo for "` strings + strcmp body) is in
+> `docs/beatscript_engine.md`, which supersedes this file. The real RIQ
+> sequence interpreter is not yet located. Everything below is kept only
+> as a record of the corrected error.
+
+> ✅ **(Now-retracted) correction 2026-07 against the verified frame.** The command
 > interpreter re-located by opcode search (`cmp/eq #0x28` + `#0x29`, the
 > only function in the code that has both) is **`func_0c1203e0`** — a
 > confirmed v3 function start.  The address this doc originally gave,
