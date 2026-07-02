@@ -62,6 +62,42 @@ the object/sprite state and burst them the same way.  Reading one of those
 builders is the next step to get the actual sprite vertex format (x/y/z,
 u/v, colour).
 
+## The emit driver — `func_0c0facc0`
+
+The sibling that drives per-list vertex emission.  Read from its pools and
+body:
+
+* **Graphics state struct at `0x0C42F6AC`** (the `0x0C42xxxx` block from
+  `docs/architecture.md`).  It is **double-buffered**: the function copies
+  field-pairs between offsets `+0x13C…` and `+0x63C…` (`+0x17C`/`+0x67C`)
+  — two banks exactly `0x500` apart, swapped per frame.
+* **It stores `0x10000000` — the real TA polygon-FIFO address — into the
+  state slot** at `+0x170 + 4*idx` (pool `0x0C0FAE64`).  Unlike the
+  earlier false positives (packed vertex constants that merely *looked*
+  like FIFO addresses), this one is written into the state struct that the
+  burst path reads its target from: the vertex stream really is aimed at
+  `0x1000_0000`.
+* **Completion polling**: `jsr @0x0C0FA898` in a `tst r0,r0 / bf` spin —
+  the graphics cluster's wait-for-TA/DMA-idle primitive (also called from
+  `func_0c0faaf8` before touching the queue).
+* **Per-item emit loop** (`0x0FAD8E…`): walks a record table from
+  `0x0C42FE84`, and per record calls `func_0c101dbc(r4=rec[12],
+  r5=float(depth), r6=buf, r7=rec[20])` — an FPU-using transform/emit —
+  then two follow-up submits per item.  Records whose control bits
+  (`state+0x1C` bit 0 / bit 1) are clear skip their half of the work: two
+  render passes gated per frame.
+
+So the draw path in full:
+
+```
+func_0c0f2164 (frame stage)
+  ├ func_0c0faaf8   open the 5 TA lists (header burst)
+  ├ func_0c0facc0   flip double-buffered state @0x0C42F6AC,
+  │                 aim the stream at TA FIFO 0x10000000,
+  │                 loop the record table → func_0c101dbc per item
+  └ …               (vertex format itself lives in func_0c101dbc)
+```
+
 ## Caveats
 
 * Scanner-bounded cluster; the constants (SQ base, QACR, para-control) are
