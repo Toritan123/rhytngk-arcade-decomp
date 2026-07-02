@@ -115,9 +115,38 @@ infrastructure**, not yet vertex data:
   frame-sync flag.
 
 So the draw path layering is: list headers → state flip → **mode params →
-surface descriptors** → (one level deeper) the actual vertex writes.  The
-two follow-up submits per record (`func_0c100de4`, `func_0c103df8`) are
-where the vertex format should finally be — the next read.
+surface descriptors** → buffer layout → register programming (below).
+
+### One level further: the layout allocator and register programmer
+
+* `func_0c103df8` — a short **PVR register-setting chain**: three calls
+  into the `0x0C1086xx` accessor family with values from the global
+  struct at `0x0C430724`.
+* `func_0c100de4` — **render-buffer layout allocator**:
+  * validates the pass count (`obj[12]` must be 1..8);
+  * per pass, the config word at `obj[72 + 8*i]` contains **five 2-bit
+    fields**, each indexing the table `{0, 8, 16, 32}` at `0x0C24A060`;
+    the summed factors × (w·h·4) give that pass's buffer size (units not
+    pinned — the shape is a per-channel/per-plane bit-width sum);
+  * checks total fit against the capacity `hdr[4]`, then carves regions
+    with **128-byte and 32-byte alignment** — the PVR's texture and tile
+    alignments;
+  * writes per-pass base addresses into `hdr[52 + 8*i]` and stores a
+    doubled span `(hdr[36]-hdr[8])*2` into the `0x0C43` struct field,
+    preserving its top byte (`0xFF000000` mask);
+  * finally calls `func_0c100aa0` — an 836-byte function whose only
+    callee is the PVR register accessor `func_0c108624`: the **register
+    programmer** that commits the computed layout to the hardware.
+
+### Honest status of the "sprite vertex format" question
+
+Five levels down, everything on this branch is the **render-target /
+video-memory manager** (descriptors → layout → registers), not per-sprite
+vertex emission.  The actual sprite/polygon vertex writes must sit on a
+different branch — candidates: the sibling stage calls
+(`func_0c0fafbc`, `func_0c0fb140`, `func_0c0fbb18`) or other callers of
+the `0x0C42FE84` record table.  Recorded so the next session starts
+there instead of re-descending this branch.
 
 So the draw path in full:
 
