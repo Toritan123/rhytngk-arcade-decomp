@@ -138,15 +138,39 @@ surface descriptors** → buffer layout → register programming (below).
     callee is the PVR register accessor `func_0c108624`: the **register
     programmer** that commits the computed layout to the hardware.
 
-### Honest status of the "sprite vertex format" question
+### The vertex emitter — found: `func_0c0e6548`
 
-Five levels down, everything on this branch is the **render-target /
-video-memory manager** (descriptors → layout → registers), not per-sprite
-vertex emission.  The actual sprite/polygon vertex writes must sit on a
-different branch — candidates: the sibling stage calls
-(`func_0c0fafbc`, `func_0c0fb140`, `func_0c0fbb18`) or other callers of
-the `0x0C42FE84` record table.  Recorded so the next session starts
-there instead of re-descending this branch.
+The prior branch was the memory manager; the actual vertex emission lives
+in the **`0x0C0E6xxx` cluster** (`func_0c0e6548` and siblings
+`func_0c0e69e0` / `_6b3c` / `_6c94` — all QACR + `pref` writers, each with
+several `fmov.s` stores).  Found by ranking every store-queue writer by
+`fmov.s`-store count.  `func_0c0e6548` (1104 B) is the fullest:
+
+1. **Transform** (`0x0E65AA`–`0x0E6656`): loads a matrix/scale from the
+   RAM block `0x0C419C24…40`, multiplies coordinates by it and by the
+   constant `0.5` (`0x3F000000`, a half-texel/centre offset), using
+   `fmul`.
+2. **Assemble + burst** (`0x0E68A2`–`0x0E692C`): writes **three
+   consecutive 32-byte blocks** (`r8`, `r8+32`, `r8+64`) — a 96-byte TA
+   parameter — then `pref @r8; pref @r2; pref @r3`.  Per block it stores:
+   * integer/fixed **screen coords** copied from the transformed stack
+     buffer (`r14+24/28/40/44/48`);
+   * a **float** (`fr15`, the shared depth / `1/w`) at each vertex's
+     w-slot via `fmov.s fr15,@r1`;
+   * **colour / control words** built from `r12`/`r13` and masked fields
+     (`@(52,r2)=(v & mask)|r12`, `@(56,r2)=r13|r12`, etc.);
+   * the para-control / list flags in `@(8,r8)` and `@(48,r2)`.
+
+So a sprite is emitted as a **3×32-byte TA parameter** = header + vertices
+carrying `{screen x, y, depth(float w), u, v, colour}`, bursted straight
+to the TA through the store queues after an on-CPU transform.  The exact
+byte-offset → field map (which slot is u vs v vs colour) is the remaining
+detail; the structure, the transform, and the emitter location are
+settled.
+
+This closes the draw-path hunt: **list setup (`func_0c0faaf8`) → state /
+video-memory management (`func_0c0facc0` → descriptors/layout) → transform
++ vertex burst (`func_0c0e6548`)**.
 
 So the draw path in full:
 
