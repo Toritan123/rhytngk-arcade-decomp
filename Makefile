@@ -86,6 +86,7 @@ help:
 	@echo "  make ptr-installs     — trace where code pointers are installed into RAM"
 	@echo "  make pool-calls       — recover mov.l @(pc)+jsr static call edges"
 	@echo "  make hw-mmio          — locate hardware drivers by MMIO register refs"
+	@echo "  make source-tree      — recover original source layout from ROM strings"
 	@echo "  make disasm           — re-run SH-4 + ARM7 objdump"
 	@echo "  make check-tools      — verify required tools are installed"
 	@echo "  make clean            — remove all build artifacts"
@@ -260,6 +261,13 @@ $(BUILD_DIR)/hw_mmio_v3.json: $(BUILD_DIR)/sh4_functions_v3.json \
                             $(TOOLS_DIR)/find_hw_mmio.py
 	@echo "  HWMMIO   (locate hardware drivers by MMIO constants)"
 	@$(PYTHON) $(TOOLS_DIR)/find_hw_mmio.py
+
+source-tree: src/original_source_tree.txt
+
+src/original_source_tree.txt: $(TOOLS_DIR)/recover_source_tree.py
+	@echo "  SRCTREE  (recover original source layout from ROM __FILE__ strings)"
+	@$(PYTHON) $(TOOLS_DIR)/recover_source_tree.py
+
 
 disasm: $(BUILD_DIR)/.disasm.stamp
 
