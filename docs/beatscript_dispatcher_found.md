@@ -1,18 +1,41 @@
 # BeatScript Dispatcher — FOUND
 
-> ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
-> document may be in the pre-correction frame — **0xFB00 too low**. The
-> verified base is `0x0C01FB00` (file offset 0), confirmed against the
-> `EstexNT/rhythmtengokuarcade` ground truth. Re-check any address against
-> `build/sh4_functions_v3.json` before relying on it. See
-> `docs/base_address_correction.md`.
-
+> ✅ **Corrected 2026-07 against the verified frame.** The command
+> interpreter re-located by opcode search (`cmp/eq #0x28` + `#0x29`, the
+> only function in the code that has both) is **`func_0c1203e0`** — a
+> confirmed v3 function start.  The address this doc originally gave,
+> `0x0c1008f0`, was in the wrong frame: it is **the same function**
+> (identical disassembly — `mov.l @(12,r4),r2; mov.b @r2,r0; cmp/eq
+> #76/#84/#115; fetch via 0x0C120CC0; cmp/eq #40/#41`), just mislabelled.
+> The other addresses below (`0x0C120CC0` fetcher, `0x0C12CCC0` sound
+> impl) were already in the true frame and are correct.
 
 After multiple failed search attempts, the BeatScript interpreter
 was located by searching for `cmp/eq #0x28` and `cmp/eq #0x29`
 (the `play_music_in` and `play_sfx` opcode checks).
 
-## Dispatcher entry point: `0x0c1008f0`
+## Command interpreter: `func_0c1203e0`  (was mislabelled `0x0c1008f0`)
+
+Read in the corrected frame:
+
+* `r12 = r4` (the script/state context); `r2 = state[+0x0C]` = current
+  script pointer; `r0 = *r2` = command byte.
+* **Text-marker fast paths** (checked before the opcode fetch): `0x4C`
+  `'L'`, `0x54` `'T'`, and the pair `0x73 0x72` (`"sr"`) route to
+  dedicated handlers — the script format carries ASCII-tagged directives
+  as well as binary opcodes.
+* Otherwise it calls the **entry fetcher `func_0c120cc0`** (pool
+  `0x0C120640`); on a null fetch it returns (end of script).
+* On the fetched entry it dispatches the opcode word `*entry`: `0x28`
+  `play_music_in` / `0x29` `play_sfx` → the **sound impl `func_0c12ccc0`**
+  (pool `0x0C120644`), then a **sub-type dispatch** on `entry[+4][+0x0C]`
+  (`1` / `2` / `3`) to per-mode handlers.
+* Callees (`func_0c11ff80`, `_120680`, `_120cc0`, `_120e20`, `_121780`,
+  `_1218c0`, `_12ccc0`) plus a self-call make this one node in a densely
+  mutually-recursive interpreter web spanning **`0x0C120xxx`–`0x0C12Cxxx`**
+  (called from `func_0c120680` / `func_0c1218c0`).
+
+## Original disassembly (frame-mislabelled `0x0c1008f0` = `func_0c1203e0`)
 
 The function works as follows:
 
