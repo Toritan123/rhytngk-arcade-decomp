@@ -51,7 +51,7 @@ func_0c020000  crt0 [V]   cache(CCR=0x105) · BSS clear · stack · FPU
         ├ main loop: while (*(u8*)0x0C4655F8 == 0) frame();
         │     frame body func_0c0208f0 [V] = 9-stage pipeline
         │        stage 5 func_0c020440 [V]  flat update group (12 calls)
-        │        stage 6 func_0c02074c [V]  update group w/ iteration
+        │        stage 6 func_0c02074c [V]  straight-line update group
         │        stage 8 func_0c020304 [V]  frame sync (wait flag 0x0C431E58)
         └ func_0c0202b0  teardown [V]
 ```

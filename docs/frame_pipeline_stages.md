@@ -52,24 +52,26 @@ A flat fan-out: builds a `{0,-1,0,-1}` marker (→ stub) and then calls
 conditionals:
 
 ```
-func_0c037db8, [stub], func_0c037ea0, func_0c037ed0, func_0c03099c,
+func_0c037db8, [stub], func_0c037ea0, func_0c037ed0, func_0c02039c,
 func_0c03eabc, func_0c038b38, func_0c066a08, func_0c06624c, func_0c03099c,
 func_0c03a520(0x0C4669D8), func_0c037ccc
 ```
 
-(`func_0c03099c` runs twice; `func_0c03a520` is passed the global
-`0x0C4669D8`.)  This is one **update group** — a fixed schedule of
-per-frame updates, all targets in the out-of-window `0x037xxx / 0x038xxx /
-0x03axxx / 0x066xxx` clusters.
+(The 5th call is the **in-window `func_0c02039c`** — pool `0x0C0204C4` =
+`0x0C02039C`; an earlier revision misread it as `func_0c03099c` running
+twice.  `func_0c03a520` is passed the global `0x0C4669D8`.)  This is one
+**update group** — a fixed schedule of per-frame updates.
 
-## Stage 6 — `func_0c02074c`: update group with an iteration [verified]
+## Stage 6 — `func_0c02074c`: straight-line update group [verified]
 
-Same shape as stage 5 but with control flow: it captures a count/handle
-returned by an early call into `r8`, then **loops**, calling a per-item
-routine `r8` times (the `bra 0x0207a8` / body at `0x020792` calling
-`func @(0x0C0208C8)` with `r4 = r8`).  So this stage iterates over a
-runtime-sized list rather than a fixed sequence.  123 instructions, ~11
-distinct callees (again mostly `0x037xxx / 0x066xxx`).
+**Corrected during C translation** (src/code_0c020140.c): an earlier
+revision read a "loop over a runtime count" here, but the apparent loop
+body at `0x020792` is an **unreachable C++ exception-handling landing
+pad** — `bra 0x0207A8` skips it unconditionally, nothing branches into
+it, and the function's pool holds the unwind helper `0x0C129EE0`.  The
+binary is C++ with exceptions; such pads recur throughout.  The real
+control flow is a straight-line update group with tick counters, ~11
+distinct callees (mostly `0x037xxx / 0x066xxx`).
 
 ## Reading
 
