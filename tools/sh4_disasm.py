@@ -221,7 +221,38 @@ def decode(w: int, pc: int) -> tuple[str, str]:
         return "mov", f"#{sext(i8,8)},{R(n)}"
 
     if op == 0xf:
-        return ".word", f"0x{w:04x}  ; fpu"
+        F = lambda x: f"fr{x}"
+        if d4 == 0x0: return "fadd", f"{F(m)},{F(n)}"
+        if d4 == 0x1: return "fsub", f"{F(m)},{F(n)}"
+        if d4 == 0x2: return "fmul", f"{F(m)},{F(n)}"
+        if d4 == 0x3: return "fdiv", f"{F(m)},{F(n)}"
+        if d4 == 0x4: return "fcmp/eq", f"{F(m)},{F(n)}"
+        if d4 == 0x5: return "fcmp/gt", f"{F(m)},{F(n)}"
+        if d4 == 0x6: return "fmov.s", f"@(r0,{R(m)}),{F(n)}"
+        if d4 == 0x7: return "fmov.s", f"{F(m)},@(r0,{R(n)})"
+        if d4 == 0x8: return "fmov.s", f"@{R(m)},{F(n)}"
+        if d4 == 0x9: return "fmov.s", f"@{R(m)}+,{F(n)}"
+        if d4 == 0xa: return "fmov.s", f"{F(m)},@{R(n)}"
+        if d4 == 0xb: return "fmov.s", f"{F(m)},@-{R(n)}"
+        if d4 == 0xc: return "fmov", f"{F(m)},{F(n)}"
+        if d4 == 0xe: return "fmac", f"fr0,{F(m)},{F(n)}"
+        if d4 == 0xd:
+            sub = m
+            one = {0x0: ("fsts", f"fpul,{F(n)}"), 0x1: ("flds", f"{F(n)},fpul"),
+                   0x2: ("float", f"fpul,{F(n)}"), 0x3: ("ftrc", f"{F(n)},fpul"),
+                   0x4: ("fneg", F(n)), 0x5: ("fabs", F(n)),
+                   0x6: ("fsqrt", F(n)), 0x7: ("fsrra", F(n)),
+                   0x8: ("fldi0", F(n)), 0x9: ("fldi1", F(n)),
+                   0xa: ("fcnvsd", f"fpul,dr{n}"), 0xb: ("fcnvds", f"dr{n},fpul"),
+                   0xe: ("fipr", f"fv{(n&3)<<2},fv{n&0xC}")}
+            if sub in one:
+                return one[sub]
+            if sub == 0xf:
+                if w == 0xfbfd: return "frchg", ""
+                if w == 0xf3fd: return "fschg", ""
+                if (n & 3) == 1: return "ftrv", f"xmtrx,fv{n & 0xC}"
+            return ".word", f"0x{w:04x}  ; fpu?"
+        return ".word", f"0x{w:04x}  ; fpu?"
 
     return ".word", f"0x{w:04x}"
 

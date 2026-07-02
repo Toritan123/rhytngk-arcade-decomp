@@ -81,11 +81,43 @@ body:
   the graphics cluster's wait-for-TA/DMA-idle primitive (also called from
   `func_0c0faaf8` before touching the queue).
 * **Per-item emit loop** (`0x0FAD8E…`): walks a record table from
-  `0x0C42FE84`, and per record calls `func_0c101dbc(r4=rec[12],
-  r5=float(depth), r6=buf, r7=rec[20])` — an FPU-using transform/emit —
-  then two follow-up submits per item.  Records whose control bits
-  (`state+0x1C` bit 0 / bit 1) are clear skip their half of the work: two
-  render passes gated per frame.
+  `0x0C42FE84`, and per record calls a helper chain, then two follow-up
+  submits per item.  Records whose control bits (`state+0x1C` bit 0 /
+  bit 1) are clear skip their half of the work: two render passes gated
+  per frame.
+
+### Down the per-record chain (corrected attribution)
+
+Reading the callees shows this level is **descriptor/allocator
+infrastructure**, not yet vertex data:
+
+* `func_0c101dbc` — *(earlier guess "FPU transform/emit" was wrong; it
+  uses no FPU)* — a **mode-parameter lookup**: from two flag bits it
+  writes a pair of limit constants to out-pointers
+  (`{40|20|10}` and `{15|8}`), i.e. per-mode buffer dimensions.
+* `func_0c103fc0` — **surface/buffer descriptor setup**:
+
+  ```c
+  int surface_setup(obj, w, h, fmt) {
+      if (!func_0c104fb4()) return 0xEEEE;     // space/validity gate
+      obj[4]=w; obj[8]=h; obj[12]=fmt;
+      obj[0x38] = ((h-1)<<16) | (w-1);         // PVR size-register form
+      hdr[8]  = obj[24];                       // buffer base
+      hdr[12] = obj[24]+hdr[4] - w*h*24*fmt;   // allocate from buffer END
+      if (g_0C430700->flags & 0x80) hdr[12] -= 24;
+      hdr[36] = hdr[12] - 0x100;
+      /* copy 4 clip/config fields from global 0x0C43001C */
+  }
+  ```
+
+  `((h-1)<<16)|(w-1)` is exactly the PVR dimension-register encoding, and
+  the config globals live at `0x0C4300xx` — the same `0x0C43` block as the
+  frame-sync flag.
+
+So the draw path layering is: list headers → state flip → **mode params →
+surface descriptors** → (one level deeper) the actual vertex writes.  The
+two follow-up submits per record (`func_0c100de4`, `func_0c103df8`) are
+where the vertex format should finally be — the next read.
 
 So the draw path in full:
 
