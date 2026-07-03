@@ -85,15 +85,20 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
 1. **RIQ sequence engine — LOCATED (see `docs/riq_interpreter.md`).**
    The script is a list of `{argc, handler_ptr, args…}` records — the
    "opcode" is a direct function pointer, so there is NO opcode/jump
-   table (that is why byte-opcode searches failed, and the `0x0C120xxx`
-   "dispatcher" was the C++ demangler). 148 handler-commands are
-   enumerated from the ROM; engine state is `*(0x0C3D4D80)`; per-frame
-   update is `func_0c092538`, tick step `func_0c091d24`; `func_0c0951dc`
-   is the on-screen text/message state machine. **Still open:** the
-   record-list *driver* loop (reached from `func_0c092538`'s run state)
-   and the outer container framing. Verify each handler's role from its
-   body before naming; only then borrow GBA *tickflow* names, tagged
-   `[hypothesis, GBA-analogy]`.
+   table (why byte-opcode searches failed; the `0x0C120xxx` "dispatcher"
+   was the C++ demangler). 148 handler-commands enumerated from the ROM.
+   Architecture: a **per-scene vtable** `{+0 enter, +4 cmd_table, +8
+   update}` driven by a **scene manager** at `0x0C3D4D94` (`mgr[0]`=state,
+   `mgr[+4]`=active descriptor). Generic per-frame driver =
+   **`func_0c06f920`** (state0→`func_0c0a2e88`, state1→`func_0c0a2f18`);
+   registrar `func_0c06f0c4`. **Fire model = input-gated, NOT
+   tick-scheduled**: advance when `(input & desc[0]) == desc[0]`
+   (`0x0C3D5C14`); the `state[+22]/[+24]` counters are per-track anim
+   timers, not a command clock. **Still open:** the top-of-frame call site
+   tying the manager to `func_0c0208f0`'s pipeline; per-note timing in the
+   track builders (`func_0c0a2b00`). Verify each handler from its body
+   before naming; only then borrow GBA *tickflow* names `[hypothesis,
+   GBA-analogy]`.
 2. **Matching C for the verified window** [0x0C020000, 0x0C026FDC): 181
    functions with EstexNT-confirmed boundaries; boot/main/frame stages
    already characterised — turn them into real .c files.

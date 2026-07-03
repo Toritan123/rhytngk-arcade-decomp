@@ -134,40 +134,80 @@ Full 148-entry list is reproducible with the scan in §7.
   `riq_reading`/`riq_counselor` text flow, adjacent to but distinct from
   the rhythm sequencer.
 
-## 4b. The driver — a scene-descriptor + `{flags,handler}` table, not a byte loop [verified structure]
+## 4b. The driver — a per-scene vtable + scene-manager state machine [verified]
 
-Tracing the run path did **not** reveal a single "read argc, `jsr @handler`,
-advance cursor, loop" driver, and structural searches for that idiom over
-`0x0C085000–0x0C0A5000` returned **zero** matches. Instead the command
-records are held in a **per-scene descriptor** reached from `state[+4]`,
-and handlers are called from the descriptor's table, not walked from a
-flat instruction stream. Concretely, the scene descriptor for region-0
-lives at **`0x0C2CAC18`** (loaded as a pool constant by `func_0c092538`,
-`func_0c091f10`, `func_0c092930`, `func_0c093044`, …). Its body and the
-table just below it decode from ROM as:
+There is **no** flat "read argc, `jsr @handler`, advance cursor, loop"
+driver (structural searches for that idiom over `0x0C085000–0x0C0A5000`
+returned zero real matches — the few hits were pool-word mis-decodes or
+object-list/track walkers). The RIQ engine is instead a **scene-manager
+state machine driving a per-scene vtable**.
+
+### The scene descriptor (a vtable) [verified from ROM]
+
+Every RIQ scene is a fixed 3-slot descriptor:
 
 ```
-0x0C2CABC0: [len][00 0N 0b XX]   ; type/string descriptors (0b05..0b09)
-0x0C2CABE8: 00000003  0C092BB4    ; {argc/flags, handler}  (run-state init)
-0x0C2CABF0: 00000000  0C092220    ; {flags, handler}
-0x0C2CABF8: 00000000  0C092538    ; {flags, handler}  = the per-frame update
-0x0C2CAC00: 00000000  0C0D54C8    ; {flags, handler}
-0x0C2CAC08: 00000000  0C264274    ; (data ptr, message text)
-0x0C2CAC18: 0C06FA34  0C2CABEC    ; descriptor head: {class/vtbl, &table above}
+descriptor +0  enter()      per-frame? no — scene enter/construct
+           +4  cmd_table    -> array of {func_ptr, flags} (8-byte entries)
+           +8  update()     the per-frame scene update
+           +12.. scene-local state
 ```
 
-So a scene is `{class_ptr, &handler_table}`, the handler table is a list
-of `{flags, function_ptr}` entries, and the flat `[argc][handler][args]`
-records from §2 are the **serialized form** of exactly these entries
-(`argc` = entry length in words; the same handler pointers appear).
-`func_0c092538` (one of the entries) is thus invoked *by the engine
-walking this table*, which is why it — and the 148 handlers of §3 — are
-called with the engine state as context rather than from a byte
-interpreter. The **outer walker that iterates the `{flags,handler}` table
-per frame and gates each entry on the tick** (`func_0c091d24` advances the
-`state[+22]` counter / `state[+24]` countdown) is **not yet pinned to a
-single function**; see §6 for the next lead. This is an honest
-"structure known, exact loop not yet isolated" — not a guessed loop.
+Many scenes **share** the same `enter` (`func_0c06fa34`) and `update`
+(`func_0c06f920`) and differ only in the `+4` command table. Verified by
+dumping the descriptor array in `0x0C2B1xxx` — e.g. `0x0C2B1D70`,
+`0x0C2B1EF8`, `0x0C2B206C` are all `{func_0c06fa34, <own cmd_table>,
+func_0c06f920, 0,0,0}`. The region-0 descriptor `0x0C2CAC18` is
+`{func_0c06fa34, 0x0C2CABEC, func_0c06f920, …}`; its `+4` table
+`0x0C2CABEC` holds the 4 entries `{func_0c092bb4, func_0c092220,
+func_0c092538, func_0c0d54c8}` (each `{func, 0}`), which is why
+`func_0c092538` is referenced only from data — it is a **vtable method**,
+not a byte-interpreted opcode.
+
+### The scene manager [verified]
+
+Global **`0x0C3D4D94`** is the scene manager: `mgr[0]` = a small state
+enum `{0,1,2}`, `mgr[+4]` = the **active scene descriptor**. Scenes are
+installed by launchers `func_0c06f07c`/`func_0c06f150`/… (each hands a
+fixed descriptor to the registrar **`func_0c06f0c4`**, which stashes it at
+`0x0C53F890` and resets `mgr` bytes `0x0C3D4D90/91`).
+
+The per-frame update method **`func_0c06f920`** (installed as every RIQ
+scene's `descriptor[+8]`) runs the manager sub-state-machine:
+
+* **state 0 → `func_0c0a2e88`**: read `desc = mgr[+4]`, read a required
+  **mask** `desc[0]` (u16), AND with the global flag word `0x0C3D5C14`,
+  and **advance only if `(flags & mask) == mask`**. On advance it calls
+  `desc[+4]` (the command-table method) and sets `mgr[0]=1`.
+  (`0x0C3D5C14` is a global bit-flags word read by ~48 functions,
+  including the input-handling code — most likely button/event input,
+  though it is not traced to the Maple driver here.)
+* **state 1 → `func_0c0a2f18`**: call `r = desc[+8]()` and branch on the
+  result `{1→reset mgr[0]=0, 2→cleanup mgr[0]=2}`.
+
+### Fire-timing — SETTLED: input-gated, not tick-scheduled [verified]
+
+The walk does **not** compare a per-entry timestamp to a tick counter
+before firing. Command advancement is **gated on a mask match**
+(`(0x0C3D5C14 & desc[0]) == desc[0]` in `func_0c0a2e88`; `0x0C3D5C14` is
+the global flag word the input code reads, so this is most likely a
+button/event gate). The counters
+`state[+22]`/`state[+24]` that `func_0c091d24` advances are a **per-track
+animation/scroll timer** (used by the note-lane builders `func_0c0a2b00`,
+`func_0c0a3020`), *not* a command-fire clock. So at the scene-manager
+level RIQ progression is an **input-driven state machine**, and the
+`{func,flags}` table entries are lifecycle methods called by the manager,
+not time-scheduled events.
+
+### Honest limit
+
+`func_0c06f920` (+ `func_0c0a2e88` / `func_0c0a2f18`) **is** the generic
+per-frame scene driver — that question is answered. What is *not* fully
+pinned is the top-of-frame call site: `mgr[+4][+8]()` is only invoked
+from `func_0c0a2f18` (state 1), so the very first call each frame comes
+from a manager tick I have not tied back to `func_0c0208f0`'s pipeline
+(the descriptors are dispatched cooperatively, so static callers don't
+reveal it). See §6.
 
 ## 5. Correction to `tools/parse_beatscript.py` [flag]
 
@@ -195,23 +235,27 @@ names as fact.
 args}` record format and its in-RAM `{flags, handler}`-table form (§4b);
 that the "opcode" is a direct function pointer (no jump/opcode table); the
 148-handler command set and the top-6 handlers' concrete behaviour (§3);
-the per-frame update entry (`func_0c092538`), tick step (`func_0c091d24`),
-and the message state machine (`func_0c0951dc`, 33-entry table decoded).
+the tick step (`func_0c091d24`); the message state machine
+(`func_0c0951dc`, 33-entry table decoded); and now (§4b) the **scene
+vtable** `{enter, cmd_table, update}`, the **scene manager** at
+`0x0C3D4D94` with the generic per-frame update **`func_0c06f920`**
+(state 0 = `func_0c0a2e88`, state 1 = `func_0c0a2f18`), the registrar
+`func_0c06f0c4`, and the **input-gated (not tick-scheduled) fire model**.
 
 **Open / next concrete leads:**
-1. **The outer walker** that iterates a scene's `{flags, handler}` table
-   (head at `0x0C2CAC18` → table at `0x0C2CABEC`) each frame and gates
-   each entry on the tick. Structure is known (§4b); the *loop itself* is
-   not yet a single named function — a byte-stream "read argc, jsr,
-   advance" driver does **not** exist (searches returned 0). Next step:
-   find who dereferences a scene descriptor's `+4` table pointer and calls
-   its entries — start from the ≥5 functions that load `0x0C2CAC18` as a
-   pool constant (`func_0c091f10`'s parent, `func_0c092930`,
-   `func_0c093044`) and look for the table-walk there, comparing an
-   entry's timestamp field against `state[+22]`.
-2. **The outer container / serialized form** (the framing between the
-   flat `[argc][handler][args]` records at `0x0C2C0000`) — decode how the
-   serialized command list maps to the in-RAM `{flags,handler}` table.
+1. **Top-of-frame entry.** `func_0c06f920` is the generic scene driver,
+   but `mgr[+4][+8]()` is only called from `func_0c0a2f18` (a state within
+   the same machine), so the *first* manager tick each frame is not yet
+   tied to `func_0c0208f0`'s 9-stage pipeline. Next step: trace which
+   frame-pipeline leaf (the out-of-window `0x037xxx`/`0x066xxx` targets of
+   `func_0c020440`/`func_0c02074c`) reads scene manager `0x0C3D4D94` or the
+   current-descriptor `0x0C53F890` and kicks the machine — a caller of
+   `func_0c06f920`/`func_0c0a2e88` reachable from the frame body.
+2. **Per-track note timing.** The tick counters `state[+22]/[+24]`
+   (`func_0c091d24`) drive the note-lane builders `func_0c0a2b00` /
+   `func_0c0a3020`. If per-note *timing* (as opposed to per-command input
+   gating) lives anywhere, it is here — read how `func_0c0a2b00` uses the
+   tick to schedule the 8-entry track array against `0x0C2CEC60`.
 3. **Per-scene attribution** — `func_0c0951dc`'s Japanese text points at
    `riq_reading`/`riq_counselor`; map the `0x0C08–0x0C0A` handler cluster
    to `src/riq/*` via `__FILE__` recovery to name each command by scene.
