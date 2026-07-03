@@ -82,14 +82,18 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
 
 ## High-value next targets (deep-reasoning work first)
 
-1. **Locate the real BeatScript/RIQ interpreter.** The `0x0C120xxx` web
-   is the C++ demangler, not gameplay (see `docs/beatscript_engine.md`).
-   Start from `riq/riq_play/Criq_play.c` via the `__FILE__` map
-   (`tools/map_funcs_to_files.py`); find the per-frame consumer of the
-   64-KB script regions (`docs/script_regions.md`) that dispatches on
-   small integer opcodes via a real jump table. Only then cross-name
-   against the GBA decomp's *tickflow* engine (arthurtilly/rhythmtengoku)
-   — tag any borrowed name `[hypothesis, GBA-analogy]`.
+1. **RIQ sequence engine — LOCATED (see `docs/riq_interpreter.md`).**
+   The script is a list of `{argc, handler_ptr, args…}` records — the
+   "opcode" is a direct function pointer, so there is NO opcode/jump
+   table (that is why byte-opcode searches failed, and the `0x0C120xxx`
+   "dispatcher" was the C++ demangler). 148 handler-commands are
+   enumerated from the ROM; engine state is `*(0x0C3D4D80)`; per-frame
+   update is `func_0c092538`, tick step `func_0c091d24`; `func_0c0951dc`
+   is the on-screen text/message state machine. **Still open:** the
+   record-list *driver* loop (reached from `func_0c092538`'s run state)
+   and the outer container framing. Verify each handler's role from its
+   body before naming; only then borrow GBA *tickflow* names, tagged
+   `[hypothesis, GBA-analogy]`.
 2. **Matching C for the verified window** [0x0C020000, 0x0C026FDC): 181
    functions with EstexNT-confirmed boundaries; boot/main/frame stages
    already characterised — turn them into real .c files.
