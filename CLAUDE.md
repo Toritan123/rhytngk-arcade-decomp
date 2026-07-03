@@ -88,17 +88,22 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
    table (why byte-opcode searches failed; the `0x0C120xxx` "dispatcher"
    was the C++ demangler). 148 handler-commands enumerated from the ROM.
    Architecture: a **per-scene vtable** `{+0 enter, +4 cmd_table, +8
-   update}` driven by a **scene manager** at `0x0C3D4D94` (`mgr[0]`=state,
-   `mgr[+4]`=active descriptor). Generic per-frame driver =
-   **`func_0c06f920`** (state0→`func_0c0a2e88`, state1→`func_0c0a2f18`);
-   registrar `func_0c06f0c4`. **Fire model = input-gated, NOT
-   tick-scheduled**: advance when `(input & desc[0]) == desc[0]`
-   (`0x0C3D5C14`); the `state[+22]/[+24]` counters are per-track anim
-   timers, not a command clock. **Still open:** the top-of-frame call site
-   tying the manager to `func_0c0208f0`'s pipeline; per-note timing in the
-   track builders (`func_0c0a2b00`). Verify each handler from its body
-   before naming; only then borrow GBA *tickflow* names `[hypothesis,
-   GBA-analogy]`.
+   update, +32 state-size}`, active descriptor = `*(0x0C53F7F8)`. The
+   **per-frame tick** = `func_0c06eaf0` (scene-manager state machine
+   `0x0C53F884`), driven by `func_0c06ed80` = the RIQ mode object's `+8`
+   update slot (`0x0C257478[3]`=`func_0c1673e4`). It calls the descriptor's
+   `enter` `func_0c06fa34` (state 1; also allocs engine state
+   `*(0x0C3D4D80)`) and `update` **`func_0c06f920`** (state 2 =
+   `desc[+8]()`). Inside `func_0c06f920` a second manager `0x0C3D4D94`
+   drives `func_0c0a2e88`/`func_0c0a2f18`. **Fire model = input-gated, NOT
+   tick-scheduled**: advance when `(0x0C3D5C14 & desc[0]) == desc[0]`; the
+   `state[+22]/[+24]` counters are per-track anim timers. Frame integration
+   is verified from the mode update method down to `func_0c06f920`; the one
+   remaining hop (frame body → mode object's vtable slot) is a runtime
+   object-registration edge, not a static call. **Still open:** per-note
+   timing in the track builders (`func_0c0a2b00`). Verify each handler from
+   its body before naming; only then borrow GBA *tickflow* names
+   `[hypothesis, GBA-analogy]`.
 2. **Matching C for the verified window** [0x0C020000, 0x0C026FDC): 181
    functions with EstexNT-confirmed boundaries; boot/main/frame stages
    already characterised — turn them into real .c files.

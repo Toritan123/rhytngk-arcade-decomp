@@ -199,15 +199,55 @@ level RIQ progression is an **input-driven state machine**, and the
 `{func,flags}` table entries are lifecycle methods called by the manager,
 not time-scheduled events.
 
-### Honest limit
+### The per-frame tick invoker — CLOSED [verified]
 
-`func_0c06f920` (+ `func_0c0a2e88` / `func_0c0a2f18`) **is** the generic
-per-frame scene driver — that question is answered. What is *not* fully
-pinned is the top-of-frame call site: `mgr[+4][+8]()` is only invoked
-from `func_0c0a2f18` (state 1), so the very first call each frame comes
-from a manager tick I have not tied back to `func_0c0208f0`'s pipeline
-(the descriptors are dispatched cooperatively, so static callers don't
-reveal it). See §6.
+The per-frame invoker of the scene update is **`func_0c06eaf0`**
+(0x0C06EAF0, 656 B) — the **scene-manager state machine**. It is driven
+once per RIQ step by **`func_0c06ed80`**, which is the RIQ mode object's
+per-frame *update method* (`0x0C257478[3]` = `func_0c1673e4`, a thin
+`{ func_0c06ed80(); return 0; }` wrapper). The full descent, every edge
+read from the ROM:
+
+```
+mode vtable 0x0C257478[3] = func_0c1673e4   (update slot; returns 0)
+  └─ func_0c06ed80    per-frame RIQ step  (bumps counter 0x0C3D4D88 each call)
+       └─ func_0c06eaf0   scene-manager state machine
+             state @ 0x0C53F884 (0..4), 5-way braf table @ 0x0C06EB2C
+             active descriptor = *(0x0C53F7F8)
+             ├─ state 1 (0x0C06EC72): enter
+             │     if desc[+32] (u16 size): engine state = func_0c09cdc0(); -> *(0x0C3D4D80)
+             │     desc[+0](desc[+4])   = func_0c06fa34(cmd_table)   [enter]
+             │     state := 2
+             └─ state 2 (0x0C06ECDE): run
+                   r = desc[+8](desc[+12]) = func_0c06f920()          [per-frame update]
+                   if r == 0 -> state 3 (teardown)
+```
+
+So `*(0x0C53F7F8)` **is** the active scene descriptor (`{+0 enter,
++4 cmd_table, +8 update, +32 state-size}` — verified: descriptor
+`0x0C2B1D70` has `+0=func_0c06fa34`, `+8=func_0c06f920`), and `func_0c06f920`
+runs as its `+8` update. The `enter` phase is also where the engine state
+`*(0x0C3D4D80)` is allocated (`func_0c09cdc0(desc[+32])`), tying together
+the two globals seen earlier.
+
+Note there are **two related state words**: the outer scene-manager state
+`0x0C53F884` (driven by `func_0c06eaf0`, values 0..4) and the inner
+manager `0x0C3D4D94` used *inside* `func_0c06f920` (values 0..2, via
+`func_0c0a2e88`/`func_0c0a2f18`). They are distinct; `func_0c0a2f18`'s
+`mgr[+4][+8]()` is the inner machine, not the top tick.
+
+### Remaining loose end (not blocking)
+
+`func_0c06ed80`'s update slot is reached through **runtime vtable
+dispatch** — the mode table `0x0C257478` is invoked via an object pointer
+(`obj->vtable[3]()`), and both it and its dispatcher `func_0c06a60c`
+bottom out at data tables (`0x0C28FA6C`, `0x0C2B1ABC`, …) with **no static
+callers**, exactly like the object-update mechanism (`func_0c091794`
+walking `state[+28]` and calling `@(40,obj)`). So the last hop
+*frame body → RIQ mode object's update slot* is an object-registration
+edge that static analysis cannot resolve to a single `jsr`; it is the
+generic per-frame object walk, not a hardcoded call. The chain **from the
+mode-object update method down to `func_0c06f920` is fully verified.**
 
 ## 5. Correction to `tools/parse_beatscript.py` [flag]
 
@@ -236,27 +276,26 @@ args}` record format and its in-RAM `{flags, handler}`-table form (§4b);
 that the "opcode" is a direct function pointer (no jump/opcode table); the
 148-handler command set and the top-6 handlers' concrete behaviour (§3);
 the tick step (`func_0c091d24`); the message state machine
-(`func_0c0951dc`, 33-entry table decoded); and now (§4b) the **scene
-vtable** `{enter, cmd_table, update}`, the **scene manager** at
-`0x0C3D4D94` with the generic per-frame update **`func_0c06f920`**
-(state 0 = `func_0c0a2e88`, state 1 = `func_0c0a2f18`), the registrar
-`func_0c06f0c4`, and the **input-gated (not tick-scheduled) fire model**.
+(`func_0c0951dc`, 33-entry table decoded); the **scene vtable**
+`{enter, cmd_table, update}` and the **input-gated (not tick-scheduled)
+fire model** (§4b); and — now closed — the **per-frame tick invoker**
+`func_0c06eaf0` (scene-manager state machine `0x0C53F884`), driven by
+`func_0c06ed80` = the RIQ mode object's `+8` update slot
+(`0x0C257478[3]` = `func_0c1673e4`); state 2 does `desc[+8]()` =
+`func_0c06f920`. The launcher `func_0c06f07c` (frame-reachable via
+`func_0c040fa0`) is the one-shot *enter* side. **RIQ frame integration is
+verified from the mode-object update method down to `func_0c06f920`.**
 
 **Open / next concrete leads:**
-1. **Top-of-frame entry — still open; one hypothesis ruled out.**
-   `func_0c06f920` is the generic scene driver, but `mgr[+4][+8]()` is only
-   called from `func_0c0a2f18` (a state within the same machine), so the
-   *first* manager tick each frame is not yet tied to `func_0c0208f0`'s
-   9-stage pipeline. **Ruled out [verified]:** `func_0c06f07c` (reached
-   from the frame-stage chain via `func_0c040fa0`) is **not** the per-frame
-   tick — it is a **one-shot scene launcher**: it inits a few subsystems
-   then installs the fixed start-scene descriptor `0x0C2B1D70` by calling
-   `func_0c06e9fc(0x0C2B1D70)` (the register-into-manager path). So the
-   launcher/enter side connects to the frame pipeline, but the per-frame
-   *update* invoker is elsewhere. Next step: find the caller of
-   `func_0c06f920`/`func_0c0a2e88` (both have **zero** static callers = pure
-   vtable indirect) that reads mgr `0x0C3D4D94` and does
-   `mov.l @(8,rDesc),r0; jsr @r0`, reachable per-frame.
+1. **Last hop is a runtime vtable edge, not a static call.** The mode
+   table `0x0C257478` (slot [3] = `func_0c1673e4` → `func_0c06ed80`) is
+   invoked as `obj->vtable[3]()`; that table and its dispatcher
+   `func_0c06a60c` have only *data* callers (`0x0C28FA6C`, `0x0C2B1ABC`, …),
+   i.e. the generic per-frame object walk (cf. `func_0c091794` calling
+   `@(40,obj)` over the `state[+28]` object list). Tying `func_0c0208f0`
+   → that walk → this specific mode object is an object-registration trace,
+   not a `jsr` search — and is not blocking, since the RIQ-side chain is
+   fully verified.
 2. **Per-track note timing.** The tick counters `state[+22]/[+24]`
    (`func_0c091d24`) drive the note-lane builders `func_0c0a2b00` /
    `func_0c0a3020`. If per-note *timing* (as opposed to per-command input
