@@ -109,7 +109,19 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
    already characterised — turn them into real .c files.
 3. **AICA 0x20/0x24 command semantics** via Unicorn trace extension →
    the only honest path to real MIDI.
-4. **Object/anim manager** (0x0C0A0xxx cluster, 68-byte records).
+4. **Object/anim manager — MAPPED (see `docs/object_manager.md`).** The
+   `0x0C0A0xxx` cluster is a fixed-pool **2-D sprite/animation object
+   manager**: 40-byte container header + `count`×68-byte records with a
+   **free-list allocator** (`func_0c0a0b9c` pops → id, link at `rec[+26]`,
+   alive bit `rec[+0]&0x4000`). Records hold position (`+2/+4`), anim-desc
+   ptr (`+8`), frame count (`+40`), resource/palette ptrs (`+44/+48`),
+   scale (`+64`) — sprite+animation state, NOT vertices or callbacks. API:
+   `func_0c0a088c` construct, `func_0c0a0960` validate (shared, 31 refs),
+   `func_0c0a130c` spawn (194 refs), `func_0c0a1a6c` re-animate (321 refs),
+   `func_0c0a15a0` set-pos, `func_0c0a17f0` set-flag, `func_0c0a0e50`
+   set-frame. Driven by the RIQ engine. **Open:** the record→TA/vertex
+   bridge (in `0x0C096/099xxx`, via `func_0c0707ac`); the anim-descriptor
+   format at `rec[+8]`.
 5. Vertex field map completion (which slot is u/v/colour in the 96-byte
    TA param from `func_0c0e6548`).
 
