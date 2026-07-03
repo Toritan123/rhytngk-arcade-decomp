@@ -115,7 +115,17 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
    functions with EstexNT-confirmed boundaries; boot/main/frame stages
    already characterised — turn them into real .c files.
 3. **AICA 0x20/0x24 command semantics** via Unicorn trace extension →
-   the only honest path to real MIDI.
+   the only honest path to real MIDI. **SH-4 side now fully traced**
+   (`docs/riq_sound_pipeline.md`): play = `func_0c03b23c` → voice-object
+   load state machine `func_0c039e5c` (pumped per-frame by `func_0c03a520`)
+   → sample-load request `func_0c0e9b14` (cmd `0x00008001`) + ARM7
+   handshake `func_0c0e9d70` (@`0xA08000B0/B4`) + wave-RAM **bump
+   allocator** `func_0c0e8688` (cursor `0x0C5414A0`, slot tbl `0x0C5415B8`,
+   AICA reg `0xA0800060+`) → key-on `func_0c039e0c` → ring `func_0c0e8bf4`.
+   **No static id→sample table**: the sample→wave-RAM binding is a runtime
+   bump alloc + ARM7 handshake (honest boundary). Remaining: DTPK parse
+   `func_0c02f4a4/4c6` (`0x0C02Fxxx`) — the last place a static id→DTPK
+   map could live — and the Unicorn trace of the 0x20/0x24 ARM7 ops.
 4. **Object/anim manager — MAPPED (see `docs/object_manager.md`).** The
    `0x0C0A0xxx` cluster is a fixed-pool **2-D sprite/animation object
    manager**: 40-byte container header + `count`×68-byte records with a

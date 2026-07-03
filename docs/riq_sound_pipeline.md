@@ -100,12 +100,11 @@ RIQ engine uses (the 148 handler-commands and the `state[+128][arg]` /
 `state[16][+24][arg]` callback dispatch — `docs/riq_interpreter.md` §3/§4).
 Concretely:
 
-* The Layer-2 arg is a **voice-object pointer**, and the encoder arg is a
-  **hardware voice id** (`obj[+0]`, 0–63), **not** a DTPK sample/bank id.
-  The wave-RAM/sample binding (which DTPK sample a voice plays) happens on
-  the AICA-driver side (`docs/aica_sound_driver.md`,
-  `docs/dtpk-format.md`), not on this control path. [V that the arg is a
-  voice id; the sample→voice binding is not on this path.]
+* The Layer-2 (`func_0c039xxx`) `func_0c0e9590` path sets **per-voice
+  parameters** (volume/pan/pitch); its arg is a hardware voice id
+  (`obj[+0]`), not a sample id. The **sample load + key-on** are a
+  *separate* path on the same voice/sound-instance object — fully traced
+  in the "Voice object & sample selection" section below.
 * None of the sound-path functions (`func_0c06a038/05c/378`,
   `func_0c039xxx`, `func_0c0e9590`) appears in the RIQ 148-handler
   command-record enumeration (the `0x0C2C–0x39` `[argc][handler]` scan):
@@ -114,10 +113,10 @@ Concretely:
 
 So: **RIQ scene lifecycle → 0x06Axxx bridge → 0x039xxx voice API →
 `func_0c0e9590` encoder → `func_0c0e8bf4` ring → G2 → AICA** is the real,
-statically-verified control pipeline. The last mile — mapping a specific
-RIQ note/command to a specific voice object and DTPK sample — runs through
-the runtime object/callback registration (same wall as the rest of RIQ),
-and is **not fabricated here**.
+statically-verified control pipeline. The last mile — voice-object load,
+sample→wave-RAM binding, and key-on — is traced in the section below; it
+bottoms out at a **runtime bump allocator + ARM7 handshake**, and that
+boundary is stated honestly (no static id→sample table is invented).
 
 ## Retraction confirmed [V]
 `func_0c06387c` (the old doc's "low-level AICA interface") is referenced
@@ -125,9 +124,115 @@ only from `func_0c14c77c` / `func_0c14ecd4` (the `0x0C14xxxx` library
 region) and one data location `0x0C28D0A8` — **not** on the real sound
 path. The retraction stands.
 
+## Voice object & sample selection — the last mile [V]
+
+The "voice object" is really a **sound-instance object** with a small
+lifecycle state at `obj[+4]`. Playing a sample is a two-phase, per-frame
+pumped sequence: **load** (async, sets `obj[+4]` to 5 = ready) then
+**trigger** (key-on, only when `obj[+4]==5`).
+
+### `obj[+4]` is a LOAD-STATE, not just a type tag [V]
+`func_0c039e5c(obj)` is the per-instance **loader state machine** (pumped
+each frame from `func_0c03a520`, the frame-stage-5 sound update — see
+`docs/frame_pipeline_stages.md`). It reads `obj[+4]` as a state `1..5`,
+`braf`-dispatches, and advances:
+
+```
+state 1 → func_0c030e40(obj+12, obj[+8], 1)      ; open/parse resource → state 2
+state 2 → func_0c02f4a4(obj+12)                   ; DTPK parse step     → state 3
+state 3 → func_0c02f4c6(obj+12)                   ; DTPK parse step     → state 4/keep
+state 4 → func_0c0e9b14(res, sub, 0x2000, arg)    ; REQUEST sample load
+          func_0c0e9d70()                          ; ARM7 load handshake → state 5
+state 5 → func_0c03083c(obj+12); obj[+4] = 5       ; READY
+```
+
+So a sound-instance is **not ready to trigger until `obj[+4]==5`**, and
+that transition is gated on the AICA sample-load completing. (`0x0C02Fxxx`
+is the DTPK/resource parser; `0x0C030E40` opens it.)
+
+### The sample → wave-RAM binding is a RUNTIME bump allocator [V — honest boundary]
+`func_0c0e9b14` builds a **load request** (command word `0x00008001`) into
+a shared descriptor at `0x0C5414D4` and hands it to the async handshake
+`func_0c0e9d70`, a 5-state machine that talks to the ARM7 `aicadrv` through
+the wave-RAM mailbox regs **`0xA08000B0` / `0xA08000B4`** (via
+`func_0c0e83a8` aica_write_reg / `func_0c0e885c` aica_read_reg). The
+actual wave-RAM address is assigned by **`func_0c0e8688`**, a **bump
+allocator**:
+
+* running cursor `0x0C5414A0` (`cursor += size`) [V, BSS];
+* slot table `0x0C5415B8` (12-byte entries `{source, ?, size}`, `-1`=free)
+  [V, BSS];
+* writes the sample's wave-RAM start address to AICA slot register
+  `0xA0800060 + slot*4` [V].
+
+**So there is no static "sample id → wave-RAM address" table.** The DTPK
+sample is copied into wave RAM at a runtime-allocated address, tracked
+only in the BSS slot table `0x0C5415B8`, and the address is handed to the
+AICA via `0xA0800060+`. This is the honest boundary: the binding resolves
+only at runtime, via the ARM7 handshake — no static table to dump. (Cross-
+ref `docs/aica_sound_driver.md` for the mailbox/ring; `docs/dtpk-format.md`
+for the sample-table format the parser walks.)
+
+### Key-on / trigger — `func_0c039e0c` [V]
+`func_0c039e0c(obj, cmd, flag)` is the **trigger**:
+
+```c
+int trigger(SoundObj *obj, u32 cmd, int flag) {  // func_0c039e0c
+    if (obj->state /*+4*/ != 5) return -1;        // must be LOADED
+    if (func_0c0e8bf4(cmd) != 0) return -1;       // enqueue raw AICA cmd (KEY-ON) to ring
+    if (flag) func_0c039c98(obj, obj[+64+20]);    // post-trigger bookkeeping
+    return 0;
+}
+```
+
+It sends a **pre-built command word straight to the ring `func_0c0e8bf4`**
+(bypassing the param-encoder `func_0c0e9590`) — this is the key-on. The
+command word is assembled by the caller.
+
+### "Play SFX by id" — `func_0c03b23c` / `func_0c03b2d8` [V]
+The user-facing play primitive:
+
+```c
+int play_sfx(Container *c, int id, int flag) {   // func_0c03b23c
+    if (!c->field_0) return;
+    void *sub = c->field_4;  if (!sub) return;
+    VoiceObj *v = func_0c03b0dc(sub);              // look up voice obj (via 0x0C14xxxx map)
+    if (!v) return;
+    if (flag) { func_0c03a608(c, id, *v); return; }// resolve SFX set → sample
+    func_0c039e0c(c, v[+4] /*cmd*/, v[+8] != 0);   // KEY-ON with resolved command word
+}
+```
+
+`func_0c03b0dc` looks up the voice object in a runtime **map** (keyed via
+the `0x0C14xxxx` container helpers — the std::map region), and
+`func_0c03a608` is the **SFX-set resolver** (the 256-byte SFX bank builder
+mapped in `docs/object_manager.md`) that turns an SFX `id` into the sound
+resource. So a specific RIQ note → `id` → resolved voice object + command
+word → `func_0c039e0c` key-on.
+
+### End-to-end (last mile)
+```
+play_sfx(id)  func_0c03b23c/2d8
+  ├─ func_0c03b0dc  → voice object (runtime map lookup, 0x0C14xxxx)
+  ├─ func_0c03a608  → resolve SFX id → sound resource   (docs/object_manager.md)
+  │        [per-frame] func_0c03a520 → func_0c039e5c loader state machine:
+  │              state 4: func_0c0e9b14 (load request 0x00008001)
+  │                       func_0c0e9d70 (ARM7 handshake @0xA08000B0/B4)
+  │                       func_0c0e8688 (wave-RAM BUMP ALLOC → 0xA0800060+slot)
+  │              → obj[+4] = 5 (READY)
+  └─ func_0c039e0c  KEY-ON (needs obj[+4]==5) → func_0c0e8bf4 ring → AICA
+```
+
+**Honest boundary restated:** the sample→wave-RAM address binding is a
+runtime bump allocation + ARM7 handshake, not a static table; the
+voice-object lookup is a runtime map. Both are the same runtime-object
+wall as the rest of RIQ. Everything above the wall (state machine, key-on,
+allocator mechanics, command words) is verified from the ROM.
+
 ## Next lead
-Map a specific RIQ note/command to its voice object + DTPK sample: trace
-how a voice object (`obj[+4]==5`, `obj[+0]`=voice id) is *constructed* and
-which field selects the DTPK sample, then join to the wave-RAM sample
-setup on the AICA-driver side (`docs/aica_sound_driver.md`). The
-`func_0c03a09a` 64-byte-stride per-voice records are the place to start.
+Decode the DTPK parse steps `func_0c02f4a4/4c6/4dc` and `func_0c030e40`
+(`0x0C02Fxxx`) to recover how a resource name/index maps to a DTPK sample
+entry (`docs/dtpk-format.md` Sample Table). That is the last piece before
+the wave-RAM allocator — and the only place a *static* id→DTPK-entry map
+could exist. Also: the key-on command word format assembled by
+`func_0c03b23c`'s callers (voice/register/value packing for the ring).
