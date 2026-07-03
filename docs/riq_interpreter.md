@@ -243,14 +243,20 @@ vtable** `{enter, cmd_table, update}`, the **scene manager** at
 `func_0c06f0c4`, and the **input-gated (not tick-scheduled) fire model**.
 
 **Open / next concrete leads:**
-1. **Top-of-frame entry.** `func_0c06f920` is the generic scene driver,
-   but `mgr[+4][+8]()` is only called from `func_0c0a2f18` (a state within
-   the same machine), so the *first* manager tick each frame is not yet
-   tied to `func_0c0208f0`'s 9-stage pipeline. Next step: trace which
-   frame-pipeline leaf (the out-of-window `0x037xxx`/`0x066xxx` targets of
-   `func_0c020440`/`func_0c02074c`) reads scene manager `0x0C3D4D94` or the
-   current-descriptor `0x0C53F890` and kicks the machine — a caller of
-   `func_0c06f920`/`func_0c0a2e88` reachable from the frame body.
+1. **Top-of-frame entry — still open; one hypothesis ruled out.**
+   `func_0c06f920` is the generic scene driver, but `mgr[+4][+8]()` is only
+   called from `func_0c0a2f18` (a state within the same machine), so the
+   *first* manager tick each frame is not yet tied to `func_0c0208f0`'s
+   9-stage pipeline. **Ruled out [verified]:** `func_0c06f07c` (reached
+   from the frame-stage chain via `func_0c040fa0`) is **not** the per-frame
+   tick — it is a **one-shot scene launcher**: it inits a few subsystems
+   then installs the fixed start-scene descriptor `0x0C2B1D70` by calling
+   `func_0c06e9fc(0x0C2B1D70)` (the register-into-manager path). So the
+   launcher/enter side connects to the frame pipeline, but the per-frame
+   *update* invoker is elsewhere. Next step: find the caller of
+   `func_0c06f920`/`func_0c0a2e88` (both have **zero** static callers = pure
+   vtable indirect) that reads mgr `0x0C3D4D94` and does
+   `mov.l @(8,rDesc),r0; jsr @r0`, reachable per-frame.
 2. **Per-track note timing.** The tick counters `state[+22]/[+24]`
    (`func_0c091d24`) drive the note-lane builders `func_0c0a2b00` /
    `func_0c0a3020`. If per-note *timing* (as opposed to per-command input
