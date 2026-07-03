@@ -8,6 +8,10 @@
 > `play_sfx` opcodes. The whole "op 0x29 → play_sfx_impl → AICA" chain in
 > this document is invalid. See `docs/beatscript_engine.md` for the
 > evidence. Kept only as a record of the corrected error.
+>
+> ➡ **The REAL RIQ→AICA sound pipeline is `docs/riq_sound_pipeline.md`**
+> (RIQ scene lifecycle → `0x0C06Axxx` bridge → `0x0C039xxx` voice API →
+> `func_0c0e9590` encoder → `func_0c0e8bf4` ring → AICA).
 
 > ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
 > document may be in the pre-correction frame — **0xFB00 too low**. The

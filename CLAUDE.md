@@ -48,6 +48,13 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
   G2), PVR regs (`func_0c1082a4/bc`), TA draw path (list setup
   `func_0c0faaf8` → VRAM mgmt `func_0c0facc0` → vertex emitter
   `func_0c0e6548`, 96-byte TA params via store queues).
+- **RIQ→AICA sound pipeline located** (`docs/riq_sound_pipeline.md`):
+  RIQ scene lifecycle (`func_0c0a2f18` run-state, `func_0c06f07c` launch)
+  → `0x0C06Axxx` bridge → `0x0C039xxx` voice-control API → param encoder
+  `func_0c0e9590` → ring. Layer-2 arg = voice OBJECT (`obj[+0]`=hw voice
+  id, `obj[+4]`==5 tag), NOT a DTPK sample id. It is reached by normal
+  scene-manager calls, NOT a "play" opcode (the old
+  `docs/beatscript_sound_pipeline.md` is retracted — `0x0C12CCC0`=strcmp).
 - **RETRACTED (2026-07):** `func_0c1203e0` is NOT the BeatScript
   interpreter — it and its `0x0C120xxx` web are the C++ Itanium name
   **demangler** (`cp-demangle.c`); the `#0x28`/`#0x29` are demangler node
