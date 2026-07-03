@@ -70,12 +70,12 @@ the opcode set: each distinct handler = one "command". Ranked by usage
 
 | handler | uses | size | behaviour [verified by disasm] |
 |---|---:|---:|---|
-| `0x0C08EBA4` | 10705 | 24 | `state[+124][+24] = arg` — generic slot **setter** |
-| `0x0C08EB6C` | 6515 | 56 | call `state[+128][arg]()` — **indexed callback** |
-| `0x0C0909A4` | 6090 | 604 | gated on `state[+144]`, indexes `state[arg*4+32]` — **conditional op** |
-| `0x0C08EBBC` | 2850 | 60 | `if state[16]==arg: call state[16][+24][arg2]()` — **conditional indexed dispatch** |
-| `0x0C090004` | 1459 | 28 | `state[+174] = (u8)arg` — byte **setter** |
-| `0x0C0987E8` | 558 | — | writes `arg` to `state[+10]`, multiplies by `state[+48]` — **sets the +10 field** (see §4) |
+| `0x0C08EBA4` | 10705 | 24 | `state[+124][+24] = arg` — generic slot **setter** [verified] |
+| `0x0C08EB6C` | 6515 | 56 | `if state[+128]: (*(state[+128] + arg*4))()` — **table-indexed callback dispatch**; arg = callback index [verified] |
+| `0x0C0909A4` | 6090 | 604 | if `state[+144]` set and `slot=state[arg*4+32]`≠0: alloc obj via `func_0c09cdc0(120)`, wire into `slot+64[+36]`, `func_0c0a01b4(slot,obj+8,64,32)` — **spawn object into slot `arg`** [verified] |
+| `0x0C08EBBC` | 2850 | 60 | `if state[16]==arg0 && (t=state[16][+24]): (*(t + arg1*4))(state[+124][+24])` — **conditional indexed dispatch** (active object gate) [verified] |
+| `0x0C090004` | 1459 | 28 | `state[+174] = (u8)arg` — byte **setter** [verified] |
+| `0x0C0987E8` | 558 | 476 | `state[+10]=(u16)arg`; derives `state[+12/16/20]` via fixed-point divides (`dmuls 0xEA0EA0EB;shad #-7`=÷~140, `dmulu 0x1B4E81B5;shlr2 x2`=÷~150), calls `func_0c126060`,`func_0c068e28` — a **rate/tempo→tick-duration converter** [verified behaviour; "tempo" [inferred, evidence-backed]] |
 | `0x0C08F1AC` | 372 | — | (unread) |
 | `0x0C08F188` | 372 | — | (unread) |
 | `0x0C08EBF8` | 352 | — | (unread) |
@@ -105,13 +105,19 @@ Full 148-entry list is reproducible with the scan in §7.
 
 ## 4. The per-frame engine update [verified]
 
-* **`func_0c092538`** (0x0C092538, 1660 B) — main per-frame sequence
-  update. `state = *0x0C3D4D80`; if `state[8] & 1` (paused) it bails;
-  dispatches on the **state byte `state[0]` = {1,2,3}** (init / run /
-  stop-like); in the run state it does fixed-point (`mulu.w` + `shad #-8`
-  = 8.8) scale/scroll interpolation over `state[+78..+104]` and calls
-  render helpers. `func_0c0922b4` (called here) returns `state[+4] != 0`,
-  so **`state[+4]` is the active script/scene cursor**.
+* **`func_0c092538`** (0x0C092538, 1660 B) — main per-frame update.
+  `state = *0x0C3D4D80`; if `state[8] & 1` (busy/paused) it bails;
+  dispatches on the **state byte `state[0]` = {1,2,3}** (scene *mode*
+  selector). **Correction to the earlier draft:** these are not
+  init/run/stop of one sequence — mode 2's body reads directional-input
+  flag word `0x0C3D5C0C` (bits 0x10/0x20/0x40/0x80 → −1/0/+1 deltas) and
+  moves a cursor on a 15×12 grid via `func_0c093410(x,y)`, i.e. it is
+  **menu/selection navigation**; another branch does `.`/`6` filename
+  parsing (scene/asset loading) around the scene descriptor `0x0C2CAC18`.
+  `func_0c0922b4` (called here) returns `state[+4] != 0`, so **`state[+4]`
+  is the active script/scene handle**. `func_0c092538` is itself an
+  embedded command (referenced only at `0x0C2CABFC` in a scene's
+  `{flags, handler}` table — see §5), which is why it mixes modes.
 * **`func_0c091d24`** (0x0C091D24, 552 B) — a **tick step**: increments a
   counter `state[+22]` and decrements a countdown `state[+24]` (both u16),
   tests flag word `0x0C3D5C0C` bits `0x40`/`0x80`, steps a byte cursor
@@ -128,6 +134,41 @@ Full 148-entry list is reproducible with the scan in §7.
   `riq_reading`/`riq_counselor` text flow, adjacent to but distinct from
   the rhythm sequencer.
 
+## 4b. The driver — a scene-descriptor + `{flags,handler}` table, not a byte loop [verified structure]
+
+Tracing the run path did **not** reveal a single "read argc, `jsr @handler`,
+advance cursor, loop" driver, and structural searches for that idiom over
+`0x0C085000–0x0C0A5000` returned **zero** matches. Instead the command
+records are held in a **per-scene descriptor** reached from `state[+4]`,
+and handlers are called from the descriptor's table, not walked from a
+flat instruction stream. Concretely, the scene descriptor for region-0
+lives at **`0x0C2CAC18`** (loaded as a pool constant by `func_0c092538`,
+`func_0c091f10`, `func_0c092930`, `func_0c093044`, …). Its body and the
+table just below it decode from ROM as:
+
+```
+0x0C2CABC0: [len][00 0N 0b XX]   ; type/string descriptors (0b05..0b09)
+0x0C2CABE8: 00000003  0C092BB4    ; {argc/flags, handler}  (run-state init)
+0x0C2CABF0: 00000000  0C092220    ; {flags, handler}
+0x0C2CABF8: 00000000  0C092538    ; {flags, handler}  = the per-frame update
+0x0C2CAC00: 00000000  0C0D54C8    ; {flags, handler}
+0x0C2CAC08: 00000000  0C264274    ; (data ptr, message text)
+0x0C2CAC18: 0C06FA34  0C2CABEC    ; descriptor head: {class/vtbl, &table above}
+```
+
+So a scene is `{class_ptr, &handler_table}`, the handler table is a list
+of `{flags, function_ptr}` entries, and the flat `[argc][handler][args]`
+records from §2 are the **serialized form** of exactly these entries
+(`argc` = entry length in words; the same handler pointers appear).
+`func_0c092538` (one of the entries) is thus invoked *by the engine
+walking this table*, which is why it — and the 148 handlers of §3 — are
+called with the engine state as context rather than from a byte
+interpreter. The **outer walker that iterates the `{flags,handler}` table
+per frame and gates each entry on the tick** (`func_0c091d24` advances the
+`state[+22]` counter / `state[+24]` countdown) is **not yet pinned to a
+single function**; see §6 for the next lead. This is an honest
+"structure known, exact loop not yet isolated" — not a guessed loop.
+
 ## 5. Correction to `tools/parse_beatscript.py` [flag]
 
 The tool's record model (`[argc][func][arg]`, 12 bytes) is **correct and
@@ -136,12 +177,13 @@ are contradicted by the disassembly:
 
 | addr | tool name | what the body actually does |
 |---|---|---|
-| `0x0C0987E8` | `tempo_bpm` | sets `state[+10]` (the §4 text-command field) & multiplies by `state[+48]`. Plausible as a rate/tempo set, but the field it writes is the message dispatcher's opcode — **unconfirmed as BPM**. |
+| `0x0C0987E8` | `tempo_bpm` | sets `state[+10]` then derives `state[+12/16/20]` via ÷~140 and ÷~150 fixed-point divides — a **rate→tick-duration converter**. "tempo" is well-supported by the division math; **BPM units unconfirmed**. Keep as `[inferred]`. |
 | `0x0C0985BC` | `set_volume` | sets `*(u16)0x0C3D4EE8` then calls `func_0c09f0e8`. Sets *a* global; **"volume" unproven**. |
 | `0x0C08EBA4` | `graphics_op` | generic `state[+124][+24] = arg` slot setter — **not specifically graphics**. |
-| `0x0C0909A4` | `universal_cue` | conditional `state[+144]`/`state[arg*4+32]` op — role unproven. |
+| `0x0C0909A4` | `universal_cue` | **spawns a game object** into slot `arg` (alloc + wire, `func_0c0a01b4`). More specific than "cue"; call it `spawn_object`/`cue_object` `[inferred]`. |
+| `0x0C08EBBC` | `graphics_op_action` | conditional indexed dispatch gated on the active object (`state[16]==arg0`) — a **guarded callback**, not specifically graphics. |
+| `0x0C08EB6C` | (—) | table-indexed callback dispatch `state[+128][arg]()` — **generic dispatch primitive**. |
 | `0x0C08F988` | `scene_switch` | scene/effect **setup** (many inits) — plausible but broader than a switch. |
-| `0x0C08EBA4`/`EBBC` etc. | `graphics_op*` | table-indexed callback dispatchers. |
 
 Recommendation: keep the record parser; treat every name as
 `[hypothesis]` until the handler body is read. Do **not** propagate these
@@ -150,21 +192,26 @@ names as fact.
 ## 6. What is verified vs open
 
 **Verified:** data regions & engine-state base; the `{argc, funcptr,
-args}` record format; that the "opcode" is a direct function pointer (no
-jump/opcode table); the 148-handler command set and its top handlers'
-concrete behaviour; the per-frame update entry (`func_0c092538`), tick
-step (`func_0c091d24`), and the message state machine (`func_0c0951dc`,
-whose 33-entry table is decoded).
+args}` record format and its in-RAM `{flags, handler}`-table form (§4b);
+that the "opcode" is a direct function pointer (no jump/opcode table); the
+148-handler command set and the top-6 handlers' concrete behaviour (§3);
+the per-frame update entry (`func_0c092538`), tick step (`func_0c091d24`),
+and the message state machine (`func_0c0951dc`, 33-entry table decoded).
 
 **Open / next concrete leads:**
-1. **The record-list *driver*** — the loop that reads `state[+4]`
-   (cursor), fires records whose fire-time matches the tick, and advances
-   the cursor. It is reached from `func_0c092538`'s run state; the
-   accessor `func_0c09927e` reads a 16-bit id at `record[+38]`. Read the
-   run-state callee chain of `func_0c092538` to find the actual walk.
-2. **The outer container format** (the framing between the inner 12-byte
-   records) — decode the region header at `0x0C2C0000`
-   (`[01][…][03][handler]…`) to get scene/track boundaries.
+1. **The outer walker** that iterates a scene's `{flags, handler}` table
+   (head at `0x0C2CAC18` → table at `0x0C2CABEC`) each frame and gates
+   each entry on the tick. Structure is known (§4b); the *loop itself* is
+   not yet a single named function — a byte-stream "read argc, jsr,
+   advance" driver does **not** exist (searches returned 0). Next step:
+   find who dereferences a scene descriptor's `+4` table pointer and calls
+   its entries — start from the ≥5 functions that load `0x0C2CAC18` as a
+   pool constant (`func_0c091f10`'s parent, `func_0c092930`,
+   `func_0c093044`) and look for the table-walk there, comparing an
+   entry's timestamp field against `state[+22]`.
+2. **The outer container / serialized form** (the framing between the
+   flat `[argc][handler][args]` records at `0x0C2C0000`) — decode how the
+   serialized command list maps to the in-RAM `{flags,handler}` table.
 3. **Per-scene attribution** — `func_0c0951dc`'s Japanese text points at
    `riq_reading`/`riq_counselor`; map the `0x0C08–0x0C0A` handler cluster
    to `src/riq/*` via `__FILE__` recovery to name each command by scene.

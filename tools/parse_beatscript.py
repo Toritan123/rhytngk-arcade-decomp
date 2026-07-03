@@ -5,14 +5,14 @@ tools/parse_beatscript.py
 Parse BeatScript bytecode in the SH-4 ROM and emit human-readable
 disassembly.
 
-Format (from docs/beatscript_commands.md):
-  Op 0x03: async call    [03 00 00 00 | func u32 | args u32]    (12 bytes)
-  Op 0x04: action call   [04 act 00 00 | func u32 | args u32]   (12 bytes)
-  Op 0x0D: sync call     [0D 00 00 00 | func u32 | args u32]    (12 bytes)
-
-Other opcodes likely exist for control-flow (loop, end, wait) but are
-not yet documented; the parser flags an unknown opcode as 'END?' and
-stops the current script at that point.
+Format (VERIFIED 2026-07 against the ROM — see docs/riq_interpreter.md):
+  A command record is  [argc u32][handler_ptr u32][arg0 .. arg(argc-2)].
+  There is NO byte-opcode: the first u32 is the record LENGTH (argc, in
+  words after it), and the 2nd u32 is a DIRECT SH-4 function pointer that
+  the engine calls.  What older docs called "op 0x03 / 0x04 / 0x0D" is
+  just argc == 3 / 4 / 13 (record length), not an opcode.  The command
+  vocabulary is the SET OF HANDLER FUNCTIONS (148 distinct across the
+  script regions, 34,202 uses); each handler == one command.
 
 Outputs:
   build/beatscripts/regions.txt   — summary of all distinct regions
@@ -28,14 +28,19 @@ OUT_DIR  = Path('/Users/sumirintarou/rhytngk-arcade-decomp/build/beatscripts')
 VRAM     = 0x0c000000
 
 
-# Known function pointers (from external RE docs)
+# Handler function -> command name.
+# Names verified from the handler body (docs/riq_interpreter.md §3) are
+# tagged [V]; evidence-backed guesses [I]; the rest of the 148 handlers
+# are still unread.  Do NOT treat untagged/old names as fact.
 KNOWN_FUNCS = {
-    0x0c0987e8: 'tempo_bpm',
-    0x0c0985bc: 'set_volume',
-    0x0c0909a4: 'universal_cue',
-    0x0c08f988: 'scene_switch',
-    0x0c08eba4: 'graphics_op',
-    0x0c08ebbc: 'graphics_op_action',
+    0x0c08eba4: 'set_slot_124_24',     # [V] state[+124][+24] = arg (generic setter; NOT "graphics_op")
+    0x0c08eb6c: 'call_cb_128',         # [V] (*(state[+128] + arg*4))()  indexed callback dispatch
+    0x0c0909a4: 'spawn_object',        # [I] alloc+wire a game object into slot `arg` (was "universal_cue")
+    0x0c08ebbc: 'call_cb_obj_guarded', # [V] guarded indexed dispatch (state[16]==arg0); NOT "graphics_op_action"
+    0x0c090004: 'set_byte_174',        # [V] state[+174] = (u8)arg
+    0x0c0987e8: 'set_tempo',           # [I] rate->tick-duration converter (div ~140 / ~150); "BPM" unconfirmed
+    0x0c0985bc: 'set_global_4ee8',     # [I] *(u16)0x0C3D4EE8 = arg (was "set_volume"; unproven)
+    0x0c08f988: 'scene_setup',         # [I] scene/effect setup, many inits (was "scene_switch")
 }
 
 
@@ -95,23 +100,13 @@ def disasm(insns, vram=VRAM):
         op = ins['op']
         func = ins['func']
         args = ins['args']
+        # `op` here is really argc (record length in words); the command
+        # IS the handler function, so name it after the handler.
         name = KNOWN_FUNCS.get(func, f'fn_{func:08x}')
-        if op == 0x03:
-            mnem = f'call_async {name}({args:#x})'
-        elif op == 0x04:
-            mnem = f'call_act   action={ins["act"]:#x} {name}({args:#x})'
-        elif op == 0x0D:
-            mnem = f'call_sync  {name}({args:#x})'
-        # Special-case tempo / volume / cue
-        if op == 0x03 and func == 0x0c0987e8:
-            mnem = f'tempo_bpm({args})'
-        elif op == 0x03 and func == 0x0c0985bc:
-            mnem = f'set_volume(target={args})'
-        elif op == 0x03 and func == 0x0c0909a4:
-            mnem = f'cue(id={args:#x})'
-        elif op == 0x04 and func == 0x0c08f988:
-            mnem = f'scene_switch(gfx_bank={ins["act"]:#x}, scene_id={args:#x})'
-        lines.append(f'  0x{addr:08x}  op={op:02x}  {mnem}')
+        mnem = f'{name}({args:#x})'
+        if op == 0x04:
+            mnem = f'{name}(a={ins["act"]:#x}, {args:#x})'
+        lines.append(f'  0x{addr:08x}  argc={op:2d}  {mnem}')
     return lines
 
 
