@@ -126,9 +126,15 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
    u32 ids, e.g. `0x0C1CDBE4`=1000), keyed by `func_0c03a608` to **DTPK
    package filenames** (`rom/ad_neko.bin`, …) — NOT AICA streams (the 3
    `sound_entries*`/`sound_pipeline_complete_map` docs are retracted). So
-   id→package IS static in ROM; the id→sample-*index* completes at DTPK
-   parse. Remaining: DTPK parse `func_0c02f4a4/4c6`+`func_0c030cf8`
-   (`0x0C02Fxxx`) for the sample index; Unicorn trace of 0x20/0x24 ARM7 ops.
+   id→package IS static in ROM. **DTPK load traced (`docs/dtpk_loader.md`):
+   the SH-4 resolves a package BY FILENAME via the SFFS directory
+   `0x0C1BFA68` (`func_0c02f3d0`) and hands the ARM7 the whole payload
+   (`func_0c0e9b14`); `func_0c030250` is a string-store, `func_0c02f4a4/4c6/4dc`
+   are state predicates — NO SH-4 DTPK sample-table walk (no DTPK magic /
+   +0x3C / 0x7FFFFF as constants in `0x0C02Fxxx`).** So id→sample-*index*
+   is ARM7-side — no static SH-4 id→sample table exists. Remaining honest
+   path to MIDI: Unicorn trace of the ARM7 `aicadrv` (cmd `0x00008001` →
+   DTPK Sample Table DTPK+0x3C → AICA voice) via `tools/trace_aicadrv.py`.
 4. **Object/anim manager — MAPPED (see `docs/object_manager.md`).** The
    `0x0C0A0xxx` cluster is a fixed-pool **2-D sprite/animation object
    manager**: 40-byte container header + `count`×68-byte records with a

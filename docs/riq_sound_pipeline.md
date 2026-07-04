@@ -285,9 +285,10 @@ SH-4 table.
 **Join to assets:** the DTPK filenames (`rom/ad_neko.bin`, etc.) name the
 packages under the extracted `rom/` set; a numeric sound id selects a
 package (via `func_0c03a608`) and, through the DTPK parse, a sample entry
-within it (`docs/dtpk-format.md` Sample Table). [H on the exact
-id→sample-index arithmetic — that lives in the DTPK parser, not yet
-decoded.]
+within it. **The id→sample-*index* step is done on the ARM7, not the
+SH-4** — the SH-4 resolves the package by filename and hands the ARM7 the
+whole payload; there is no static SH-4 id→sample-index table. Full trace:
+`docs/dtpk_loader.md`.
 
 ### Correction to the stale docs [V]
 `docs/sound_entries.md` / `docs/sound_entries_are_aica_streams.md` read
@@ -299,10 +300,21 @@ mechanism* (BeatScript op 0x28/0x29 via `0x0C1008F0`) is retracted (that
 was the C++ demangler — `docs/beatscript_engine.md`); the real accessor is
 `func_0c03a608` on the verified key-on path.
 
+## DTPK load / id→sample — DONE (see `docs/dtpk_loader.md`)
+The DTPK-load path is traced: `func_0c02f4a4/4c6/4dc` are state predicates
+(not parsers), `func_0c030250` is a string-store (not a parser), and the
+SH-4 resolves a package **by filename** through the SFFS virtual
+filesystem (`func_0c030b60`→`func_0c02f3d0`, directory `0x0C1BFA68`), then
+hands the ARM7 the whole resource payload (`func_0c0e9b14`, cmd
+`0x00008001`). **The DTPK Sample-Table parse (DTPK+0x3C) and sample-index
+selection are on the ARM7 `aicadrv` side — there is no static SH-4
+id→sample-index table** (honest boundary). Recoverable statically from
+ROM: sound id → package filename, and filename → SFFS file; the
+id→sample-*index* is runtime/ARM7. Full write-up: `docs/dtpk_loader.md`.
+
 ## Next lead
-Decode the DTPK parse steps `func_0c02f4a4/4c6/4dc` and `func_0c030e40`
-(`0x0C02Fxxx`) to recover how a resource name/index maps to a DTPK sample
-entry (`docs/dtpk-format.md` Sample Table). That is the last piece before
-the wave-RAM allocator — and the only place a *static* id→DTPK-entry map
-could exist. Also: the key-on command word format assembled by
-`func_0c03b23c`'s callers (voice/register/value packing for the ring).
+Trace the ARM7 `aicadrv` (`asm/arm/aicadrv.s`, `tools/trace_aicadrv.py`)
+to see how command `0x00008001` + the package payload select a DTPK
+Sample-Table entry and program the AICA voice — the final id→PCM join,
+resolvable only via ARM7 emulation. Also: the key-on command-word packing
+assembled by `func_0c03b23c`'s callers (voice/register/value for the ring).
