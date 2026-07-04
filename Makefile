@@ -55,7 +55,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -222,6 +222,11 @@ $(BUILD_DIR)/sh4_functions_v3.json: $(DECRYPTED_IC8) \
 validate-gt: $(BUILD_DIR)/sh4_functions_v3.json $(TOOLS_DIR)/ground_truth_estex.txt
 	@echo "  VALIDATE (v3 vs EstexNT ground truth)"
 	@$(PYTHON) $(TOOLS_DIR)/validate_groundtruth.py
+
+verify-asm: $(BUILD_DIR)/sh4_functions_v3.json
+	@echo "  VERIFY-ASM (reassemble the verified window; byte-compare vs ROM)"
+	@$(PYTHON) $(TOOLS_DIR)/asm_roundtrip.py --window
+	@echo "  (needs sh-elf binutils; set SH_ELF_BIN if not in ~/opt/sh-elf/bin)"
 
 call-graph: $(BUILD_DIR)/sh4_callgraph_v3.json
 
