@@ -217,11 +217,34 @@ void func_0c0214c6(void *pos, void *ins)
 // INCLUDE_ASM("asm/code_0c021250/func_0c0215b4")
 
 /* ================================================================== */
-/* func_0c021684 @ 0x0C021684, size 0x38 — walk chain 1 to find the   */
-/* node >= key (r5) and unlink it via func_0c0214c6 if not the head.  */
-/* Traverses @(8,r4) list.  confidence: medium (control flow clear)   */
+/* func_0c021684 @ 0x0C021684, size 0x38 — ordered-insert into the    */
+/* chain-1 list (offset +8 next).  head sentinel = self[+36]; scans   */
+/* the list for the first node `n` with n >= key (unsigned compare on */
+/* the node addresses) and, if that node isn't already == key, splices*/
+/* key in before it via func_0c0214c6 (std::set-style lower_bound +   */
+/* insert).  confidence: high (control flow fully traced)             */
 /* ================================================================== */
-// INCLUDE_ASM("asm/code_0c021250/func_0c021684")
+void func_0c021684(void *self, void *key)
+{
+    void *head = *(void **)((char *)self + 36);   /* r1 = self[+36]  */
+    void *n = *(void **)((char *)head + 8);       /* r4 = head[+8]   */
+
+    /* first node: stop if n==head or n >= key; else advance */
+    if (n != head && (unsigned)n < (unsigned)key) {
+        for (;;) {
+            if (!((unsigned)key > (unsigned)n)) {   /* key <= n → stop */
+                break;
+            }
+            n = *(void **)((char *)n + 8);          /* advance */
+            if (n == head) {
+                break;
+            }
+        }
+    }
+    if (n != key) {
+        func_0c0214c6(n, key);   /* insert `key` before `n` in chain 1 */
+    }
+}
 
 /* func_0c0216bc @ 0x0C0216BC, size 0x10 — return r4 + 64. */
 void *func_0c0216bc(void *p)
@@ -303,7 +326,40 @@ s32 func_0c021790(s32 sz)
 /* struct field shuffling; offsets known but semantics unclear.       */
 /* confidence: medium (mechanical); roles unknown                     */
 /* ================================================================== */
-// INCLUDE_ASM("asm/code_0c021250/func_0c0217ac")
+void func_0c0217ac(void *self)
+{
+    char *s = (char *)self;
+    char *scratch = s + 64;                 /* r7 = self+64 */
+    char *hi = s + 124;                     /* r2 = self+124 */
+    char *lo = s + 4;                       /* r2 after add #-120 */
+    char *out = s + 88;                     /* r4 = self+88 */
+    s32 t3, t6, t1, t2;
+    s32 i;
+
+    /* gather into the scratch block at self+64 */
+    *(s32 *)(scratch + 0)  = *(s32 *)(hi + 8);    /* self+132 */
+    t3 = *(s32 *)(hi + 4);                         /* self+128 */
+    *(s32 *)(scratch + 4)  = t3;
+    *(s32 *)(scratch + 8)  = *(s32 *)(lo + 20);   /* self+24  */
+    t6 = *(s32 *)(lo + 32);                        /* self+36  */
+    *(s32 *)(scratch + 12) = t6;
+    *(s32 *)(scratch + 16) = *(s32 *)(lo + 36);   /* self+40  */
+    *(s32 *)(scratch + 20) = t3 - t6;
+
+    /* zero self+88 .. self+124 (10 words) */
+    for (i = 0; i < 10; i++) {
+        *(s32 *)(out + i * 4) = 0;
+    }
+
+    /* scatter two fields back out */
+    t2 = *(s32 *)(scratch + 4);
+    *(s32 *)(out + 0)  = t2;
+    t1 = *(s32 *)(scratch + 8);
+    *(s32 *)(out + 4)  = t1;
+    t1 = *(s32 *)(scratch + 12);
+    *(s32 *)(out + 28) = t1;
+    *(s32 *)(out + 32) = t2 - t1;
+}
 
 /* ================================================================== */
 /* func_0c021802 @ 0x0C021802, size 0xD6 — list-node relink with a    */
@@ -367,10 +423,11 @@ void func_0c021b44(void *self)
 
 /* ================================================================== */
 /* func_0c021b60 @ 0x0C021B60, size 0x68 — append to a growable       */
-/* buffer object: if len(r5)!=0, snapshot header fields, call         */
-/* func_0c134694, advance the used-count (+32 word) by r6 and clamp   */
-/* the write cursor.  Struct offsets 32/36/40/56 involved.           */
-/* confidence: medium (control flow clear; field roles inferred)      */
+/* buffer object; builds a 24-byte descriptor on the stack, calls     */
+/* func_0c134694, advances self[+32]/[+36].  Keeping asm: it reads a  */
+/* 5th argument off the CALLER's stack frame (`mov.l @(40,r14),r1`    */
+/* above its own 24-byte frame), which is an ABI/stack-passing detail */
+/* not faithfully expressible without inventing the exact frame ABI.  */
 /* ================================================================== */
 // INCLUDE_ASM("asm/code_0c021250/func_0c021b60")
 
@@ -496,11 +553,22 @@ s32 func_0c021fbc(void *self)
 
 /* ================================================================== */
 /* func_0c022050 @ 0x0C022050, size 0x64 — remove-by-key from the     */
-/* container: look up via func_0c1341ee, adjust the +32 running total */
-/* by the node's +24 size, free via func_0c116700 + func_0c1342ac,    */
-/* decrement the +20 count.  Container internals; kept as asm.        */
+/* container.  If key!=0: look up the node via func_0c1341ee(&local); */
+/* if the iterator isn't the end sentinel (self+4): subtract the      */
+/* node's size field node[+24] from the running total self[+32], free */
+/* the node (func_0c116700 → func_0c1342ac(self, freed, 1)), and      */
+/* decrement the element count self[+20].                             */
+/* confidence: medium (control flow traced; container field roles     */
+/* inferred, consistent with the +32 total / +20 count elsewhere)     */
 /* ================================================================== */
 // INCLUDE_ASM("asm/code_0c021250/func_0c022050")
+/* func_0c022050 @ 0x0C022050, size 0x64 — remove-by-key: lookup via   */
+/* func_0c1341ee (iterator in r0), if not end-sentinel (self+4)        */
+/* subtract node[+24] from total self[+32], free via func_0c116700 +   */
+/* func_0c1342ac(self,freed,1), self[+20]--.  Kept as asm: the two     */
+/* callees return values in r0 that conflict with the void externs the */
+/* rest of this file uses for them — not cleanly expressible without   */
+/* diverging the shared signatures.                                    */
 
 /* ================================================================== */
 /* func_0c0220b4 @ 0x0C0220B4, size 0x40 — bump the +44 counter of    */
