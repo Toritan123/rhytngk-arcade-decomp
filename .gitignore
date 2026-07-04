@@ -103,3 +103,18 @@ mame_err_*.log
 *.log
 # Local launcher / helper scripts
 launch_rhytngk.command
+
+# ── RE working notes / analysis prose (kept local; the repo is decompiled ──────
+# data, not documentation — understanding comes from the src/asm/data itself).
+docs/
+
+# ── Abandoned AICA→MIDI experiment (produced garbage output; kept local only) ──
+# The MIDI conversion effort is retired: the AM2 sequencer stream is not a
+# pitched-note stream (docs/dtpk-format.md), so these fabricate melodies.
+tools/aica_to_midi.py
+tools/aica_to_midi_v[0-9].py
+tools/aica_log_to_midi.py
+tools/dtpk_to_midi.py
+tools/parse_aica_programs.py
+tools/trace_real_dtpk.py
+tools/mame_aica_trace*.cmd
