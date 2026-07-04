@@ -1,5 +1,17 @@
 # Complete Sound Pipeline Map (SH-4 → AICA)
 
+> ⛔ **RETRACTED premise (2026-07).** This map is built on "BeatScript op
+> 0x28/0x29 = play_sfx/play_music dispatched via `0x0c1008f0`", which is
+> disproven: `0x28`/`0x29` are C++ **demangler** node tags and
+> `0x1008f0`/`func_0c1203e0` is the demangler
+> (`docs/beatscript_engine.md`). Its addresses are also pre-correction
+> (0xFB00 too low). **The verified SH-4→AICA pipeline is
+> `docs/riq_sound_pipeline.md`** (RIQ scene lifecycle → `0x0C06Axxx` bridge
+> → `0x0C039xxx` voice API → `func_0c0e9590` encoder → `func_0c0e8bf4` ring
+> → AICA; plus the voice-load / wave-RAM bump-alloc / key-on last mile and
+> the `0x0C1CDxxx` sound-id table). Kept only as a record of the corrected
+> map.
+
 > ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
 > document may be in the pre-correction frame — **0xFB00 too low**. The
 > verified base is `0x0C01FB00` (file offset 0), confirmed against the

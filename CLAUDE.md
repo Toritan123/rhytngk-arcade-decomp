@@ -122,10 +122,13 @@ was 0xFB00 too low. `make validate-gt` regression-checks the function set
    handshake `func_0c0e9d70` (@`0xA08000B0/B4`) + wave-RAM **bump
    allocator** `func_0c0e8688` (cursor `0x0C5414A0`, slot tbl `0x0C5415B8`,
    AICA reg `0xA0800060+`) → key-on `func_0c039e0c` → ring `func_0c0e8bf4`.
-   **No static id→sample table**: the sample→wave-RAM binding is a runtime
-   bump alloc + ARM7 handshake (honest boundary). Remaining: DTPK parse
-   `func_0c02f4a4/4c6` (`0x0C02Fxxx`) — the last place a static id→DTPK
-   map could live — and the Unicorn trace of the 0x20/0x24 ARM7 ops.
+   `0x0C1CD000–0x0C1CF000` = **static numeric sound-id table** (sequential
+   u32 ids, e.g. `0x0C1CDBE4`=1000), keyed by `func_0c03a608` to **DTPK
+   package filenames** (`rom/ad_neko.bin`, …) — NOT AICA streams (the 3
+   `sound_entries*`/`sound_pipeline_complete_map` docs are retracted). So
+   id→package IS static in ROM; the id→sample-*index* completes at DTPK
+   parse. Remaining: DTPK parse `func_0c02f4a4/4c6`+`func_0c030cf8`
+   (`0x0C02Fxxx`) for the sample index; Unicorn trace of 0x20/0x24 ARM7 ops.
 4. **Object/anim manager — MAPPED (see `docs/object_manager.md`).** The
    `0x0C0A0xxx` cluster is a fixed-pool **2-D sprite/animation object
    manager**: 40-byte container header + `count`×68-byte records with a

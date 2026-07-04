@@ -115,8 +115,10 @@ So: **RIQ scene lifecycle → 0x06Axxx bridge → 0x039xxx voice API →
 `func_0c0e9590` encoder → `func_0c0e8bf4` ring → G2 → AICA** is the real,
 statically-verified control pipeline. The last mile — voice-object load,
 sample→wave-RAM binding, and key-on — is traced in the section below; it
-bottoms out at a **runtime bump allocator + ARM7 handshake**, and that
-boundary is stated honestly (no static id→sample table is invented).
+bottoms out at a **runtime bump allocator + ARM7 handshake** for the
+sample→wave-RAM *address*. (The id→DTPK-*package* mapping, by contrast, IS
+static in ROM — see the "Sound-entry table" section; only the
+address-within-wave-RAM is runtime.)
 
 ## Retraction confirmed [V]
 `func_0c06387c` (the old doc's "low-level AICA interface") is referenced
@@ -228,6 +230,74 @@ runtime bump allocation + ARM7 handshake, not a static table; the
 voice-object lookup is a runtime map. Both are the same runtime-object
 wall as the rest of RIQ. Everything above the wall (state machine, key-on,
 allocator mechanics, command words) is verified from the ROM.
+
+## Sound-entry table (`0x0C1CD000–0x0C1CF000`) — what an entry really is [V]
+
+The SFX resolver **`func_0c03a608`** (the `id → sound resource` step of
+`play_sfx`) pool-references this table 32× (`0x0C1CDD64`, `0x0C1CE6F0`, …).
+Reading the resolver settles what the table is — and it is **not** what
+the three stale docs claim (AICA sequencer streams).
+
+### `func_0c03a608` is a name/id → DTPK-package lookup builder [V]
+`func_0c03a608(ptr /*r4*/, id /*r5*/, flag /*r6*/)` builds a 264-byte
+lookup object on the stack (memset via `func_0c12c914`), fills it as an
+**8-byte-stride table of entries**, each entry's value dword loaded by
+**dereferencing a `0x0C1CDxxx`/`0x0C1CExxx` global** (`mov.l @glob; mov.l
+into obj`), and each entry paired with a **DTPK-package filename pointer**
+(e.g. `0x0C25743C` = `"ad_neko.bin"`, prefix of `"rom/ad_neko.bin"`). It
+then **scans that table** (`add #1,r9; mov.b @r9; … cmp/eq r10,r1`) for the
+requested id and, on a hit, uses C++ string ops (`func_0c1a31c0` ctor,
+`func_0c1a2340` compare) on the associated name.
+
+### The entries are STATIC NUMERIC SOUND IDs, not streams [V]
+The values it loads from the table are **small sequential integers**, read
+directly from the ROM:
+
+```
+0x0C1CDD64: 0x000004AF (1199)   0x0C1CDD68: 0x04B0 (1200)  0x04B1 …  ; +1 runs
+0x0C1CE6F0: 0x000002B7 (695)    0x0C1CE6F4: 0x02B8 (696)   0x02B9 …
+0x0C1CDBE4: 0x000003E8 (1000)   0x0C1CDBF0: 0x03EB …                 ; (what the
+                                                                       stale doc
+                                                                       misread as
+                                                                       "AICA stream")
+```
+
+The region is ROM (static, not BSS) and is ~50% small ints in `+1` runs.
+It has two sub-structures: a **name/handler pointer-pair table** near the
+start (`0x0C1CD000`: `{code_ptr, string_ptr}` pairs → the DTPK filenames
+at `0x0C2574xx` like `"rom/dr_lesson.bin"`, `"rom/ad_neko.bin"`,
+`"rom/ad_koku.bin"`, and tags `"riq_play_sample_69"`, `"play_sample_48"`)
+and blocks of **sequential numeric sound IDs** further in.
+
+### So a "sound entry" = a static numeric sound id keyed to a DTPK package [V]
+An entry is **not** an AICA sequencer stream and **not** a raw pointer to
+stream data. It is a **numeric sound id**, and `func_0c03a608` associates
+id-ranges with **DTPK package filenames** (`rom/*.bin`). The id → package
+mapping is therefore **static and present in ROM** (the id blocks + the
+filename strings) — this is the closest thing to the "static id→sample
+map" we were hunting. The remaining hop, id → *which sample inside that
+DTPK*, is completed at load time by the DTPK parser
+(`func_0c030e40`→`func_0c030cf8`, `func_0c02f4a4/4c6` — see the loader
+state machine above) walking the DTPK Sample Table (`docs/dtpk-format.md`,
+DTPK+0x3C). That last index is resolved during parse, not held as a flat
+SH-4 table.
+
+**Join to assets:** the DTPK filenames (`rom/ad_neko.bin`, etc.) name the
+packages under the extracted `rom/` set; a numeric sound id selects a
+package (via `func_0c03a608`) and, through the DTPK parse, a sample entry
+within it (`docs/dtpk-format.md` Sample Table). [H on the exact
+id→sample-index arithmetic — that lives in the DTPK parser, not yet
+decoded.]
+
+### Correction to the stale docs [V]
+`docs/sound_entries.md` / `docs/sound_entries_are_aica_streams.md` read
+this region's bytes (e.g. `0x0C1CDBE4: 0x000003E8 …`) as AICA stream
+opcodes. They are **sequential integer sound IDs** (1000, 1003, 1004, …),
+not stream data — the "stream opcode" interpretation is an artifact of
+mis-framing consecutive u32 ids. The table location is real; the *access
+mechanism* (BeatScript op 0x28/0x29 via `0x0C1008F0`) is retracted (that
+was the C++ demangler — `docs/beatscript_engine.md`); the real accessor is
+`func_0c03a608` on the verified key-on path.
 
 ## Next lead
 Decode the DTPK parse steps `func_0c02f4a4/4c6/4dc` and `func_0c030e40`

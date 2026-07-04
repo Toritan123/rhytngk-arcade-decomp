@@ -1,5 +1,18 @@
 # Sound Entries Are AICA Sequencer Streams
 
+> ⛔ **RETRACTED — the core claim of this doc is FALSE (2026-07).** The
+> `0x0C1CD000–0x0C1CF000` entries are **NOT AICA sequencer streams**. Read
+> via the verified accessor `func_0c03a608` (`docs/riq_sound_pipeline.md`,
+> "Sound-entry table"), an entry is a **static numeric sound id**
+> (sequential u32 integers) that keys to a **DTPK package filename**
+> (`rom/*.bin`). The "AICA stream opcodes" this doc found at e.g.
+> `0x0c1cdc5c` are consecutive integer ids (and adjacent data) misread as a
+> byte stream. The premise it inherited — "BeatScript op 0x28/0x29 →
+> play_sfx via `0x0c1008f0`" — is also retracted: `0x28`/`0x29` are C++
+> demangler node tags and `0x1008f0` is the demangler
+> (`docs/beatscript_engine.md`). Addresses here are also pre-correction
+> (0xFB00 too low). Kept only as a record of the corrected error.
+
 > ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
 > document may be in the pre-correction frame — **0xFB00 too low**. The
 > verified base is `0x0C01FB00` (file offset 0), confirmed against the

@@ -1,5 +1,24 @@
 # Sound Entry Structs (BeatScript play_sfx / play_music_in targets)
 
+> ⛔ **RETRACTED premise (2026-07).** The access mechanism in this doc is
+> wrong: there is no "BeatScript op 0x28/0x29 = play_sfx/play_music" and no
+> "`0x0c1008f0` dispatcher" — `0x28`/`0x29` are C++ **demangler** node tags
+> and `0x1008f0`/`func_0c1203e0` is the demangler (see
+> `docs/beatscript_engine.md`). The real accessor is **`func_0c03a608`** on
+> the verified key-on path (`docs/riq_sound_pipeline.md`, "Sound-entry
+> table" section).
+>
+> **DATA re-verified [V]:** the table at `0x0C1CD000–0x0C1CF000` IS real and
+> IS on the sound path. **But an entry is a STATIC NUMERIC SOUND ID**
+> (sequential u32 integers, e.g. `0x0C1CDBE4 = 0x3E8 = 1000`), keyed by
+> `func_0c03a608` to a **DTPK package filename** (`rom/ad_neko.bin`, …) —
+> **NOT** an AICA sequencer stream, and not the per-`play_sfx`
+> attributions/region counts in the table below (those came from the
+> retracted op-0x28/0x29 scan and are unreliable). The word0/word1/word2
+> columns are consecutive integer ids read with wrong framing.
+>
+> Kept only as a record of the corrected error and the raw byte dump.
+
 > ⚠ **Base-address note (2026-06-09).** Absolute SH-4 addresses in this
 > document may be in the pre-correction frame — **0xFB00 too low**. The
 > verified base is `0x0C01FB00` (file offset 0), confirmed against the
