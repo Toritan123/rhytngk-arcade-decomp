@@ -28,8 +28,14 @@ AICA_DRV      := roms/aicadrv.bin
 #  Toolchain
 # ──────────────────────────────────────────────────────────────────────
 
+# The original compiler is GCC 4.1.2 (build stamp 2007-06-11); the flags
+# below are PROVEN by byte-exact reassembly — `sh-elf-gcc-4.1.2 $(CFLAGS_SH4)`
+# reproduces ROM function bytes exactly, while -O2/-Os do not.  Build the
+# matching toolchain reproducibly with `make toolchain` (see ./Dockerfile).
 SH4_PREFIX ?= sh-elf-
 ARM_PREFIX ?= arm-none-eabi-
+# docker image built from ./Dockerfile (see `make toolchain`)
+SH4_IMAGE  ?= rhytngk-sh4
 
 SH4_AS      := $(SH4_PREFIX)as
 SH4_LD      := $(SH4_PREFIX)ld
@@ -40,8 +46,9 @@ ARM_AS      := $(ARM_PREFIX)as
 ARM_LD      := $(ARM_PREFIX)ld
 ARM_OBJDUMP := $(ARM_PREFIX)objdump
 
-CFLAGS_SH4  := -m4-single-only -ml -O2 -ffreestanding -nostdlib \
-               -fno-builtin -I$(INCLUDE_DIR) -Wall -Wno-unused
+# -O1 -ml -m4-single: the byte-match-proven recipe (do not change lightly;
+# -O2/-Os reschedule and stop matching).
+CFLAGS_SH4  := -O1 -ml -m4-single -I$(INCLUDE_DIR)
 CFLAGS_ARM  := -mcpu=arm7tdmi -mthumb-interwork -O2 -ffreestanding \
                -nostdlib -I$(INCLUDE_DIR) -Wall -Wno-unused
 
@@ -55,7 +62,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain sh4-cc symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -227,6 +234,17 @@ verify-asm: $(BUILD_DIR)/sh4_functions_v3.json
 	@echo "  VERIFY-ASM (reassemble the verified window; byte-compare vs ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/asm_roundtrip.py --window
 	@echo "  (needs sh-elf binutils; set SH_ELF_BIN if not in ~/opt/sh-elf/bin)"
+
+# Build the matching GCC 4.1.2 SH-4 toolchain (reproducible; see ./Dockerfile).
+toolchain:
+	@echo "  DOCKER build $(SH4_IMAGE) (sh-elf-gcc 4.1.2 + binutils 2.17)"
+	@docker build -t $(SH4_IMAGE) .
+
+# Compile a decomp .c to SH-4 asm with the matching compiler+flags, e.g.:
+#   make sh4-cc SRC=src/code_0c022224.c
+sh4-cc:
+	@docker run --rm -v "$(CURDIR)":/src $(SH4_IMAGE) \
+	    $(SH4_CC) $(CFLAGS_SH4) -S -o - $(SRC)
 
 call-graph: $(BUILD_DIR)/sh4_callgraph_v3.json
 

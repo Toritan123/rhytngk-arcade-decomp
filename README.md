@@ -90,6 +90,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | SH-4 sound pipeline | ✓ Traced | RIQ→AICA control path fully mapped (SH-4 side) |
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
+| Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single` — byte-exact (see Toolchain) |
 | C reconstruction | ◑ Started | verified-window functions ([0x0C020000, 0x0C026FDC)) |
 
 Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
@@ -97,6 +98,25 @@ and "DTPK→MIDI" claims were **retracted** — `0x0c1008f0`/`func_0c1203e0` is
 the C++ name **demangler**, and the AM2 sequencer stream is not a
 pitched-note stream, so no faithful MIDI exists yet. The real RIQ command
 engine is function-pointer records, not byte-opcodes.
+
+## Toolchain (rebuilding)
+
+The ROM was built with **GCC 4.1.2** (build stamp `2007-06-11`; identified
+from its embedded libiberty demangler strings and confirmed by byte-exact
+reassembly). The matching recipe is **`sh-elf-gcc-4.1.2 -O1 -ml -m4-single`**
+— `-O2`/`-Os` reschedule and stop matching. `./Dockerfile` reproduces the
+exact cross toolchain (binutils 2.17 + gcc 4.1.2, little-endian SH-4):
+
+```sh
+make toolchain                         # docker build the sh-elf-gcc 4.1.2 image
+make sh4-cc SRC=src/code_0c022224.c    # compile a decomp .c to SH-4 asm
+make verify-asm                        # reassemble asm/ and byte-compare vs ROM
+```
+
+`make verify-asm` proves the assembler half (148/175 verified-window
+functions reproduce ROM bytes exactly; the rest are jump tables / shared
+literal pools). Trivial C leaves already recompile byte-exact with the
+recipe above; larger functions need their source form iterated to match.
 
 ## Make targets
 
