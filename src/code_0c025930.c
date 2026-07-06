@@ -453,7 +453,8 @@ s32 func_0c0269e4(void *self, s32 sel)
 /* confidence: high (fully traced; near-identical bodies)             */
 /* ================================================================== */
 
-static void stream_ctor_common(void *self, s32 a, s32 b, s32 put, u8 flag)
+static __inline__ __attribute__((always_inline))
+void stream_ctor_common(void *self, s32 a, s32 b, s32 put, u8 flag)
 {
     char *s = (char *)self;
     *(u32 *)s = 0x0C275CA4;

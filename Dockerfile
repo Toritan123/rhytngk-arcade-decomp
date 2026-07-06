@@ -1,8 +1,9 @@
 # Reproducible SH-4 cross toolchain matching the original build of this ROM.
 #
 # Identified compiler: GCC 4.1.2 (built 2007-06-11). Proven by byte-exact
-# reassembly: `sh-elf-gcc-4.1.2 -O1 -ml -m4-single` reproduces ROM function
-# bytes exactly (-O2/-Os do not). Little-endian, SH-4 single-precision FP.
+# reassembly: `sh-elf-gcc-4.1.2 -O1 -ml -m4-single -fno-delayed-branch`
+# reproduces ROM function bytes exactly (-O2/-Os do not; the ROM leaves
+# jsr/rts delay slots as nop). Little-endian, SH-4 single-precision FP.
 #
 #   docker build -t rhytngk-sh4 .
 #   docker run --rm -v "$PWD":/src rhytngk-sh4 \

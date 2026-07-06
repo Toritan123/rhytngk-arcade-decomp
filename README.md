@@ -103,8 +103,9 @@ engine is function-pointer records, not byte-opcodes.
 
 The ROM was built with **GCC 4.1.2** (build stamp `2007-06-11`; identified
 from its embedded libiberty demangler strings and confirmed by byte-exact
-reassembly). The matching recipe is **`sh-elf-gcc-4.1.2 -O1 -ml -m4-single`**
-— `-O2`/`-Os` reschedule and stop matching. `./Dockerfile` reproduces the
+reassembly). The matching recipe is
+**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single -fno-delayed-branch`** — `-O2`/`-Os`
+reschedule and the ROM leaves delay slots as nop. `./Dockerfile` reproduces the
 exact cross toolchain (binutils 2.17 + gcc 4.1.2, little-endian SH-4):
 
 ```sh
@@ -115,8 +116,10 @@ make verify-asm                        # reassemble asm/ and byte-compare vs ROM
 
 `make verify-asm` proves the assembler half (148/175 verified-window
 functions reproduce ROM bytes exactly; the rest are jump tables / shared
-literal pools). Trivial C leaves already recompile byte-exact with the
-recipe above; larger functions need their source form iterated to match.
+literal pools). `make verify-c` proves the compiler half: **26/119**
+translated verified-window functions already recompile byte-exact from our C;
+the rest need their source form iterated (helper inlining, eval order) to
+match — the delay-slot flag and helper-inlining were found exactly this way.
 
 ## Make targets
 

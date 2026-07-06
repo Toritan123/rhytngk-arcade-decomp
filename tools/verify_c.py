@@ -19,7 +19,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
-CFLAGS = os.environ.get("SH4_CFLAGS", "-O1 -ml -m4-single -Iinclude")
+CFLAGS = os.environ.get("SH4_CFLAGS",
+                        "-O1 -ml -m4-single -fno-delayed-branch -Iinclude")
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
 END = {f["start"]: f["end"]
        for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
