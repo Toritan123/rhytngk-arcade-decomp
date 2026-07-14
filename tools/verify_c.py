@@ -38,24 +38,36 @@ def objdump_tu(rel_c):
 
 
 def parse(objdump):
+    # Byte arrays are function-relative; relocations must be masked at the
+    # reloc's own offset (objdump prints a 4-byte R_SH_DIR32 as two .word
+    # lines with the reloc line after the FIRST half, so "mask last 4 bytes"
+    # mis-aligns). Track each function's section start and mask [off, off+4).
     out, cur = {}, None
     for ln in objdump.splitlines():
-        m = re.match(r"^[0-9a-f]+ <_?(\w+)>:", ln)
+        m = re.match(r"^([0-9a-f]+) <_?(\w+)>:", ln)
         if m:
-            cur = m.group(1); out[cur] = [bytearray(), bytearray()]; continue
+            cur = m.group(2)
+            out[cur] = [bytearray(), int(m.group(1), 16), []]  # bytes, start, relocs
+            continue
         if cur is None:
             continue
-        if "\t" in ln and re.match(r"^\s*[0-9a-f]+:", ln):
+        rm = re.match(r"^\s*([0-9a-f]+):\s+R_SH_(?:DIR32|REL32)", ln)
+        if rm:                                   # reloc — record offset, apply later
+            out[cur][2].append(int(rm.group(1), 16) - out[cur][1])
+        elif "\t" in ln and re.match(r"^\s*[0-9a-f]+:", ln):
             hexf = ln.split("\t")[1].strip()
             if re.fullmatch(r"[0-9a-f]{2}( [0-9a-f]{2})*", hexf):
-                pairs = hexf.split()
-                out[cur][0].extend(bytes.fromhex("".join(pairs)))
-                out[cur][1].extend(b"\x00" * len(pairs))
-        elif re.search(r"R_SH_DIR32|R_SH_REL32", ln):
-            b, mask = out[cur]
-            for i in range(max(0, len(mask) - 4), len(mask)):
-                mask[i] = 1
-    return out
+                out[cur][0].extend(bytes.fromhex("".join(hexf.split())))
+    # second pass: build the reloc mask now that full lengths are known
+    res = {}
+    for name, (b, _start, relocs) in out.items():
+        mask = bytearray(len(b))
+        for r in relocs:
+            for i in range(r, min(r + 4, len(mask))):
+                if i >= 0:
+                    mask[i] = 1
+        res[name] = (b, mask)
+    return res
 
 
 def classify(name, cbytes, mask):
