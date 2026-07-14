@@ -454,3 +454,81 @@ void func_0c0a1a1c(void *hdr, s16 id, u16 v)
         *(u16 *)(rec + 62) = v;
     }
 }
+
+/* more out-of-TU callees for the init/teardown path. */
+extern void func_0c09c708(void);
+extern void func_0c09df44(void);
+
+/* ================================================================== */
+/* func_0c0a06dc @ 0x0C0A06DC, size 0x40 — subsystem init: run two       */
+/* fixed init routines, invoke the optional hook at 0x0C540D50 if set,   */
+/* then latch the ready flag 0x0C540D4C = 1.                             */
+/* ================================================================== */
+void func_0c0a06dc(void)
+{
+    void (*hook)(void);
+    func_0c09c708();
+    func_0c09df44();
+    hook = *(void (**)(void))0x0C540D50;
+    if (hook) {
+        hook();
+    }
+    *(u16 *)0x0C540D4C = 1;
+}
+
+/* ================================================================== */
+/* func_0c0a1c60 @ 0x0C0A1C60, size 0x60 — write bit 13 of the rec+0     */
+/* flag word from (val & 1).  Mode tag = 20.                            */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     *(u8 *)0x0C540D5E = 20;                                        */
+/*     if (func_0c0a0960(hdr, id) == 0) {                            */
+/*         u32 *p = (u32 *)(*(char **)((char *)hdr+8) + id*68);      */
+/*         *p = (*p & ~0x2000) | ((u32)(val & 1) << 13); }           */
+/* GCC materialises `id*68` before the record-array base and orders   */
+/* the bit-merge differently from the ROM (register-allocation, not   */
+/* source-controllable).  Left as ASM until matched.                  */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1c60")
+
+/* ================================================================== */
+/* func_0c0a1cc0 @ 0x0C0A1CC0, size 0x60 — write bit 15 of the rec+0     */
+/* flag word from (val & 1).  Mode tag = 21.                            */
+/* ================================================================== */
+/* Pseudo-C: as func_0c0a1c60 but bit 15 / mask ~0x8000, mode tag 21.  */
+/* Same register-allocation ordering divergence.  ASM until matched.   */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1cc0")
+
+/* ================================================================== */
+/* func_0c0a1e40 @ 0x0C0A1E40, size 0x58 — store the resource pointer    */
+/* into rec+44, substituting the default 0x0C540D5C when null.  Tag=24.  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     *(u8 *)0x0C540D5E = 24;                                        */
+/*     if (func_0c0a0960(hdr, id) == 0) {                            */
+/*         char *base = *(char **)((char *)hdr + 8);                 */
+/*         if (val == 0) val = (void *)0x0C540D5C;                   */
+/*         *(void **)(base + id*68 + 44) = val; }                    */
+/* Same `exts.w`-parameter-normalisation scheduling divergence as     */
+/* func_0c0a1710 (GCC defers it past the mode store).  ASM until matched. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1e40")
+
+/* ================================================================== */
+/* func_0c0a1e98 @ 0x0C0A1E98, size 0x58 — as func_0c0a1e40 but the      */
+/* palette pointer at rec+48.  Mode tag = 24.                           */
+/* ================================================================== */
+/* Pseudo-C: as func_0c0a1e40 but the palette pointer at rec+48.       */
+/* Same `exts.w` scheduling divergence.  ASM until matched.            */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1e98")
+
+/* ================================================================== */
+/* func_0c0a1d20 @ 0x0C0A1D20, size 0x50 — store two u32 words at rec+32 */
+/* and rec+36.  Mode tag = 22.  ASM: `muls.w` id*68 (cf 15a0/192c).     */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1d20")
+
+/* ================================================================== */
+/* func_0c0a1de0 @ 0x0C0A1DE0, size 0x60 — store rec+44/rec+48 with the  */
+/* 0x0C540D5C null-default (cf func_0c0a1e40).  Mode tag = 24.  ASM:     */
+/* `muls.w` id*68 (cf 15a0/192c).                                       */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1de0")
