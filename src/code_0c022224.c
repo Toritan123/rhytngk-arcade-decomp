@@ -175,17 +175,21 @@ u32 func_0c02262c(const f32 *ch)
 
 /* ================================================================== */
 /* func_0c02267c @ 0x0C02267C, size 0x54 — inverse of func_0c02262c:   */
-/* unpack a packed u32 colour (r4) into 4 floats written to a stack    */
-/* struct returned via r2 (hidden aggregate return); each channel is   */
-/* byteval / 255.0f.  Written with an explicit out pointer.           */
-/* confidence: high                                                   */
+/* unpack a packed u32 colour (r4) into a 4-float colour returned BY   */
+/* VALUE (hidden aggregate-return pointer in r2); each channel is      */
+/* byteval / 255.0f.  Channels stored [3],[2],[1],[0] via a walking    */
+/* pointer (out+12 down to out+0).  confidence: high                   */
 /* ================================================================== */
-f32 *func_0c02267c(f32 *out, u32 c)
+typedef struct { f32 v[4]; } rgba_f;
+
+rgba_f func_0c02267c(u32 c)
 {
-    out[3] = (f32)((c >> 24) & 0xFF) / 255.0f;
-    out[2] = (f32)((c >> 16) & 0xFF) / 255.0f;
-    out[1] = (f32)((c >> 8)  & 0xFF) / 255.0f;
-    out[0] = (f32)( c        & 0xFF) / 255.0f;
+    rgba_f out;
+    f32 *p = &out.v[3];                               /* walk down from out+12  */
+    *p-- = (f32)(s32)(c >> 24) / 255.0f;              /* no mask: >>24 is 0..255 */
+    *p-- = (f32)(s32)((c >> 16) & 0xFF) / 255.0f;
+    *p-- = (f32)(s32)((c >> 8)  & 0xFF) / 255.0f;
+    *p   = (f32)(s32)( c        & 0xFF) / 255.0f;
     return out;
 }
 
