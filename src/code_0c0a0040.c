@@ -32,6 +32,8 @@ extern void func_0c0a0e50(void *hdr, s32 id, s32 arg, s32 flag);
  */
 extern u32   g_0C3D5C00;   /* 0x0C3D5C00 */
 extern u32   g_0C3D5C04;   /* 0x0C3D5C04 */
+extern u8    g_0C540D40;   /* 0x0C540D40 */
+extern u16   g_0C540D44;   /* 0x0C540D44 */
 extern u16   g_0C540D4C;   /* 0x0C540D4C */
 extern void *g_0C540D50;   /* 0x0C540D50 */
 extern void *g_0C540D60;   /* 0x0C540D60 */
@@ -532,3 +534,64 @@ void func_0c0a06dc(void)
 /* `muls.w` id*68 (cf 15a0/192c).                                       */
 /* ================================================================== */
 // INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1de0")
+
+/* callee invoked by the reset loop in func_0c0a065c. */
+extern void func_0c068ed0(s32 a, s32 b);
+extern void func_0c0a01d8(s32 v);
+extern void func_0c0a0218(s32 v);
+
+/* ================================================================== */
+/* func_0c0a065c @ 0x0C0A065C, size 0x60 — cold reset of both state     */
+/* blocks: run func_0c0a01d8(0), clear the two sub-channels via         */
+/* func_0c068ed0, run func_0c0a0218(0), then seed 0x0C540D40/0x0C540D44.*/
+/* ================================================================== */
+void func_0c0a065c(void)
+{
+    s32 i;
+    func_0c0a01d8(0);
+    i = 0;
+    do {
+        func_0c068ed0(i, 0);
+        i++;
+    } while (i != 2);
+    func_0c0a0218(0);
+    g_0C540D40 = 0;
+    g_0C540D44 = 1023;
+}
+
+/* ================================================================== */
+/* func_0c0a077c @ 0x0C0A077C, size 0x30 — invoke the hook stored at     */
+/* 0x0C540D64 twice: first with *(hdr+8), then with hdr (reloading the   */
+/* pointer between calls in case the hook rebinds it).                   */
+/* ================================================================== */
+void func_0c0a077c(void *hdr)
+{
+    void (**pfn)(void *) = (void (**)(void *))0x0C540D64;
+    (*pfn)(*(void **)((char *)hdr + 8));
+    (*pfn)(hdr);
+}
+
+/* ================================================================== */
+/* func_0c0a0bd2 @ 0x0C0A0BD2, size 0x52 — free-list push: append record */
+/* `id` to the tail of the intrusive list (link at rec+26), updating the */
+/* head (hdr+16) when empty and the tail (hdr+18) always.  id<0 = no-op. */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (id < 0) return;                                            */
+/*     s16 tail = *(s16 *)((char *)hdr + 18);                         */
+/*     if (tail >= 0)                                                 */
+/*         *(s16 *)(*(char **)((char *)hdr+8) + tail*68 + 26) = id;   */
+/*     else *(s16 *)((char *)hdr + 16) = id;                          */
+/*     *(s16 *)(*(char **)((char *)hdr+8) + id*68 + 26) = -1;         */
+/*     *(s16 *)((char *)hdr + 18) = id;                               */
+/* GCC caches the `hdr+18` field address in a scratch register and    */
+/* reuses it for the final store; the ROM recomputes it (`mov r4,r1;  */
+/* add #18`).  Register allocation, not source-controllable.  ASM.    */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0bd2")
+
+/* ================================================================== */
+/* func_0c0a0b40 @ 0x0C0A0B40, size 0x5C — swap record `id` with its      */
+/* list neighbours (reorder via the +24/+26 link fields).  Mode-less.    */
+/* ASM: `id * 68` uses `muls.w` (see func_0c0a15a0).                     */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0b40")
