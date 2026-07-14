@@ -48,7 +48,7 @@ s32  func_0c026572(void *self);
 s32  func_0c02658c(void *self);
 void func_0c026464(void *a, void *b);
 void func_0c026700(void *self, s32 begin, s32 count, s32 put);
-s32  func_0c0264e8(s32 mode, s32 key);
+void func_0c0264e8(s32 mode, s32 key);
 
 /* ================================================================== */
 /* func_0c025930 @ 0x0C025930, size 0x8DC — very large FPU/format      */
@@ -143,12 +143,11 @@ s32 func_0c0264ca(void *head)
 /* mode==1 && key==0xFFFF -> func_0c139440(0x0C461CCD).               */
 /* confidence: high                                                   */
 /* ================================================================== */
-s32 func_0c0264e8(s32 mode, s32 key)
+void func_0c0264e8(s32 mode, s32 key)
 {
     if (mode == 1 && key == 0xFFFF) {
         func_0c139440((void *)0x0C461CCD);
     }
-    return 0;
 }
 
 /* func_0c026518 @ 0x0C026518, size 0x24 — wrapper: mode-1 entry. */
