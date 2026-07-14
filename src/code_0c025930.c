@@ -85,31 +85,35 @@ void func_0c026464(void *pa, void *pb)
     void **a = (void **)pa;
     void **b = (void **)pb;
 
-    if (a[0] != a) {                 /* a is linked */
-        if (b[0] == b) {             /* b empty: move a's ring onto b */
-            b[0] = a[0];
-            b[1] = a[1];
-            ((void **)a[1])[0] = b;
-            ((void **)a[0])[1] = b;
-            a[0] = a;
-            a[1] = a;
-        } else {                     /* both linked: exchange endpoints */
-            void *an = a[0], *ap = a[1];
-            void *bn = b[0], *bp = b[1];
-            a[0] = bn; b[0] = an;
-            a[1] = bp; b[1] = ap;
-            ((void **)a[0])[1] = a;
+    if (a[0] == a) {                 /* a empty */
+        if (b[0] != b) {             /* b linked: adopt b's ring into a */
+            a[0] = b[0];
+            a[1] = b[1];
+            ((void **)b[0])[1] = a;
             ((void **)a[1])[0] = a;
-            ((void **)b[0])[1] = b;
-            ((void **)b[1])[0] = b;
+            b[0] = b;
+            b[1] = b;
         }
-    } else if (b[0] != b) {          /* only b linked: move onto a */
-        a[0] = b[0];
-        a[1] = b[1];
-        ((void **)b[1])[0] = a;
-        ((void **)b[0])[1] = a;
-        b[0] = b;
-        b[1] = b;
+    } else if (b[0] == b) {          /* a linked, b empty: adopt a's ring into b */
+        b[0] = a[0];
+        b[1] = a[1];
+        ((void **)a[0])[1] = b;
+        ((void **)b[1])[0] = b;
+        a[0] = a;
+        a[1] = a;
+    } else {                         /* both linked: exchange endpoints */
+        void *an = a[0], *bn = b[0];
+        a[0] = bn;
+        b[0] = an;
+        {
+            void *ap = a[1], *bp = b[1];
+            a[1] = bp;
+            b[1] = ap;
+        }
+        ((void **)a[0])[1] = a;
+        ((void **)a[1])[0] = a;
+        ((void **)b[0])[1] = b;
+        ((void **)b[1])[0] = b;
     }
 }
 

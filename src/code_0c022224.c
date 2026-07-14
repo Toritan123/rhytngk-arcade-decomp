@@ -57,9 +57,9 @@ void func_0c02246c(void *self, void *src);   /* alt-entry -> func_0c022470 */
 void func_0c022470(void *self, void *src);   /* INCLUDE_ASM below */
 void func_0c0223e8(void *self, void *src);   /* alt-entry -> func_0c0223ec */
 void func_0c0223ec(void *self, void *src);   /* INCLUDE_ASM below */
-s32  func_0c0225fc(s32 mode, s32 key);
+void func_0c0225fc(s32 mode, s32 key);
 s32  func_0c02296c(s32 mode, s32 key);
-s32  func_0c0226d0(s32 mode, s32 key);
+void func_0c0226d0(s32 mode, s32 key);
 
 /* ================================================================== */
 /* func_0c022224 @ 0x0C022224, size 0x44 — object dtor: writes         */
@@ -143,7 +143,7 @@ void func_0c0222a0(void *self)
 // INCLUDE_ASM("asm/code_0c022224/func_0c02259c")
 
 /* func_0c0225fc @ 0x0C0225FC, size 0x0C — empty (mode,key) handler.  */
-s32 func_0c0225fc(s32 mode, s32 key) { return 0; }
+void func_0c0225fc(s32 mode, s32 key) {}
 
 /* func_0c022608 @ 0x0C022608, size 0x24 — wrapper: mode-1 entry. */
 void func_0c022608(void)
@@ -165,11 +165,12 @@ void func_0c022608(void)
 /* ================================================================== */
 u32 func_0c02262c(const f32 *ch)
 {
-    u32 c1 = (u32)(u8)(s32)(ch[1] * 255.0f) << 8;    /* bits [15:8]  */
-    u32 c2 = (u32)(u8)(s32)(ch[2] * 255.0f);         /* bits [7:0]   */
-    u32 c3 = (u32)(u8)(s32)(ch[3] * 255.0f) << 24;   /* bits [31:24] */
-    u32 c0 = (u32)(u8)(s32)(ch[0] * 255.0f) << 16;   /* bits [23:16] */
-    return c0 | c1 | c2 | c3;
+    const f32 *p = &ch[1];
+    u32 c1 = (u32)(u8)(s32)(*p++ * 255.0f) << 8;     /* ch[1] bits [15:8]  */
+    u32 c2 = (u32)(u8)(s32)(*p++ * 255.0f);          /* ch[2] bits [7:0]   */
+    u32 c3 = (u32)(s32)(*p * 255.0f) << 24;          /* ch[3] bits [31:24] (no extu.b) */
+    u32 c0 = (u32)(u8)(s32)(ch[0] * 255.0f) << 16;   /* ch[0] bits [23:16] */
+    return c1 | (c2 | (c3 | c0));
 }
 
 /* ================================================================== */
@@ -193,15 +194,15 @@ f32 *func_0c02267c(f32 *out, u32 c)
 /* mode==1 && key==0xFFFF -> set the float[4] at 0x0C461CA8 to all 1.0f*/
 /* confidence: high                                                   */
 /* ================================================================== */
-s32 func_0c0226d0(s32 mode, s32 key)
+void func_0c0226d0(s32 mode, s32 key)
 {
     if (mode == 1 && key == 0xFFFF) {
-        g_unk_0C461CA8[0] = 1.0f;
-        g_unk_0C461CA8[1] = 1.0f;
-        g_unk_0C461CA8[2] = 1.0f;
-        g_unk_0C461CA8[3] = 1.0f;
+        f32 *p = g_unk_0C461CA8;
+        *p = 1.0f;              /* offset 0  */
+        *(p + 1) = 1.0f;        /* offset 4  */
+        *(p + 2) = 1.0f;        /* offset 8  */
+        *(p + 3) = 1.0f;        /* offset 12 */
     }
-    return 0;
 }
 
 /* func_0c022704 @ 0x0C022704, size 0x24 — wrapper: mode-1 entry. */
@@ -240,11 +241,12 @@ void func_0c022704(void)
 /* Writes hi nibble then lo nibble of r5 to [r4],[r4+1] using the LUT  */
 /* at 0x0C1BF030.  confidence: high                                   */
 /* ================================================================== */
-void func_0c022940(char *out, u8 v)
+void func_0c022940(char *out, s32 v)
 {
     const char *lut = (const char *)0x0C1BF030;   /* "0123456789ABCDEF" */
-    out[0] = lut[(v >> 4) & 0x0F];
-    out[1] = lut[v & 0x0F];
+    u32 b = (u8)v;                                 /* extu.b r5,r2, kept live */
+    *out++ = lut[b >> 4];                          /* hi nibble (shlr2 x2)   */
+    *out = lut[b & 15];                            /* lo nibble             */
 }
 
 /* ================================================================== */

@@ -155,10 +155,10 @@ void func_0c021470(void) {}
 void func_0c02147c(void *node)
 {
     void **n = (void **)node;
-    void **next = (void **)n[0];
-    void **prev = (void **)n[1];
-    prev[0] = next;   /* *(next of prev) = next */
-    next[1] = prev;   /* *(prev of next) = prev */
+    void **a = (void **)n[1];   /* *(node+4) loaded first (r2) */
+    void **b = (void **)n[0];   /* *(node)   (r1)             */
+    a[0] = b;                    /* *(node[1])   = node[0]     */
+    b[1] = a;                    /* *(node[0]+4) = node[1]     */
     n[0] = NULL;
     n[1] = NULL;
 }
@@ -169,11 +169,11 @@ void func_0c021496(void *pos, void *ins)
 {
     void **p = (void **)pos;
     void **q = (void **)ins;
-    void **prev = (void **)p[1];
-    q[1] = prev;      /* ins.prev = pos.prev  (via *r5 = r4 then...) */
-    prev[0] = ins;    /* pos.prev.next = ins */
-    q[0] = pos;       /* ins.next = pos */
-    p[1] = ins;       /* pos.prev = ins */
+    void **prev = (void **)p[1];   /* r1 = pos[1]        */
+    q[0] = pos;                     /* ins[0] = pos       */
+    prev[0] = ins;                  /* *(pos[1]) = ins    */
+    q[1] = prev;                    /* ins[1] = pos[1]    */
+    p[1] = ins;                     /* pos[1] = ins       */
 }
 
 /* func_0c0214ac @ 0x0C0214AC, size 0x1A — unlink node from chain 1   */
@@ -181,10 +181,10 @@ void func_0c021496(void *pos, void *ins)
 void func_0c0214ac(void *node)
 {
     void **n = (void **)node;
-    void **next = (void **)n[3];   /* @12 */
-    void **prev = (void **)n[2];   /* @8  */
-    prev[2] = next;
-    next[3] = prev;
+    void **a = (void **)n[3];   /* *(node+12) loaded first (r2) */
+    void **b = (void **)n[2];   /* *(node+8)  (r1)             */
+    a[2] = b;                    /* *(node[3]+8)  = node[2]     */
+    b[3] = a;                    /* *(node[2]+12) = node[3]     */
     n[2] = NULL;
     n[3] = NULL;
 }
@@ -195,11 +195,11 @@ void func_0c0214c6(void *pos, void *ins)
 {
     void **p = (void **)pos;
     void **q = (void **)ins;
-    void **prev = (void **)p[3];   /* @12 */
-    p[2] = ins;                    /* r5 stored @(8,r5)? — see note */
-    prev[2] = ins;
-    q[3] = prev;
-    p[3] = ins;
+    void **prev = (void **)p[3];   /* r1 = pos[3] (@(12,r4))   */
+    q[2] = pos;                     /* ins[2] = pos  (@(8,r5))  */
+    prev[2] = ins;                  /* *(pos[3]+8) = ins        */
+    q[3] = prev;                    /* ins[3] = pos[3]          */
+    p[3] = ins;                     /* pos[3] = ins             */
 }
 
 /* ================================================================== */
@@ -447,12 +447,17 @@ void func_0c021b44(void *self)
 /* ================================================================== */
 void func_0c021c20(void *self)
 {
-    void **head = (void **)*(void **)((char *)self + 36);
-    void **node = (void **)head[0];
+    void **head = *(void ***)((char *)self + 36);   /* r1 */
+    void **node = (void **)head[0];                  /* r3 = *head */
     if (node != head) {
-        while (*node != (void *)head && *node != NULL) {
-            node = (void **)*node;
-        }
+        void *nx;
+        do {
+            nx = *node;                 /* r2 = *r3   */
+            node = (void **)nx;         /* r3 = r2    */
+            if (nx == (void *)head) {   /* r2 == r1?  */
+                break;
+            }
+        } while (nx != NULL);           /* r2 != 0    */
     }
 }
 
