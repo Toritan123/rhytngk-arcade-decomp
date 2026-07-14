@@ -169,17 +169,18 @@ s32 func_0c02653c(void *self)
 }
 
 /* ================================================================== */
-/* func_0c02654a @ 0x0C02654A, size 0x28 — "peek/store active byte":   */
-/* if the +32 flag is set and the +20 put-cursor is non-null, store    */
-/* that flag byte through it and return the +4 field; else return 0.   */
-/* confidence: high                                                   */
+/* func_0c02654a @ 0x0C02654A, size 0x28 — if the +32 byte is ZERO and */
+/* the +20 put-cursor is non-null, store that byte (0) through it and  */
+/* return the +4 field; else return 0.  (ROM: `tst; bf` — the process  */
+/* branch is taken when the +32 byte == 0.)                            */
+/* confidence: high (branch condition read from raw bytes 0x8b06=bf)   */
 /* ================================================================== */
 s32 func_0c02654a(void *self)
 {
     char *s = (char *)self;
     u8 flag = *(u8 *)(s + 32);
     u8 *cursor;
-    if (flag != 0) {
+    if (flag == 0) {
         cursor = *(u8 **)(s + 20);
         if (cursor != NULL) {
             *cursor = flag;
