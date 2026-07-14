@@ -380,3 +380,77 @@ void func_0c0a1848(void *hdr, s16 id, s32 val)
 /* Same `muls.w`-vs-`shld` strength-reduction mismatch as            */
 /* func_0c0a15a0.  Left as ASM until matched.                        */
 // INCLUDE_ASM("asm/code_0c0a0040/func_0c0a192c")
+
+/* ================================================================== */
+/* func_0c0a1710 @ 0x0C0A1710, size 0x4C — get-field: return the signed */
+/* byte at rec+12, or -1 when the record is not writable.  Mode tag=10. */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     *(u8 *)0x0C540D5E = 10;                                        */
+/*     if (func_0c0a0960(hdr, id) == 0) {                            */
+/*         char *rec = *(char **)((char *)hdr + 8) + id * 68;        */
+/*         return *(s8 *)(rec + 12); }                                */
+/*     return -1;                                                     */
+/* Identical to the ROM except GCC 4.1.2 schedules the `exts.w r5`    */
+/* parameter normalisation after the mode-byte store (the getter's    */
+/* return-value register pressure defers it); the ROM hoists it to    */
+/* entry.  Pure scheduling, not source-controllable.  ASM until matched. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1710")
+
+/* ================================================================== */
+/* func_0c0a1698 @ 0x0C0A1698, size 0x78 — set anim-frame (rec+6): if   */
+/* the value changes, call func_0c0a0b40, store it, then func_0c0a0a3c. */
+/* Mode tag = 9.  ASM: `id * 68` uses `muls.w` (see func_0c0a15a0).     */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1698")
+
+/* ================================================================== */
+/* func_0c0a1894 @ 0x0C0A1894, size 0x4C — OR `bits` into the u32 flag   */
+/* word at rec+16.  Mode tag = 14.  ASM: `muls.w` id*68 (cf 15a0/192c). */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1894")
+
+/* ================================================================== */
+/* func_0c0a18e0 @ 0x0C0A18E0, size 0x4C — AND `mask` into the u32 flag  */
+/* word at rec+16.  Mode tag = 15.  ASM: `muls.w` id*68 (cf 15a0/192c). */
+/* ================================================================== */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a18e0")
+
+/* ================================================================== */
+/* func_0c0a197c @ 0x0C0A197C, size 0x50 — store s16 into rec+20.       */
+/* Mode tag = 17.                                                      */
+/* ================================================================== */
+void func_0c0a197c(void *hdr, s16 id, s16 v)
+{
+    *(u8 *)0x0C540D5E = 17;
+    if (func_0c0a0960(hdr, id) == 0) {
+        char *rec = *(char **)((char *)hdr + 8) + id * 68;
+        *(s16 *)(rec + 20) = v;
+    }
+}
+
+/* ================================================================== */
+/* func_0c0a19cc @ 0x0C0A19CC, size 0x50 — store s8 into rec+22.        */
+/* Mode tag = 18.                                                      */
+/* ================================================================== */
+void func_0c0a19cc(void *hdr, s16 id, s8 v)
+{
+    *(u8 *)0x0C540D5E = 18;
+    if (func_0c0a0960(hdr, id) == 0) {
+        char *rec = *(char **)((char *)hdr + 8) + id * 68;
+        *(s8 *)(rec + 22) = v;
+    }
+}
+
+/* ================================================================== */
+/* func_0c0a1a1c @ 0x0C0A1A1C, size 0x50 — store u16 into rec+62.       */
+/* Mode tag = 28.                                                      */
+/* ================================================================== */
+void func_0c0a1a1c(void *hdr, s16 id, u16 v)
+{
+    *(u8 *)0x0C540D5E = 28;
+    if (func_0c0a0960(hdr, id) == 0) {
+        char *rec = *(char **)((char *)hdr + 8) + id * 68;
+        *(u16 *)(rec + 62) = v;
+    }
+}
