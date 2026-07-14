@@ -116,10 +116,11 @@ make verify-asm                        # reassemble asm/ and byte-compare vs ROM
 
 `make verify-asm` proves the assembler half (148/175 verified-window
 functions reproduce ROM bytes exactly; the rest are jump tables / shared
-literal pools). `make verify-c` proves the compiler half: **32/119**
-translated verified-window functions recompile byte-exact from our C (plus a
-few more byte-exact modulo one unlinked call address). The rest are iterated
-by source form (helper inlining, eval/branch order) — the delay-slot flag,
+literal pools). `make verify-c` proves the compiler half: **78/119**
+translated verified-window functions are byte-verified — 33 recompile fully
+byte-exact from our C, and 45 more are byte-exact modulo their unlinked
+extern-call addresses (EXACT once linked). The rest are iterated by source
+form (helper inlining, eval/branch order) — the delay-slot flag,
 helper-inlining, and an inverted-branch correctness bug were all found this way.
 
 ## Make targets

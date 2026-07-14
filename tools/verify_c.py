@@ -3,11 +3,13 @@
 byte-compare each function against the ROM.
 
 Compiles with the reproducible GCC 4.1.2 image (`make toolchain`, see
-./Dockerfile) at the proven `-O1 -ml -m4-single`, then for every
-`func_0cXXXXXX` in the object compares its bytes to the ROM at that address.
-Functions that call externs load the target from a literal pool via a DIR32
-relocation; unlinked, that word is 0, so reloc-covered bytes are masked and
-reported as MATCH* (exact modulo unlinked addresses) rather than EXACT.
+./Dockerfile) at the proven `-O1 -ml -m4-single -fno-delayed-branch`. Fast
+mode compiles -ffunction-sections and extracts each function's exact bytes
+with objcopy (objdump -d elides trailing zero pool words with `...`) plus its
+relocation offsets with objdump -r. Functions that call externs load the
+target from a literal pool via a DIR32 relocation; unlinked, that word is 0,
+so reloc-covered bytes are masked and reported as MATCH* (byte-exact modulo
+unlinked addresses — EXACT once linked) rather than EXACT.
 
     tools/verify_c.py                       # the 4 verified-window TUs (fast)
     tools/verify_c.py src/foo.c             # specific TUs
@@ -29,43 +31,43 @@ END = {f["start"]: f["end"]
        for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
 
 
-def objdump_tu(rel_c):
-    cmd = (f"cd /src && sh-elf-gcc {CFLAGS} -c {rel_c} -o /tmp/o.o 2>/tmp/e "
-           f"&& sh-elf-objdump -dr /tmp/o.o || cat /tmp/e")
-    r = subprocess.run(["docker", "run", "--rm", "-v", f"{REPO}:/src", IMAGE,
-                        "sh", "-c", cmd], capture_output=True, text=True)
-    return r.stdout
-
-
-def parse(objdump):
-    # Byte arrays are function-relative; relocations must be masked at the
-    # reloc's own offset (objdump prints a 4-byte R_SH_DIR32 as two .word
-    # lines with the reloc line after the FIRST half, so "mask last 4 bytes"
-    # mis-aligns). Track each function's section start and mask [off, off+4).
-    out, cur = {}, None
-    for ln in objdump.splitlines():
-        m = re.match(r"^([0-9a-f]+) <_?(\w+)>:", ln)
-        if m:
-            cur = m.group(2)
-            out[cur] = [bytearray(), int(m.group(1), 16), []]  # bytes, start, relocs
-            continue
-        if cur is None:
-            continue
-        rm = re.match(r"^\s*([0-9a-f]+):\s+R_SH_(?:DIR32|REL32)", ln)
-        if rm:                                   # reloc — record offset, apply later
-            out[cur][2].append(int(rm.group(1), 16) - out[cur][1])
-        elif "\t" in ln and re.match(r"^\s*[0-9a-f]+:", ln):
-            hexf = ln.split("\t")[1].strip()
-            if re.fullmatch(r"[0-9a-f]{2}( [0-9a-f]{2})*", hexf):
-                out[cur][0].extend(bytes.fromhex("".join(hexf.split())))
-    # second pass: build the reloc mask now that full lengths are known
+def raw_tu(rel_c):
+    """{func: (bytes, reloc_mask)} via -ffunction-sections + objcopy (exact
+    bytes; objdump -d elides trailing zero pool words with `...`) and
+    objdump -r (exact reloc offsets)."""
+    cf = CFLAGS.replace("-Iinclude", "-ffunction-sections -Iinclude")
+    script = (
+        f"cd /src && sh-elf-gcc {cf} -c {rel_c} -o /tmp/o.o 2>/tmp/e "
+        f"|| {{ cat /tmp/e; exit 1; }}\n"
+        "echo ===RELOCS===; sh-elf-objdump -r /tmp/o.o\n"
+        "echo ===BYTES===\n"
+        "for s in $(sh-elf-objdump -h /tmp/o.o | grep -oE '[.]text[.]func_0c[0-9a-f]{6}' | sort -u); do\n"
+        "  sh-elf-objcopy -O binary --only-section=$s /tmp/o.o /tmp/s.bin 2>/dev/null;\n"
+        "  printf '%s ' \"$s\"; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo;\n"
+        "done")
+    out = subprocess.run(["docker", "run", "--rm", "-v", f"{REPO}:/src", IMAGE,
+                          "sh", "-c", script], capture_output=True, text=True).stdout
+    relocs, byts, cur, phase = {}, {}, None, ""
+    for ln in out.splitlines():
+        if ln.startswith("==="):
+            phase = ln; continue
+        if "RELOCS" in phase:
+            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.](func_0c[0-9a-f]{6})\]", ln)
+            if m:
+                cur = m.group(1); relocs[cur] = []; continue
+            rm = re.match(r"^([0-9a-f]+)\s+R_SH_(?:DIR32|REL32)", ln)
+            if rm and cur:
+                relocs[cur].append(int(rm.group(1), 16))
+        elif "BYTES" in phase:
+            p = ln.split()
+            if len(p) == 2 and p[0].startswith(".text.func_"):
+                byts[p[0][6:]] = bytes.fromhex(p[1])
     res = {}
-    for name, (b, _start, relocs) in out.items():
+    for name, b in byts.items():
         mask = bytearray(len(b))
-        for r in relocs:
+        for r in relocs.get(name, []):
             for i in range(r, min(r + 4, len(mask))):
-                if i >= 0:
-                    mask[i] = 1
+                mask[i] = 1
         res[name] = (b, mask)
     return res
 
@@ -169,7 +171,7 @@ def main():
         else:
             rows = sorted(r for r in
                           (classify(n, b, m)
-                           for n, (b, m) in parse(objdump_tu(tu)).items()) if r)
+                           for n, (b, m) in raw_tu(tu).items()) if r)
         print(f"\n=== {tu}  ({sum(1 for r in rows if r[1]=='EXACT')}/{len(rows)} exact) ===")
         for name, st, info in rows:
             tally[st] = tally.get(st, 0) + 1
