@@ -595,3 +595,152 @@ void func_0c0a077c(void *hdr)
 /* ASM: `id * 68` uses `muls.w` (see func_0c0a15a0).                     */
 /* ================================================================== */
 // INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0b40")
+
+/* list-reorder helpers used by the set-layer path. */
+extern void func_0c0a0a3c(void *hdr, s32 id);
+extern void func_0c0a0b40(void *hdr, s32 id);
+
+/* ================================================================== */
+/* func_0c0a17f0 @ 0x0C0A17F0, size 0x58 — set bit 0 of the rec+0 flag   */
+/* word from (val & 1).  Mode tag = 12.                                 */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     *(u8 *)0x0C540D5E = 12;                                        */
+/*     if (func_0c0a0960(hdr, id) == 0) {                            */
+/*         u32 *p = (u32 *)(*(char **)((char *)hdr+8) + id*68);      */
+/*         *p = (*p & ~1) | (val & 1); }                             */
+/* Same flag-bit RMW ordering divergence as func_0c0a1c60 (GCC loads  */
+/* the record-array base after the id*68 shift and merges the bit     */
+/* last).  Register allocation, not source-controllable.  ASM.        */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a17f0")
+
+/* ================================================================== */
+/* func_0c0a1510 @ 0x0C0A1510, size 0x90 — set position (rec+2/rec+4)    */
+/* then, if the layer word at rec+6 changed, unlink (func_0c0a0b40),     */
+/* store the new layer, and relink (func_0c0a0a3c).  Mode tag = 5.       */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     *(u8 *)0x0C540D5E = 5;                                         */
+/*     if (func_0c0a0960(hdr, id) == 0) {                            */
+/*         char *rec = *(char **)((char *)hdr+8) + id*68;            */
+/*         *(s16 *)(rec+2) = x;  *(s16 *)(rec+4) = y;               */
+/*         if (*(u16 *)(rec+6) != layer) {                          */
+/*             func_0c0a0b40(hdr, id);                              */
+/*             rec = *(char **)((char *)hdr+8) + id*68;             */
+/*             *(u16 *)(rec+6) = layer;                             */
+/*             func_0c0a0a3c(hdr, id); } }                          */
+/* ASM: the ROM lowers `id*68` with `muls.w` (cf 15a0) and assigns   */
+/* hdr/id to r8/r9 where GCC uses r9/r8 — both compiler-internal.    */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1510")
+
+/* ================================================================== */
+/* func_0c0a07bc @ 0x0C0A07BC, size 0xD0 — (re)build the record pool's   */
+/* free-list: clear each record's alive/bit1 flags, then chain records  */
+/* 0..count-1 through the +24 (prev) / +26 (next) link fields and seed  */
+/* the header's head/tail (+16/+18) and misc fields.                    */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact): clear each     */
+/* record's alive(+bit14)/bit1 flags, chain 0..count-1 through the +24  */
+/* (prev)/+26 (next) links, seed head/tail (hdr+16/+18) and hdr+30/+32. */
+/* The ROM applies the two flag masks as two separate ANDs (`& ~2`,     */
+/* `& ~0x4000`); GCC 4.1.2 constant-folds them into one `& 0xFFFFBFFD`  */
+/* and assigns count/base to different registers — compiler-internal    */
+/* across a 200-byte body.  Left as ASM until matched.                  */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a07bc")
+
+/* ================================================================== */
+/* Remaining core-API / larger functions in the cluster.  Each is      */
+/* carried as an INCLUDE_ASM placeholder with a one-line reason: the    */
+/* fixed GCC 4.1.2 recipe diverges from the ROM by a compiler-internal  */
+/* choice we cannot drive from source.  The dominant blocker is that    */
+/* the ROM lowers the record index `id * 68` with a 16x16 `muls.w`,     */
+/* whereas this GCC build always strength-reduces it to `shld/add/      */
+/* shll2` (confirmed unforceable for any cast/type of the operands).    */
+/* ================================================================== */
+
+/* func_0c0a0040 (0x54) construct-and-init wrapper: alloc via
+ * func_0c0acdc0(24), keep the handle as a float in fr12, marshal a
+ * 12-byte argument block on the stack, call func_0c09ffdc.  ASM: FPU
+ * save/restore + stack-passed aggregate, not source-controllable. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0040")
+
+/* func_0c0a02b0 (0x120) container (re)init + mode dispatch: seed the
+ * 0x0C540D40..D48 / 0x0C3D5C00 state globals then branch on the mode
+ * byte through a `braf` jump table at 0x0C0A0330.  ASM: computed-jump
+ * switch table (layout + braf offsets) is not source-controllable. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a02b0")
+
+/* func_0c0a088c (0xD4) container construct: allocate the 40-byte header
+ * (custom/default allocator at 0x0C540D68/0x0C540D60), fill the count
+ * u32 slots of arg2 with 0x22222222, allocate the arg3*68 record array,
+ * chain via func_0c0a07bc.  ASM: allocator-branch + init-loop codegen
+ * (index scaling / pool-constant folding) diverges. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a088c")
+
+/* func_0c0a0c9e (0xA2) move/duplicate a record to a fresh free-list
+ * slot (func_0c0a0b9c) and fix up its links.  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0c9e")
+
+/* func_0c0a0d40 (0xA0) copy a whole 68-byte record after two validate
+ * gates, then re-anim (func_0c0a0b40/0a3c).  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0d40")
+
+/* func_0c0a0de0 (0x70) clear two flag words of a record then unlink /
+ * re-push it (func_0c0a0b40/0bd2).  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0de0")
+
+/* func_0c0a1488 (0x88) advance the record's animation frame by a u8
+ * step scaled against the frame table (rec+40), wrapping via
+ * func_0c0a0fe0.  ASM: `muls.w` id*68 + `mul.l`/`shad` scaling. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1488")
+
+/* func_0c0a175c (0x94) set-and-relink variant (mode 11).  ASM: `muls.w`. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a175c")
+
+/* func_0c0a1a6c (0x108) re-animate: rebind a record's animation
+ * descriptor and reset its frame/timer state.  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1a6c")
+
+/* func_0c0a1b74 (0xEC) spawn-into-slot variant.  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1b74")
+
+/* func_0c0a1d70 (0x70) set two bytes (rec+13/+14) and bits 1-4 of the
+ * flag word from a 5th stack argument.  ASM: `muls.w` id*68 + stack arg. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1d70")
+
+/* func_0c0a1ef0 (0x88) set-field-and-relink variant.  ASM: `muls.w`. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1ef0")
+
+/* func_0c0a1fc4 (0x142) per-record float transform / scale update.
+ * ASM: FPU scheduling (independent fmul/fadd reordered) not
+ * source-controllable. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1fc4")
+
+/* func_0c0a1000 (0x18C) spawn (frame build) with float setup.  ASM:
+ * `muls.w` id*68 + FPU scheduling. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a1000")
+
+/* func_0c0a118c (0x180) spawn variant with float setup.  ASM: `muls.w`
+ * id*68 + FPU scheduling. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a118c")
+
+/* func_0c0a130c (0x17C) spawn (194 refs) with float setup.  ASM:
+ * `muls.w` id*68 + FPU scheduling. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a130c")
+
+/* func_0c0a03d0 (0x28C) large object-manager dispatch/update routine.
+ * ASM: 650-byte multi-branch body; not yet reduced to a byte match. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a03d0")
+
+/* func_0c0a0960 (0xDC) validate(hdr, id): bounds/alive check shared by
+ * the whole set/get API (returns 0 to proceed).  ASM: 220-byte
+ * multi-branch validator; not yet reduced to a byte-matching form. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0960")
+
+/* func_0c0a0a3c (0x104) relink a record into the active display list by
+ * layer order.  ASM: `muls.w` id*68 (x4). */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0a3c")
+
+/* func_0c0a0e50 (0x18C) set-frame: bind the record's animation frame and
+ * refresh its resource/palette pointers.  ASM: `muls.w` id*68. */
+// INCLUDE_ASM("asm/code_0c0a0040/func_0c0a0e50")
