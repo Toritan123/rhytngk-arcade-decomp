@@ -112,7 +112,14 @@ exact cross toolchain (binutils 2.17 + gcc 4.1.2, little-endian SH-4):
 make toolchain                         # docker build the sh-elf-gcc 4.1.2 image
 make sh4-cc SRC=src/code_0c022224.c    # compile a decomp .c to SH-4 asm
 make verify-asm                        # reassemble asm/ and byte-compare vs ROM
+make verify-c                          # compile the decomp C and byte-compare
+make rebuild                           # assemble a whole segment (C + base ROM)
 ```
+
+`make rebuild` proves the decomp is genuinely **rebuildable**: it assembles the
+verified-window code segment [0x0C020000, 0x0C026FDC) from the 78 byte-verified
+C functions (compiled, call addresses resolved) plus a base-ROM `.incbin` for
+every remaining byte, and the result is byte-identical to the ROM.
 
 `make verify-asm` proves the assembler half (148/175 verified-window
 functions reproduce ROM bytes exactly; the rest are jump tables / shared

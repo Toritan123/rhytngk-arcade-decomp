@@ -63,7 +63,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm toolchain sh4-cc verify-c symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain sh4-cc verify-c rebuild symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -252,6 +252,13 @@ sh4-cc:
 verify-c: $(BUILD_DIR)/sh4_functions_v3.json
 	@echo "  VERIFY-C (compile decomp C with GCC 4.1.2; byte-compare vs ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/verify_c.py
+
+# Rebuild the verified-window code segment: compiled-C matched functions +
+# base-ROM incbin for the rest, byte-compared against the ROM (needs the ROM
+# and `make toolchain`).
+rebuild: $(BUILD_DIR)/sh4_functions_v3.json
+	@echo "  REBUILD (assemble the verified window from C + base ROM)"
+	@$(PYTHON) $(TOOLS_DIR)/rebuild.py
 
 call-graph: $(BUILD_DIR)/sh4_callgraph_v3.json
 
