@@ -230,7 +230,7 @@ s32 func_0c039094(s32 idx)
     if (*(u32 *)0x0C46577C == 0) {
         return 0;
     }
-    elem = (u32 *)(0x0C46567C + (idx << 3));
+    elem = (u32 *)((char *)0x0C46567C + (idx << 3));
     if (*elem != 1) {
         return 0;
     }
@@ -247,7 +247,7 @@ s32 func_0c0390cc(s32 idx)
     if (*(u32 *)0x0C46577C == 0) {
         return 0;
     }
-    elem = (u32 *)(0x0C46567C + (idx << 3));
+    elem = (u32 *)((char *)0x0C46567C + (idx << 3));
     if (*elem != 2) {
         return 0;
     }
@@ -339,4 +339,89 @@ s32 func_0c039d24(void *obj)
         }
     }
     return -1;
+}
+
+/* more voice-control callees (return type set to match r0/r1 jsr target). */
+extern s32  func_0c039d58(void *sub, s32 arg);
+extern s32  func_0c0e8bf4(s32 arg);
+extern void func_0c0398da(void *obj, s32 n);
+extern s32  func_0c039a0c(void *obj, s32 a, s32 b);
+
+/* ================================================================== */
+/* func_0c039c08 @ 0x0C039C08, size 0x44 — set voice level obj[+108]     */
+/* from arg*127.5 clamped to [0,127] and store the flag at obj[+112].   */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (((vhdr *)obj)->tag != 5) return -1;                        */
+/*     if (flag <= 0) flag = 1;                                       */
+/*     s32 v = (s32)(arg * 127.5f);                                   */
+/*     if (v > 127) v = 127;  if (v < 0) v = 0;                       */
+/*     char *p = (char *)obj + 64;                                    */
+/*     *(s32 *)(p + 44) = v;  *(s32 *)(p + 48) = flag;  return 0;     */
+/* The ROM passes the single-precision float arg in fr4; GCC 4.1.2    */
+/* `-m4-single` passes the first float arg in fr5 (a `double` param   */
+/* reaches fr4 but switches to double-precision ops).  ABI wall.      */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039c08")
+
+/* ================================================================== */
+/* func_0c039c4c @ 0x0C039C4C, size 0x4C — set voice level obj[+76] from */
+/* arg*127.5 clamped to [0,127], flagging obj[+80] only when it changes  */
+/* from the current value obj[+72].                                     */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (((vhdr *)obj)->tag != 5) return -1;                        */
+/*     s32 v = (s32)(arg * 127.5f);                                   */
+/*     if (v > 127) v = 127;  if (v < 0) v = 0;                       */
+/*     char *p = (char *)obj + 64;                                    */
+/*     if (*(s32 *)(p + 8) == v) return 0;                            */
+/*     *(s32 *)(p + 12) = v;  *(u8 *)((char *)obj + 80) = 1;          */
+/*     return 0;                                                      */
+/* Same single-float arg ABI wall (fr4 vs fr5) as func_0c039c08.      */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039c4c")
+
+/* ================================================================== */
+/* func_0c039dbc @ 0x0C039DBC, size 0x50 — for each of the 8 260-byte    */
+/* sub-channels (offset i*260+8), call func_0c039d58; skip if obj[+0]=0. */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (*(u8 *)obj == 0) return;                                   */
+/*     for (s32 i = 0; i != 8; i++)                                   */
+/*         func_0c039d58((char *)obj + i * 260 + 8, arg);             */
+/* The ROM copies obj to a callee-saved register before the guard;    */
+/* GCC 4.1.2 defers the copy into the loop-taken path (the early       */
+/* return lets it skip the save) and picks a different register.       */
+/* Register allocation, not source-controllable.                     */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039dbc")
+
+/* ================================================================== */
+/* func_0c039e0c @ 0x0C039E0C, size 0x50 — issue voice buffer op         */
+/* func_0c0e8bf4(a2); on success, if a3 is set, refresh pan from         */
+/* obj[+84] via func_0c039c98.                                          */
+/* ================================================================== */
+s32 func_0c039e0c(void *obj, s32 a2, u8 a3)
+{
+    if (((vhdr *)obj)->tag != 5) {
+        return -1;
+    }
+    if (func_0c0e8bf4(a2) != 0) {
+        return -1;
+    }
+    if (a3 != 0) {
+        func_0c039c98(obj, *(s32 *)((char *)obj + 84));
+    }
+    return 0;
+}
+
+/* ================================================================== */
+/* func_0c039b74 @ 0x0C039B74, size 0x4C — ring append: if cursor obj[+8] */
+/* + a3 would reach the end obj[+4], flush via func_0c0398da(obj, a3+1), */
+/* then push the record via func_0c039a0c.                              */
+/* ================================================================== */
+void func_0c039b74(void *obj, s32 a2, s32 a3)
+{
+    char **o = (char **)obj;
+    if (o[2] + a3 >= o[1]) {
+        func_0c0398da(obj, a3 + 1);
+    }
+    func_0c039a0c(obj, a2, a3);
 }
