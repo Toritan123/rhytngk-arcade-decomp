@@ -22,6 +22,12 @@ typedef struct vnode {
     struct vnode *next;   /* +4 */
 } vnode;
 
+/* Voice-object header: +0 hw voice id / link, +4 type tag (== 5 = voice). */
+typedef struct {
+    u32 link;   /* +0 */
+    s32 tag;    /* +4 */
+} vhdr;
+
 /* ---- extern out-of-TU callees (addresses [verified] from pools) --- */
 extern void func_0c038f0c(void);
 
@@ -208,4 +214,129 @@ void func_0c03983c(void)
 void func_0c039860(void)
 {
     func_0c0397a8(1, 0xFFFF);
+}
+
+/* memset-like fill and the AICA param encoder. */
+extern void *func_0c12c914(void *dst, s32 val, s32 len);
+extern s32  func_0c0e9590(u16 voice, s32 cmd, s32 arg);
+
+/* ================================================================== */
+/* func_0c039094 @ 0x0C039094, size 0x38 — per-channel 1 -> 2 transition */
+/* on the 8-byte slot array at 0x0C46567C, gated by 0x0C46577C.         */
+/* ================================================================== */
+s32 func_0c039094(s32 idx)
+{
+    u32 *elem;
+    if (*(u32 *)0x0C46577C == 0) {
+        return 0;
+    }
+    elem = (u32 *)(0x0C46567C + (idx << 3));
+    if (*elem != 1) {
+        return 0;
+    }
+    *elem = 2;
+    return 1;
+}
+
+/* ================================================================== */
+/* func_0c0390cc @ 0x0C0390CC, size 0x3C — per-channel 2 -> 1 transition. */
+/* ================================================================== */
+s32 func_0c0390cc(s32 idx)
+{
+    u32 *elem;
+    if (*(u32 *)0x0C46577C == 0) {
+        return 0;
+    }
+    elem = (u32 *)(0x0C46567C + (idx << 3));
+    if (*elem != 2) {
+        return 0;
+    }
+    *elem = 1;
+    return 1;
+}
+
+/* ================================================================== */
+/* func_0c0398ae @ 0x0C0398AE, size 0x2C — write a NUL at the buffer     */
+/* cursor obj[+8] (or the last in-range byte), returning the base       */
+/* obj[+0].  Buffer = {+0 start, +4 end, +8 cursor}.                   */
+/* ================================================================== */
+void *func_0c0398ae(void *obj)
+{
+    char **o = (char **)obj;
+    char *w = o[2];
+    if (w < o[1]) {
+        *w = 0;
+    } else {
+        w = o[1] - 1;
+        if (w >= o[0]) {
+            *w = 0;
+        }
+    }
+    return o[0];
+}
+
+/* ================================================================== */
+/* func_0c039a64 @ 0x0C039A64, size 0x28 — reset a ring buffer: cursor   */
+/* obj[+8]/obj[+12] = start obj[+0], then zero [start, end).            */
+/* ================================================================== */
+void func_0c039a64(void *obj)
+{
+    char *start = *(char **)obj;
+    *(char **)((char *)obj + 8) = start;
+    *(char **)((char *)obj + 12) = start;
+    func_0c12c914(start, 0, *(char **)((char *)obj + 4) - start);
+}
+
+/* ================================================================== */
+/* func_0c039bc0 @ 0x0C039BC0, size 0x2A — advance the type tag obj[+4]: */
+/* -1 if idle (0); 5 -> 8; anything else -> 6.  Returns 0 unless idle.  */
+/* ================================================================== */
+s32 func_0c039bc0(void *obj)
+{
+    vhdr *o = (vhdr *)obj;
+    s32 t = o->tag;
+    if (t == 0) {
+        return -1;
+    }
+    if (t == 5) {
+        o->tag = 8;
+        return 0;
+    }
+    o->tag = 6;
+    return 0;
+}
+
+/* ================================================================== */
+/* func_0c039c98 @ 0x0C039C98, size 0x34 — set pan obj[+88] clamped to   */
+/* [-64, 63] and flag obj[+92]=1 for a voice object (obj[+4]==5).       */
+/* ================================================================== */
+s32 func_0c039c98(void *obj, s32 v)
+{
+    if (((vhdr *)obj)->tag != 5) {
+        return -1;
+    }
+    if (v < -64) {
+        v = -64;
+    }
+    if (v > 63) {
+        v = 63;
+    }
+    *(s32 *)((char *)obj + 88) = v;
+    *(u8 *)((char *)obj + 92) = 1;
+    return 0;
+}
+
+/* ================================================================== */
+/* func_0c039d24 @ 0x0C039D24, size 0x34 — send AICA command 0x001300A0  */
+/* for the voice (obj[+0] id) via the param encoder; 0 on success.      */
+/* ================================================================== */
+s32 func_0c039d24(void *obj)
+{
+    s32 *o = (s32 *)obj;
+    if (o[1] == 5) {
+        if (func_0c0e9590((u16)*(u32 *)obj, 0x001300A0, 0) == 0) {
+            return 0;
+        }
+    }
+    return -1;
 }
