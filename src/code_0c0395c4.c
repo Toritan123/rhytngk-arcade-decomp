@@ -627,3 +627,151 @@ void func_0c0394fc(void)
 /* Pseudo-C: exactly func_0c03a310 with cmd 0x001200A0 in place of        */
 /* 0x001100A0.  Same R0-indexed `i + o` vs `o + i` canonicalisation wall. */
 // INCLUDE_ASM("asm/code_0c0395c4/func_0c03a134")
+
+/* ================================================================== */
+/* func_0c039f54 @ 0x0C039F54, size 0x70 — set track level obj[+180+...]  */
+/* from v*127 for track index arg2 in (0,16], flag obj[+244+...], with a  */
+/* short-circuit when arg3==0 and the value is unchanged.                */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     u8 keep = (u8)arg3;                                            */
+/*     if (((vhdr *)obj)->tag != 5) return -1;                        */
+/*     if (arg2 <= 0 || arg2 > 16) return -1;                         */
+/*     s32 iv = (s32)(v * 127.0f);                                    */
+/*     if (iv > 127) iv = 127;  if (iv < 0) iv = 0;                   */
+/*     char *o = (char *)obj;                                         */
+/*     if (keep == 0 && *(s32 *)(o + 112 + arg2*4) == iv) return 0;   */
+/*     *(s32 *)(o + 180 + (arg2-1)*4) = iv;                           */
+/*     *(u8 *)(o + 244 + (arg2-1)) = 1;                               */
+/*     return 0;                                                      */
+/* Float arg arrives in fr4 (`fmul fr4`), but GCC 4.1.2 `-m4-single`   */
+/* passes the first float in fr5 — the same fr4-vs-fr5 ABI wall as      */
+/* func_0c039c08 — compounded by the R0-indexed store operand-order     */
+/* canonicalisation (see func_0c03a310).                               */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039f54")
+
+/* ================================================================== */
+/* func_0c03a09a @ 0x0C03A09A, size 0x9A — reset all 8 sub-channels of a  */
+/* voice object: request AICA param 0x000100A0 once, then run the         */
+/* func_0c03a310-style play-state fill per sub-channel (offset i*260+8).  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     char *base = obj;  if (*(u8 *)base == 0) return;               */
+/*     func_0c0e9590(0, 0x000100A0, 0);                              */
+/*     for (s32 s = 0; s != 8; s++) {                                 */
+/*         char *o = base + s*260 + 8;   (per func_0c03a310 fill)      */
+/*         ...  *(u8 *)(o + s2 + 243) = 1;  }  }                       */
+/* Same R0-indexed `i + o` vs `o + i` canonicalisation wall as           */
+/* func_0c03a310, here inside a nested loop.                            */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a09a")
+
+/* param encoder + level setter reached with the float live in fr4. */
+extern s32 func_0c039c08(void *obj, float v, s32 flag);
+
+/* ================================================================== */
+/* func_0c039ccc @ 0x0C039CCC, size 0x58 — for each of the 8 260-byte     */
+/* sub-channels (offset i*260+8) call func_0c039c08 with the float arg;   */
+/* skip entirely if obj[+0]==0.                                          */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (*(u8 *)obj == 0) return;                                   */
+/*     for (s32 i = 0; i != 8; i++)                                   */
+/*         func_0c039c08((char *)obj + i*260 + 8, v, arg2);           */
+/* The callee expects its float in fr4 (the ROM keeps it there through   */
+/* the loop in fr12), but GCC 4.1.2 `-m4-single` would pass it in fr5 at  */
+/* the call site — the fr4-vs-fr5 ABI wall, plus loop rotation.          */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039ccc")
+
+/* ================================================================== */
+/* func_0c039424 @ 0x0C039424, size 0x94 — hash-subsystem init: zero 128  */
+/* 20-byte records at 0x0C465784, chain them into a doubly-linked free    */
+/* list, then arm the 32 buckets at 0x0C46567C and the guard 0x0C46577C.  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     for (i=0;i!=128;i++){ rec[i] = {0,0,0,0}; rec[i].b16 = 0; }    */
+/*     for (i=0;i!=127;i++){ rec[i].next=&rec[i+1];                   */
+/*                           rec[i+1].prev=&rec[i]; }                 */
+/*     *(void **)0x0C465780 = &rec[0];                                */
+/*     for (bucket b in [0x0C46567C,0x0C46577C)) { b.w0=1; b.head=0; }*/
+/*     *(u32 *)0x0C46577C = 1;  return 1;                             */
+/* The ROM redundantly reloads the 0x0C465784 table pointer from its      */
+/* literal pool at the start of each phase; GCC 4.1.2 CSEs those loads     */
+/* into a single register.  Redundant-reload wall (cf. func_0c039884).    */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039424")
+
+/* ================================================================== */
+/* func_0c0392de @ 0x0C0392DE, size 0x96 — bucket remove-and-recycle:     */
+/* find the bucket[key] node matching (a,b), unlink it (func_0c0392a0),   */
+/* clear it, splice it onto the free list (func_0c0392c6) at 0x0C465780,  */
+/* and return 1; else return 0.  Guarded by 0x0C46577C.                  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (*(u32 *)0x0C46577C == 0) return 0;                         */
+/*     hbucket *slot = &((hbucket *)0x0C46567C)[key];                 */
+/*     for (hnode *n = slot->head; n; n = n->next)                    */
+/*       if (n->tag_a==a && n->tag_b==b) {                            */
+/*         if (slot->head == n) slot->head = n->next;                 */
+/*         func_0c0392a0(n);                                          */
+/*         n->pad0=n->next=n->tag_b=n->tag_a=0; n->inuse=0;           */
+/*         func_0c0392c6(n, *(void **)0x0C465780);                    */
+/*         *(void **)0x0C465780 = n;  return 1; }                     */
+/*     return 0;                                                      */
+/* Indexed-load addressing fold (cf. func_0c039108) + eager callee-save. */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c0392de")
+
+/* ================================================================== */
+/* func_0c039204 @ 0x0C039204, size 0x9C — dispatch: collect every        */
+/* bucket[key] node that matches (armed && node[+16]) into a stack array  */
+/* of up to 128, then invoke each node's handler node[+12](node[+8],r5)   */
+/* in reverse order.  Guarded by 0x0C46577C==1 and slot==1.             */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     void *buf[128];  s32 k = 0;                                    */
+/*     if (*(u32 *)0x0C46577C != 1) return;                           */
+/*     if (bucket[key].w0 != 1) return;                               */
+/*     for (n = bucket[key].head; n; n = n->next)                     */
+/*       if (n->at12 && n->inuse) buf[k++] = n;                       */
+/*     while (k--) { h = buf[k]->at12; h(buf[k]->at8, arg2); }        */
+/* Large stack frame (VLA-style 0x200 buffer), indexed loads, indirect   */
+/* calls with values surviving each call — register-allocation and        */
+/* loop-rotation walls throughout.                                       */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039204")
+
+/* ================================================================== */
+/* func_0c03a8f4 @ 0x0C03A8F4, size 0x84 — walk a 16-byte-stride node      */
+/* list [obj[+0], obj[+4]); for each entry test a predicate               */
+/* (func @0x0C0C110C) and dispatch func @0x0C1A401A / @0x0C0C1A40, then    */
+/* splice obj[+0] onto obj[+4] and clear obj[+12]; return 1.             */
+/* ================================================================== */
+/* Instruction-selection + eager callee-save walls (six callee-saved      */
+/* regs live across two calls in the loop body).                         */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a8f4")
+
+/* ================================================================== */
+/* func_0c039950 @ 0x0C039950, size 0x58 — bounded formatted append into  */
+/* buffer obj{+0 start,+4 end,+8 cursor}: forward (obj[+8], obj[+4]-      */
+/* obj[+8], fmt, va...) to func_0c12ebc8 (vsnprintf) and advance obj[+8]   */
+/* by the return, clamped to obj[+4].                                    */
+/* ================================================================== */
+/* Variadic forwarder: replays the caller's five stack arguments into a   */
+/* fresh outgoing frame.  The exact stack-slot copy sequence depends on    */
+/* the SH-4 varargs ABI parameter-save layout; not reproducible from a     */
+/* portable `...`/va_list source form under this build. */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039950")
+
+/* ================================================================== */
+/* func_0c0399a8 @ 0x0C0399A8, size 0x64 — va_start wrapper: build a       */
+/* __va_list on the stack (spilling r6/r7 and fr4..fr11 into the register  */
+/* save area) and tail into func @0x0C039AAC with (fmt-ptr, &va).         */
+/* ================================================================== */
+/* The fr4..fr11 / r6..r7 register-save prologue and __va_list struct are  */
+/* emitted by GCC's va_start machinery; matching requires the original     */
+/* `va_start`/`va_arg` usage and layout — SH-4 varargs ABI wall.          */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c0399a8")
+
+/* ================================================================== */
+/* func_0c039b10 @ 0x0C039B10, size 0x64 — twin of func_0c0399a8, the      */
+/* va_start wrapper forwarding to func @0x0C039C8C.                       */
+/* ================================================================== */
+/* Same SH-4 varargs register-save-area / __va_list ABI wall.            */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039b10")
