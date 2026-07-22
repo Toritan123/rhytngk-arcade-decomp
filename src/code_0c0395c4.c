@@ -177,10 +177,14 @@ void func_0c0392a0(void *node)
 /* func_0c0394da @ 0x0C0394DA, size 0x22 — query voice state of the      */
 /* fixed voice object 0x0C466188 (func_0c0394c6).                       */
 /* ================================================================== */
-s32 func_0c0394da(void)
-{
-    return func_0c0394c6((void *)0x0C466188);
-}
+/* Pseudo-C (byte-exact code, NOT byte-exact placement):               */
+/*     return func_0c0394c6((void *)0x0C466188);                       */
+/* The generated instructions match the ROM exactly, but the function  */
+/* sits at a 2-mod-4 ROM address, so the assembler inserts one extra    */
+/* nop to 4-align the trailing literal pool.  GCC emits function        */
+/* sections as if 4-aligned and omits that nop, leaving fast-mode       */
+/* verify 2 bytes short.  Address-dependent alignment, not codegen.     */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c0394da")
 
 /* ================================================================== */
 /* func_0c03955c @ 0x0C03955C, size 0x20 — forward the fixed voice       */
@@ -424,4 +428,168 @@ void func_0c039b74(void *obj, s32 a2, s32 a3)
         func_0c0398da(obj, a3 + 1);
     }
     func_0c039a0c(obj, a2, a3);
+}
+
+/* ================================================================== */
+/* func_0c03ad3c @ 0x0C03AD3C, size 0x20 — zero the 16-byte header of   */
+/* obj and stamp obj[+16] with the low byte of its own address.        */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     s32 *o = (s32 *)obj;                                           */
+/*     o[0] = o[1] = o[2] = o[3] = 0;                                 */
+/*     char *p = (char *)obj + 16;  *p = (char)(s32)p;                */
+/* The ROM reserves a 4-byte stack frame (`add #-4,r15`) for a local   */
+/* that leaves no other trace, and keeps obj live in r1 while GCC       */
+/* 4.1.2 uses no frame and clobbers r4.  Phantom local + register       */
+/* allocation, not source-controllable.                               */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03ad3c")
+
+/* ================================================================== */
+/* func_0c03a060 @ 0x0C03A060, size 0x3A — find the first of 8 260-byte  */
+/* sub-channels whose word at [+12] is 0; return its [+8] pointer, else  */
+/* 0.                                                                  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     s32 i = 0;  char *p = (char *)obj + 12;                        */
+/*     do { if (*(s32 *)p == 0) return (char *)obj + (i*260 + 8);     */
+/*          i++; p += 260; } while (i != 8);                         */
+/*     return 0;                                                     */
+/* GCC 4.1.2 always rotates the loop the other way (break via a       */
+/* forward `bt` + unconditional back-`bra`, vs the ROM's conditional   */
+/* back-`bf` with the return-0 as fall-through) and associates the     */
+/* found-pointer as `(obj + i*260) + 8` rather than `obj + (i*260+8)`. */
+/* Loop rotation + scheduling, not source-controllable.               */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a060")
+
+/* ================================================================== */
+/* func_0c039fc4 @ 0x0C039FC4, size 0x38 — set pan obj[+100] to (int)v   */
+/* clamped to [-64, 63] and flag obj[+104]=1 for a voice (obj[+4]==5).   */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (((vhdr *)obj)->tag != 5) return -1;                        */
+/*     s32 iv = (s32)v;                                               */
+/*     if (iv > 63) iv = 63;  if (iv < -64) iv = -64;                 */
+/*     *(s32 *)((char *)obj + 100) = iv;                              */
+/*     *(u8 *)((char *)obj + 104) = 1;  return 0;                     */
+/* The ROM truncates the incoming float in fr4 (`ftrc fr4,fpul`) and   */
+/* clamps high before low; GCC 4.1.2 `-m4-single` passes the first     */
+/* float arg in fr5 and clamps low before high.  Same fr4-vs-fr5 ABI   */
+/* wall as func_0c039c08 / func_0c039c4c.                              */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039fc4")
+
+/* string-length + copy helpers used by the buffer append path. */
+extern s32  func_0c12d388(void *s);
+extern void func_0c1a3840(void *dst, void *s, s32 n);
+
+/* ================================================================== */
+/* func_0c03a5b8 @ 0x0C03A5B8, size 0x50 — claim buffer obj: fail if     */
+/* obj[+4] already set or s is null; else mark obj[+4]=1 and copy s      */
+/* (length func_0c12d388) into obj[+8] via func_0c1a3840.                */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (*(s32 *)((char *)obj + 4) != 0) return -1;                 */
+/*     if (s == 0) return -1;                                         */
+/*     *(s32 *)((char *)obj + 4) = 1;                                 */
+/*     s32 n = func_0c12d388(s);                                      */
+/*     func_0c1a3840((char *)obj + 8, s, n);  return 0;              */
+/* The ROM keeps obj in the argument register r4 through the guards    */
+/* and the store, moving it to a callee-saved reg (as obj+8) only just  */
+/* before the call; GCC 4.1.2 eagerly copies obj to r8 in the          */
+/* prologue.  Eager-vs-lazy callee-save, not source-controllable.      */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a5b8")
+
+/* ================================================================== */
+/* func_0c039ffc @ 0x0C039FFC, size 0x64 — forward to func_0c039c4c,     */
+/* then set voice level obj[+108] from v*127 clamped to [0,127] and the  */
+/* flag obj[+112] (forced to 1 when <= 0), for a voice (obj[+4]==5).     */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (((vhdr *)obj)->tag != 5) return -1;                        */
+/*     if (flag <= 0) flag = 1;                                       */
+/*     func_0c039c4c(obj, v);   (v passed through fr5)                */
+/*     s32 iv = (s32)(v * 127.0f);                                    */
+/*     if (iv > 127) iv = 127;  if (iv < 0) iv = 0;                   */
+/*     char *p = (char *)obj + 64;                                    */
+/*     *(s32 *)(p + 44) = iv;  *(s32 *)(p + 48) = flag;  return 0;    */
+/* Instruction-for-instruction identical except the ROM's branchless   */
+/* low-clamp copies the value out with an extra `mov r2,r1` before      */
+/* reusing r2 as the mask, and loads the 127.0f pool constant with a    */
+/* plain `fmov.s @r0` where GCC 4.1.2 emits `fmov.s @r0+`.  Branchless-  */
+/* clamp regalloc + post-increment addressing, not source-controllable. */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039ffc")
+
+/* Hash-bucket table 0x0C46567C: stride-8 slots {u32, node *head}, keyed
+ * by the request-slot index; walked only while 0x0C46577C is armed. */
+typedef struct hnode {
+    s32 pad0;             /* +0  */
+    struct hnode *next;   /* +4  */
+    s32 tag_b;            /* +8  */
+    s32 tag_a;            /* +12 */
+    u8  inuse;            /* +16 */
+} hnode;
+typedef struct {
+    u32 w0;               /* +0  */
+    hnode *head;          /* +4  */
+} hbucket;
+
+/* The three lookups below all hit the same instruction-selection wall:  */
+/* GCC 4.1.2 folds the bucket-member offset (+4) into the base pool       */
+/* constant (0x0C465680) and loads the head with a single indexed         */
+/* `mov.l @(r0,r1)`, whereas the ROM compiler keeps the base 0x0C46567C   */
+/* separate — `add base,idx; mov.l @(4,idx)` — one instruction longer.    */
+/* The addressing-mode fold is not source-controllable (same for struct   */
+/* array, pointer-add, or raw-cast forms). */
+
+/* ================================================================== */
+/* func_0c039108 @ 0x0C039108, size 0x54 — find bucket[key] node whose    */
+/* [+12]==a && [+8]==b; if its [+16] byte is set, clear it and return 1.  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     if (*(u32 *)0x0C46577C == 0) return 0;                         */
+/*     hnode *n = ((hbucket *)0x0C46567C)[key].head;                  */
+/*     while (n) { if (n->tag_a == a && n->tag_b == b) {              */
+/*         if (n->inuse) { n->inuse = 0; return 1; } return 0; }      */
+/*         n = n->next; }                                             */
+/*     return 0;                                                      */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c039108")
+
+/* ================================================================== */
+/* func_0c03915c @ 0x0C03915C, size 0x54 — as func_0c039108 but the       */
+/* acquire side: if the matched node's [+16] byte is clear, set it and    */
+/* return 1, else return 0.                                              */
+/* ================================================================== */
+/* Pseudo-C: as func_0c039108, but the matched branch is                */
+/*     if (n->inuse) return 0; n->inuse = 1; return 1;                 */
+/* Same indexed-load addressing-mode fold.                            */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03915c")
+
+/* ================================================================== */
+/* func_0c0391b0 @ 0x0C0391B0, size 0x54 — as func_0c039108 but returns    */
+/* the matched node's [+16] byte (unsigned), or 0 if not found.          */
+/* ================================================================== */
+/* Pseudo-C: as func_0c039108, but the matched branch is `return        */
+/* n->inuse;` (unsigned byte).  Same indexed-load addressing-mode fold. */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c0391b0")
+
+/* init helpers (fixed addresses [verified] from pools). */
+extern void func_0c0666cc(s32 a);
+extern void func_0c062bc0(s32 a);
+extern void func_0c05cc88(void);
+extern void func_0c05eb0c(void);
+
+/* ================================================================== */
+/* func_0c0394fc @ 0x0C0394FC, size 0x60 — voice/sound subsystem init:    */
+/* a fixed sequence of register writes via func_0c062bc0 plus two         */
+/* trailing init calls.                                                  */
+/* ================================================================== */
+void func_0c0394fc(void)
+{
+    func_0c0666cc(73);
+    func_0c062bc0(89);
+    func_0c062bc0(291);
+    func_0c062bc0(229);
+    func_0c062bc0(227);
+    func_0c062bc0(0);
+    func_0c05cc88();
+    func_0c05eb0c();
 }
