@@ -593,3 +593,37 @@ void func_0c0394fc(void)
     func_0c05cc88();
     func_0c05eb0c();
 }
+
+/* ================================================================== */
+/* func_0c03a310 @ 0x0C03A310, size 0x88 — key-on init for a voice:      */
+/* request AICA param 0x001100A0, then fill the voice play-state block.  */
+/* ================================================================== */
+/* Pseudo-C (semantically faithful, but NOT byte-exact):              */
+/*     char *o = obj;                                                 */
+/*     if (*(s32 *)(o + 4) != 5) return -1;                           */
+/*     s32 r = func_0c0e9590((u16)*(u32 *)o, 0x001100A0, 0);          */
+/*     if (r == 0) return -1;                                         */
+/*     *(s32 *)(o+72)=127; *(s32 *)(o+76)=127; *(u8 *)(o+80)=1;       */
+/*     *(s32 *)(o+84)=r;   *(s32 *)(o+88)=r;   *(u8 *)(o+92)=1;       */
+/*     *(s32 *)(o+96)=r;   *(s32 *)(o+100)=r;  *(u8 *)(o+104)=1;      */
+/*     *(s32 *)(o+108)=127;*(s32 *)(o+112)=r;                         */
+/*     for (s32 i = 1; i != 15; i++) {                                */
+/*         *(s32 *)(o + 116 + (i-1)*4) = 127;                         */
+/*         *(s32 *)(o + 180 + (i-1)*4) = 127;                         */
+/*         *(u8 *)(o + i + 243) = 1; }                                */
+/*     return 0;                                                      */
+/* Compiles instruction-for-instruction identical EXCEPT the R0-indexed */
+/* byte store: the ROM forms the address as `i + o` (mov r3,r0;         */
+/* add r8,r0) while GCC 4.1.2 canonicalises the commutative pointer add  */
+/* as `o + i` (mov r8,r0; add r3,r0), independent of source operand      */
+/* order or casts.  Operand-order canonicalisation, not controllable.   */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a310")
+
+/* ================================================================== */
+/* func_0c03a134 @ 0x0C03A134, size 0x88 — twin of func_0c03a310 for      */
+/* AICA param 0x001200A0 (voice release/stop side); identical field       */
+/* layout and init loop.                                                 */
+/* ================================================================== */
+/* Pseudo-C: exactly func_0c03a310 with cmd 0x001200A0 in place of        */
+/* 0x001100A0.  Same R0-indexed `i + o` vs `o + i` canonicalisation wall. */
+// INCLUDE_ASM("asm/code_0c0395c4/func_0c03a134")
