@@ -130,13 +130,21 @@ extern-call addresses (EXACT once linked). The rest are iterated by source
 form (helper inlining, eval/branch order) — the delay-slot flag,
 helper-inlining, and an inverted-branch correctness bug were all found this way.
 
-Outside the verified window two whole clusters are now translated with **no
-mismatches at all**: `src/code_0c148260.c` (the 0x0C148260–0x0C148BF8 config
-bit-field accessors, **77/77** byte-exact) and `src/code_0c145000.c` (the
-0x0C145xxx float vector primitives, **59/59** byte-exact). Both are true
-EXACT — no relocations involved.
+Outside the verified window three clusters are now translated near-completely,
+all true EXACT (no relocations involved):
 
-Three source-form rules came out of those two passes and generalise:
+| TU | Cluster | Byte-exact |
+|---|---|---|
+| `src/code_0c148260.c` | 0x0C148260–0x0C148BF8 config bit-field accessors | **77/77** |
+| `src/code_0c145000.c` | 0x0C145xxx float vector primitives | **59/59** |
+| `src/code_0c141000.c` | 0x0C141xxx vector/matrix float primitives | **56/60** |
+
+These pages are C++ inline members emitted once per instantiating type, so
+they collapse to a handful of distinct bodies — 60 functions on 0x0C141xxx
+are only 33 distinct bodies. Grouping by exact ROM bytes and writing one C
+form per body is what makes a whole page tractable at once.
+
+Six source-form rules came out of those passes and generalise:
 
 - packed-word getters/setters are C **bit-fields**, not shift/mask
   expressions (shift/mask C reorders the setter's `or` operands);
@@ -149,6 +157,16 @@ Three source-form rules came out of those two passes and generalise:
   load. It is a strict improvement on the previously recorded recipe: no
   function that matched before regressed, and the verified window went
   78/119 → 79/119.
+- component-wise operators use **temporaries**, not compound assignment: the
+  ROM computes every component before storing any, which `d[0] += s[0];
+  d[1] += s[1];` does not reproduce but `x = d[0]+s[0]; y = d[1]+s[1];
+  d[0]=x; d[1]=y;` does.
+- scalar min/max helpers select a **pointer**, not a value —
+  `d[0] = *(k > d[0] ? &k : &d[0])`. Taking the address of the by-value
+  parameter is what produces the ROM's stack spill.
+- multi-component equality is an early-return `if (a != b) return 0;` chain;
+  `&&` makes GCC materialise the result with `negc`/`xor`/`extu.b` where the
+  ROM just uses `movt`.
 
 ## Make targets
 
