@@ -130,6 +130,13 @@ extern-call addresses (EXACT once linked). The rest are iterated by source
 form (helper inlining, eval/branch order) — the delay-slot flag,
 helper-inlining, and an inverted-branch correctness bug were all found this way.
 
+Outside the verified window, `src/code_0c148260.c` translates the whole
+0x0C148260–0x0C148BF8 accessor family — **77/77 fully byte-exact**, no
+relocations involved. Getting there pinned down two source-form rules that
+generalise: the ROM's packed-word getters/setters are C *bit-fields* (plain
+shift/mask C reorders the setter operands), and the comparison accessors take
+an unsigned value (`u8` alone promotes to `int` and yields signed `cmp/gt`).
+
 ## Make targets
 
 ```sh
