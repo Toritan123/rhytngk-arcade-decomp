@@ -16,6 +16,16 @@ unlinked addresses — EXACT once linked) rather than EXACT.
     tools/verify_c.py --link                # rigorous: link each func at its
                                             # ROM address so calls resolve to a
                                             # true EXACT (no reloc masking)
+Per-TU flags: the ROM is NOT a single-flag build.  A .c file may override the
+default recipe with a line
+
+    /* CFLAGS: -O2 -ml -m4-single-only */
+
+anywhere in its first 40 lines; `-Iinclude` is appended automatically.  This
+is how e.g. src/code_0c17b000.c records that its page was built at -O2 (proven
+by byte-match: delay slots filled, sibling calls, insn scheduling, 32-byte
+function alignment).  SH4_CFLAGS in the environment overrides everything.
+
 Env: SH4_IMAGE (default rhytngk-sh4), SH4_CFLAGS.
 """
 import json, os, re, subprocess, sys
@@ -24,8 +34,21 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
-CFLAGS = os.environ.get("SH4_CFLAGS",
-                        "-O1 -ml -m4-single-only -fno-delayed-branch -Iinclude")
+DEFAULT_CFLAGS = "-O1 -ml -m4-single-only -fno-delayed-branch -Iinclude"
+CFLAGS = os.environ.get("SH4_CFLAGS", DEFAULT_CFLAGS)
+ENV_CFLAGS = "SH4_CFLAGS" in os.environ
+
+
+def tu_cflags(rel_c):
+    """Per-TU `/* CFLAGS: ... */` override, unless SH4_CFLAGS forces one."""
+    if ENV_CFLAGS:
+        return CFLAGS
+    head = (REPO / rel_c).read_text().splitlines()[:40]
+    for ln in head:
+        m = re.search(r"CFLAGS:\s*(-.+?)\s*(?:\*/)?\s*$", ln)
+        if m:
+            return m.group(1) + " -Iinclude"
+    return CFLAGS
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
 END = {f["start"]: f["end"]
        for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
@@ -35,7 +58,7 @@ def raw_tu(rel_c):
     """{func: (bytes, reloc_mask)} via -ffunction-sections + objcopy (exact
     bytes; objdump -d elides trailing zero pool words with `...`) and
     objdump -r (exact reloc offsets)."""
-    cf = CFLAGS.replace("-Iinclude", "-ffunction-sections -Iinclude")
+    cf = tu_cflags(rel_c).replace("-Iinclude", "-ffunction-sections -Iinclude")
     script = (
         f"cd /src && sh-elf-gcc {cf} -c {rel_c} -o /tmp/o.o 2>/tmp/e "
         f"|| {{ cat /tmp/e; exit 1; }}\n"
@@ -113,7 +136,7 @@ def _setup_syms():
 
 def link_check(tu):
     _setup_syms()
-    cf = CFLAGS.replace("-Iinclude", "-ffunction-sections -Iinclude")
+    cf = tu_cflags(tu).replace("-Iinclude", "-ffunction-sections -Iinclude")
     r = _drun(f"cd /src && sh-elf-gcc {cf} -c {tu} -o {OUT}/tu.o 2>{OUT}/e "
               f"&& sh-elf-nm {OUT}/tu.o || cat {OUT}/e")
     defined = sorted(set(re.findall(r"[Tt] _(func_0c[0-9a-f]{6})", r.stdout)))

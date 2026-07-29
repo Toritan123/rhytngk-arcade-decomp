@@ -138,11 +138,23 @@ all true EXACT (no relocations involved):
 | `src/code_0c148260.c` | 0x0C148260–0x0C148BF8 config bit-field accessors | **77/77** |
 | `src/code_0c145000.c` | 0x0C145xxx float vector primitives | **59/59** |
 | `src/code_0c141000.c` | 0x0C141xxx vector/matrix float primitives | **56/60** |
+| `src/code_0c142000.c` | 0x0C142xxx float library (dot/cross/length/distance) | **37/42** |
+| `src/code_0c17b000.c` | 0x0C17Bxxx virtual-dispatch thunks (**-O2**) | **28/28** |
 
 These pages are C++ inline members emitted once per instantiating type, so
 they collapse to a handful of distinct bodies — 60 functions on 0x0C141xxx
 are only 33 distinct bodies. Grouping by exact ROM bytes and writing one C
 form per body is what makes a whole page tractable at once.
+
+**The ROM is not a single-flag build.** Page 0x0C17Bxxx is compiled at
+**-O2**, not at the -O1 recipe the rest of the decomp uses — at -O2 and only
+at -O2 this GCC fills the jsr/rts delay slots, turns void-result virtual
+thunks into `jmp` sibling calls, schedules the pointer load ahead of the frame
+setup, and aligns functions to 32 bytes; 71 of that page's 76 leaf functions
+start on a 32-byte boundary. All 28 translated functions there are byte-exact
+at -O2 and none of them match at -O1. A `.c` file records its own recipe with
+a `/* CFLAGS: ... */` line, which `tools/verify_c.py` and `tools/rebuild.py`
+read; the default stays the -O1 recipe.
 
 Six source-form rules came out of those passes and generalise:
 

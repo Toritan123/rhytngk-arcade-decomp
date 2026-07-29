@@ -20,6 +20,17 @@ REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
 CFLAGS = "-O1 -ml -m4-single-only -fno-delayed-branch -ffunction-sections -Iinclude"
+
+
+def tu_cflags(tu):
+    """Per-TU `/* CFLAGS: ... */` override (see tools/verify_c.py) -- the ROM
+    is not a single-flag build, so a TU may record its own recipe."""
+    import re as _re
+    for ln in (REPO / tu).read_text().splitlines()[:40]:
+        m = _re.search(r"CFLAGS:\s*(-.+?)\s*(?:\*/)?\s*$", ln)
+        if m:
+            return m.group(1) + " -ffunction-sections -Iinclude"
+    return CFLAGS
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
 FUNCS = {f["start"]: f["end"]
          for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
@@ -38,7 +49,7 @@ def compiled(tu):
     """{addr: (bytes, {reloc_off: symbol})} for every func in the TU."""
     (REPO / OUT).mkdir(parents=True, exist_ok=True)
     r = drun(
-        f"cd /src && sh-elf-gcc {CFLAGS} -c {tu} -o {OUT}/o.o 2>{OUT}/e || {{ cat {OUT}/e; exit 1; }}\n"
+        f"cd /src && sh-elf-gcc {tu_cflags(tu)} -c {tu} -o {OUT}/o.o 2>{OUT}/e || {{ cat {OUT}/e; exit 1; }}\n"
         "echo ===R===; sh-elf-objdump -r /src/" + OUT + "/o.o\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /src/" + OUT + "/o.o | grep -oE '[.]text[.]func_0c[0-9a-f]{6}' | sort -u); do "
