@@ -3,7 +3,7 @@
 byte-compare each function against the ROM.
 
 Compiles with the reproducible GCC 4.1.2 image (`make toolchain`, see
-./Dockerfile) at the proven `-O1 -ml -m4-single -fno-delayed-branch`. Fast
+./Dockerfile) at the proven `-O1 -ml -m4-single-only -fno-delayed-branch`. Fast
 mode compiles -ffunction-sections and extracts each function's exact bytes
 with objcopy (objdump -d elides trailing zero pool words with `...`) plus its
 relocation offsets with objdump -r. Functions that call externs load the
@@ -25,7 +25,7 @@ REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
 CFLAGS = os.environ.get("SH4_CFLAGS",
-                        "-O1 -ml -m4-single -fno-delayed-branch -Iinclude")
+                        "-O1 -ml -m4-single-only -fno-delayed-branch -Iinclude")
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
 END = {f["start"]: f["end"]
        for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}

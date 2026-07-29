@@ -2,14 +2,18 @@
  * rt_types.h — shared types for the EstexNT-verified window
  *              [0x0C020000, 0x0C026FDC) matching-C effort.
  *
- * HONESTY NOTE: no sh-elf toolchain is installed in this repo, so none of
- * the C under src/ has been byte-verified against the ROM.  Every function
- * is hand-translated from tools/sh4_disasm.py output (validated decoder)
- * with literal pools resolved from roms/fpr-24423_decrypted.bin.  Each
- * function carries its own confidence tag:
- *   [verified-boundary]  EstexNT-confirmed start/end (all 181 in-window)
- *   translated           instruction-faithful C, hand-checked against disasm
+ * HONESTY NOTE (updated 2026-07-29; the original claim that nothing here was
+ * byte-verified is now out of date).  `./Dockerfile` + `make verify-c` build
+ * the matching toolchain and byte-compare every translated function against
+ * the ROM, so each one is in one of these states:
+ *   EXACT                recompiles to the ROM's bytes exactly
+ *   MATCH*               byte-exact modulo unlinked extern-call addresses
+ *   MISMATCH / SHORT     source form still being iterated
  *   INCLUDE_ASM          not yet expressed in C (honest placeholder)
+ * Run `make verify-c` for the current state — do not trust counts in prose.
+ * Function boundaries in [0x0C020000, 0x0C026FDC) are EstexNT-confirmed
+ * [verified]; elsewhere they come from tools/find_functions (build/
+ * sh4_functions_v3.json) [scanner].
  *
  * Global addresses below are read directly from literal pools [verified
  * constants]; the *names* are ours and are hypotheses unless a docs/ file

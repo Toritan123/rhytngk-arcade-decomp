@@ -46,10 +46,10 @@ ARM_AS      := $(ARM_PREFIX)as
 ARM_LD      := $(ARM_PREFIX)ld
 ARM_OBJDUMP := $(ARM_PREFIX)objdump
 
-# Byte-match-proven recipe (do not change lightly): -O1 -ml -m4-single with
+# Byte-match-proven recipe (do not change lightly): -O1 -ml -m4-single-only with
 # -fno-delayed-branch (the ROM leaves jsr/rts delay slots as nop; gcc's -O1
 # default fills them). -O2/-Os reschedule and stop matching.
-CFLAGS_SH4  := -O1 -ml -m4-single -fno-delayed-branch -I$(INCLUDE_DIR)
+CFLAGS_SH4  := -O1 -ml -m4-single-only -fno-delayed-branch -I$(INCLUDE_DIR)
 CFLAGS_ARM  := -mcpu=arm7tdmi -mthumb-interwork -O2 -ffreestanding \
                -nostdlib -I$(INCLUDE_DIR) -Wall -Wno-unused
 

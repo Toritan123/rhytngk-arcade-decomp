@@ -90,7 +90,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | SH-4 sound pipeline | ✓ Traced | RIQ→AICA control path fully mapped (SH-4 side) |
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
-| Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single` — byte-exact (see Toolchain) |
+| Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single-only` — byte-exact (see Toolchain) |
 | C reconstruction | ◑ Started | verified-window functions ([0x0C020000, 0x0C026FDC)) |
 
 Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
@@ -104,7 +104,7 @@ engine is function-pointer records, not byte-opcodes.
 The ROM was built with **GCC 4.1.2** (build stamp `2007-06-11`; identified
 from its embedded libiberty demangler strings and confirmed by byte-exact
 reassembly). The matching recipe is
-**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single -fno-delayed-branch`** — `-O2`/`-Os`
+**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single-only -fno-delayed-branch`** — `-O2`/`-Os`
 reschedule and the ROM leaves delay slots as nop. `./Dockerfile` reproduces the
 exact cross toolchain (binutils 2.17 + gcc 4.1.2, little-endian SH-4):
 
@@ -117,25 +117,38 @@ make rebuild                           # assemble a whole segment (C + base ROM)
 ```
 
 `make rebuild` proves the decomp is genuinely **rebuildable**: it assembles the
-verified-window code segment [0x0C020000, 0x0C026FDC) from the 78 byte-verified
+verified-window code segment [0x0C020000, 0x0C026FDC) from the 79 byte-verified
 C functions (compiled, call addresses resolved) plus a base-ROM `.incbin` for
 every remaining byte, and the result is byte-identical to the ROM.
 
 `make verify-asm` proves the assembler half (148/175 verified-window
 functions reproduce ROM bytes exactly; the rest are jump tables / shared
-literal pools). `make verify-c` proves the compiler half: **78/119**
-translated verified-window functions are byte-verified — 33 recompile fully
+literal pools). `make verify-c` proves the compiler half: **79/119**
+translated verified-window functions are byte-verified — 34 recompile fully
 byte-exact from our C, and 45 more are byte-exact modulo their unlinked
 extern-call addresses (EXACT once linked). The rest are iterated by source
 form (helper inlining, eval/branch order) — the delay-slot flag,
 helper-inlining, and an inverted-branch correctness bug were all found this way.
 
-Outside the verified window, `src/code_0c148260.c` translates the whole
-0x0C148260–0x0C148BF8 accessor family — **77/77 fully byte-exact**, no
-relocations involved. Getting there pinned down two source-form rules that
-generalise: the ROM's packed-word getters/setters are C *bit-fields* (plain
-shift/mask C reorders the setter operands), and the comparison accessors take
-an unsigned value (`u8` alone promotes to `int` and yields signed `cmp/gt`).
+Outside the verified window two whole clusters are now translated with **no
+mismatches at all**: `src/code_0c148260.c` (the 0x0C148260–0x0C148BF8 config
+bit-field accessors, **77/77** byte-exact) and `src/code_0c145000.c` (the
+0x0C145xxx float vector primitives, **59/59** byte-exact). Both are true
+EXACT — no relocations involved.
+
+Three source-form rules came out of those two passes and generalise:
+
+- packed-word getters/setters are C **bit-fields**, not shift/mask
+  expressions (shift/mask C reorders the setter's `or` operands);
+- comparison accessors compare **unsigned** — a bare `u8` parameter promotes
+  to `int` and yields signed `cmp/gt` where the ROM has `cmp/hi`;
+- the FPU flag is **`-m4-single-only`**, not `-m4-single`. This was found
+  from the float-argument ABI (the ROM passes `float` args in `fr4, fr5,
+  fr6`; `-m4-single` pairs them into double registers and emits `fr5, fr4,
+  fr7`) and it also restores `fldi0` for `0.0f` in place of a constant-pool
+  load. It is a strict improvement on the previously recorded recipe: no
+  function that matched before regressed, and the verified window went
+  78/119 → 79/119.
 
 ## Make targets
 
