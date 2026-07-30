@@ -63,7 +63,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm toolchain sh4-cc verify-c rebuild rebuild-code symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain sh4-cc verify-c status status-failing rebuild rebuild-code symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -256,6 +256,13 @@ verify-c: $(BUILD_DIR)/sh4_functions_v3.json
 # Rebuild the verified-window code segment: compiled-C matched functions +
 # base-ROM incbin for the rest, byte-compared against the ROM (needs the ROM
 # and `make toolchain`).
+status: $(BUILD_DIR)/sh4_functions_v3.json
+	@echo "  STATUS (authoritative decomp state -- compile every TU, byte-compare)"
+	@$(PYTHON) $(TOOLS_DIR)/status.py
+
+status-failing: $(BUILD_DIR)/sh4_functions_v3.json
+	@$(PYTHON) $(TOOLS_DIR)/status.py --failing
+
 rebuild: $(BUILD_DIR)/sh4_functions_v3.json
 	@echo "  REBUILD (whole program image from decomp C + base ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/rebuild.py

@@ -113,7 +113,9 @@ records its own recipe. `./Dockerfile` reproduces the exact cross toolchain
 make toolchain                         # docker build the sh-elf-gcc 4.1.2 image
 make sh4-cc SRC=src/code_0c022224.c    # compile a decomp .c to SH-4 asm
 make verify-asm                        # reassemble asm/ and byte-compare vs ROM
-make verify-c                          # compile the decomp C and byte-compare
+make status                            # authoritative state: every TU, byte-compared
+make status-failing                    # only the functions that do not reproduce
+make verify-c                          # per-TU drill-down (looser MATCH* class)
 make rebuild                           # whole program image (C + base ROM)
 make rebuild-code                      # code region only
 ```
@@ -134,7 +136,17 @@ the ROM and an unresolvable symbol name is a hard error. Current state:
 | functions translated to C | **645** |
 | of those, rebuilt byte-exactly | **596** |
 | bytes rebuilt from compiled C | 21,506 of 1,612,466 (**1.33%**) |
-| translated but not yet reproducing | 49 (named in the `make rebuild` output) |
+| translated but not yet reproducing | 49 (34 MISMATCH + 15 SHORT, all named by `make status`) |
+
+**`make status` is the authoritative state** — it compiles every TU with that
+TU's recipe, resolves relocations from symbol names, byte-compares against the
+ROM, and prints a per-TU table plus these totals (`--json` for machine
+output). Do not count functions with `grep`: a `.c` also holds prototypes,
+forward declarations, INCLUDE_ASM placeholders and calls, and counting those
+inflated the total by ~20% before this tool existed. `make status` and
+`make rebuild` use the same strict criterion and agree by construction;
+`tools/verify_c.py` is the per-TU drill-down and reports a looser `MATCH*`
+class for functions that are exact apart from unlinked call addresses.
 
 Read that 1.33% as the honest figure. The `BYTE-EXACT` line `make rebuild`
 prints cannot fail — a compiled function is overlaid only where its bytes
