@@ -141,3 +141,37 @@ f32 func_0c142b28(const f32 *a, const f32 *b) { f32 z = A(a[2] - b[2]); f32 x = 
 
 /* ---- 2-D Chebyshev distance (max abs delta) (1 instance(s), 52 bytes each) ---- */
 f32 func_0c142b58(const f32 *a, const f32 *b) { f32 x = A(a[0] - b[0]); f32 y = A(a[1] - b[1]); return *(y > x ? &y : &x); }
+
+/* ---- copy 4 floats ---- */
+
+void func_0c142c18(f32 *d, const f32 *s)
+{
+    f32 t0 = s[0];
+    f32 t1 = s[1];
+    f32 t2 = s[2];
+    f32 t3 = s[3];
+
+    d[0] = t0;
+    d[1] = t1;
+    d[2] = t2;
+    d[3] = t3;
+}
+
+/* ---- 4-vector times 4x4 matrix, stride 4 (row form) ---- */
+
+void func_0c142fae(const f32 *m, const f32 *v, f32 *out)
+{
+    f32 c0 = v[0];
+    f32 c1 = v[1];
+    f32 c2 = v[2];
+    f32 c3 = v[3];
+    f32 o0 = c0 * m[0] + c1 * m[1] + c2 * m[2] + c3 * m[3];
+    f32 o1 = c0 * m[4] + c1 * m[5] + c2 * m[6] + c3 * m[7];
+    f32 o2 = c0 * m[8] + c1 * m[9] + c2 * m[10] + c3 * m[11];
+    f32 o3 = c0 * m[12] + c1 * m[13] + c2 * m[14] + c3 * m[15];
+
+    out[0] = o0;
+    out[1] = o1;
+    out[2] = o2;
+    out[3] = o3;
+}

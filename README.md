@@ -91,7 +91,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
 | Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single-only` — byte-exact (see Toolchain) |
-| C reconstruction | ◑ 617 functions | 568 rebuild byte-exactly = 1.03% of code bytes (`make rebuild`) |
+| C reconstruction | ◑ 645 functions | 596 rebuild byte-exactly = 1.33% of code bytes (`make rebuild`) |
 
 Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
 and "DTPK→MIDI" claims were **retracted** — `0x0c1008f0`/`func_0c1203e0` is
@@ -131,12 +131,12 @@ the ROM and an unresolvable symbol name is a hard error. Current state:
 
 | | |
 |---|---|
-| functions translated to C | **617** |
-| of those, rebuilt byte-exactly | **568** |
-| bytes rebuilt from compiled C | 16,556 of 1,612,466 (**1.03%**) |
+| functions translated to C | **645** |
+| of those, rebuilt byte-exactly | **596** |
+| bytes rebuilt from compiled C | 21,506 of 1,612,466 (**1.33%**) |
 | translated but not yet reproducing | 49 (named in the `make rebuild` output) |
 
-Read that 1.03% as the honest figure. The `BYTE-EXACT` line `make rebuild`
+Read that 1.33% as the honest figure. The `BYTE-EXACT` line `make rebuild`
 prints cannot fail — a compiled function is overlaid only where its bytes
 already equal the ROM's — so the meaningful numbers are the two counts, and
 the functions that fall back are listed by name every run rather than being
@@ -161,7 +161,8 @@ all true EXACT (no relocations involved):
 | `src/code_0c145000.c` | 0x0C145xxx float vector primitives | **59/59** |
 | `src/code_0c141000.c` | 0x0C141xxx vector/matrix float primitives | **56/60** |
 | `src/code_0c142000.c` | 0x0C142xxx float library (dot/cross/length/distance) | **37/42** |
-| `src/code_0c17b000.c` | 0x0C17Bxxx virtual-dispatch thunks (**-O2**) | **28/28** |
+| `src/code_0c17b000.c` | 0x0C17Bxxx virtual-dispatch thunks (**-O2**) | **30/30** |
+| `src/code_0c143000.c` / `0c144000.c` | 3x3 and 4x4 matrix products | **13/13** |
 
 These pages are C++ inline members emitted once per instantiating type, so
 they collapse to a handful of distinct bodies — 60 functions on 0x0C141xxx
