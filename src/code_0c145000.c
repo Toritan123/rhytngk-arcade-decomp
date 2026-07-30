@@ -88,3 +88,42 @@ void func_0c145f12(f32 *d) { d[0] = 0.0f; d[1] = 0.0f; d[2] = 0.0f; }
 
 /* ---- copy 16 bytes as words (1 instances, 28 bytes each) ---- */
 void func_0c145a44(const u32 *s, u32 *d) { d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3]; }
+
+/* ---- componentwise add, 16 components (c16), 3-argument form ---- */
+
+void func_0c145368(f32 *o, const f32 *a, const f32 *b)
+{
+    f32 t0 = a[0] + b[0];
+    f32 t1 = a[1] + b[1];
+    f32 t2 = a[2] + b[2];
+    f32 t3 = a[3] + b[3];
+    f32 t4 = a[4] + b[4];
+    f32 t5 = a[5] + b[5];
+    f32 t6 = a[6] + b[6];
+    f32 t7 = a[7] + b[7];
+    f32 t8 = a[8] + b[8];
+    f32 t9 = a[9] + b[9];
+    f32 t10 = a[10] + b[10];
+    f32 t11 = a[11] + b[11];
+    f32 t12 = a[12] + b[12];
+    f32 t13 = a[13] + b[13];
+    f32 t14 = a[14] + b[14];
+    f32 t15 = a[15] + b[15];
+
+    o[0] = t0;
+    o[1] = t1;
+    o[2] = t2;
+    o[3] = t3;
+    o[4] = t4;
+    o[5] = t5;
+    o[6] = t6;
+    o[7] = t7;
+    o[8] = t8;
+    o[9] = t9;
+    o[10] = t10;
+    o[11] = t11;
+    o[12] = t12;
+    o[13] = t13;
+    o[14] = t14;
+    o[15] = t15;
+}

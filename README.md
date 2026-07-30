@@ -91,7 +91,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
 | Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single-only` — byte-exact (see Toolchain) |
-| C reconstruction | ◑ 645 functions | 596 rebuild byte-exactly = 1.33% of code bytes (`make rebuild`) |
+| C reconstruction | ◑ 660 functions | 611 rebuild byte-exactly = 1.42% of code bytes (`make status`) |
 
 Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
 and "DTPK→MIDI" claims were **retracted** — `0x0c1008f0`/`func_0c1203e0` is
@@ -133,9 +133,9 @@ the ROM and an unresolvable symbol name is a hard error. Current state:
 
 | | |
 |---|---|
-| functions translated to C | **645** |
-| of those, rebuilt byte-exactly | **596** |
-| bytes rebuilt from compiled C | 21,506 of 1,612,466 (**1.33%**) |
+| functions translated to C | **660** |
+| of those, rebuilt byte-exactly | **611** |
+| bytes rebuilt from compiled C | 22,890 of 1,612,466 (**1.42%**) |
 | translated but not yet reproducing | 49 (34 MISMATCH + 15 SHORT, all named by `make status`) |
 
 **`make status` is the authoritative state** — it compiles every TU with that
@@ -148,7 +148,7 @@ inflated the total by ~20% before this tool existed. `make status` and
 `tools/verify_c.py` is the per-TU drill-down and reports a looser `MATCH*`
 class for functions that are exact apart from unlinked call addresses.
 
-Read that 1.33% as the honest figure. The `BYTE-EXACT` line `make rebuild`
+Read that 1.42% as the honest figure. The `BYTE-EXACT` line `make rebuild`
 prints cannot fail — a compiled function is overlaid only where its bytes
 already equal the ROM's — so the meaningful numbers are the two counts, and
 the functions that fall back are listed by name every run rather than being

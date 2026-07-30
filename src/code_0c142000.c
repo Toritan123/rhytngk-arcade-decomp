@@ -175,3 +175,48 @@ void func_0c142fae(const f32 *m, const f32 *v, f32 *out)
     out[2] = o2;
     out[3] = o3;
 }
+
+/* ---- componentwise subtract, 4 components (c4), 3-argument form ---- */
+
+void func_0c142bd4(f32 *o, const f32 *a, const f32 *b)
+{
+    f32 t0 = a[0] - b[0];
+    f32 t1 = a[1] - b[1];
+    f32 t2 = a[2] - b[2];
+    f32 t3 = a[3] - b[3];
+
+    o[0] = t0;
+    o[1] = t1;
+    o[2] = t2;
+    o[3] = t3;
+}
+
+/* ---- scale 4 floats (c4), 3-argument form ---- */
+
+void func_0c142c92(f32 *o, const f32 *a, f32 k)
+{
+    f32 t0 = a[0] * k;
+    f32 t1 = a[1] * k;
+    f32 t2 = a[2] * k;
+    f32 t3 = a[3] * k;
+
+    o[0] = t0;
+    o[1] = t1;
+    o[2] = t2;
+    o[3] = t3;
+}
+
+/* ---- componentwise add, 4 components (c4), 3-argument form ---- */
+
+void func_0c142db4(f32 *o, const f32 *a, const f32 *b)
+{
+    f32 t0 = a[0] + b[0];
+    f32 t1 = a[1] + b[1];
+    f32 t2 = a[2] + b[2];
+    f32 t3 = a[3] + b[3];
+
+    o[0] = t0;
+    o[1] = t1;
+    o[2] = t2;
+    o[3] = t3;
+}
