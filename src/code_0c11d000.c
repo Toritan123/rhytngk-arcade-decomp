@@ -31,3 +31,6 @@ int func_0c11dde0(void) { return 1; }
 int func_0c11de00(void) { return 1; }
 int func_0c11de20(void) { return 1; }
 int func_0c11de60(void) { return 0; }
+
+/* ---- empty function ---- */
+void func_0c11dee0(void) { }

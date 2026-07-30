@@ -89,3 +89,7 @@ void func_0c17bf40(void *o) { VT(o)[4](o); }
    these two distinguishable from their -O1 equivalents. */
 int func_0c17be00(void) { return 0; }
 int func_0c17bec0(void) { return 0; }
+
+/* ---- empty function ---- */
+void func_0c17baa0(void) { }
+void func_0c17bee0(void) { }

@@ -28,3 +28,7 @@ typedef V3   (*VFn3)(void *);
 
 /* ---- constant stub ---- */
 int func_0c11b4c0(void) { return 0; }
+
+/* ---- empty function ---- */
+void func_0c11bc42(void) { }
+void func_0c11bc62(void) { }

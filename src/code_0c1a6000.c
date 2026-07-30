@@ -45,3 +45,7 @@ V3 func_0c1a6220(void *o) { return VT3(o)[3](o); }
 
 /* ---- virtual call, void result ---- */
 void func_0c1a6240(void *o) { VT(o)[4](o); }
+
+/* ---- empty function ---- */
+void func_0c1a61e0(void) { }
+void func_0c1a6382(void) { }

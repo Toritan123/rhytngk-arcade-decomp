@@ -28,3 +28,26 @@ typedef V3   (*VFn3)(void *);
 
 /* ---- constant stub ---- */
 int func_0c169ae0(void) { return -1; }
+
+/* ---- empty function ---- */
+void func_0c169a40(void) { }
+void func_0c169a60(void) { }
+void func_0c169a80(void) { }
+void func_0c169b00(void) { }
+void func_0c169b20(void) { }
+void func_0c169b40(void) { }
+void func_0c169ba2(void) { }
+void func_0c169be0(void) { }
+void func_0c169c00(void) { }
+void func_0c169c20(void) { }
+void func_0c169c40(void) { }
+void func_0c169c60(void) { }
+void func_0c169c80(void) { }
+void func_0c169ca0(void) { }
+void func_0c169cc0(void) { }
+
+/* ---- return the second argument ---- */
+void *func_0c169aa0(void *a, void *b) { (void)a; return b; }
+void *func_0c169ac0(void *a, void *b) { (void)a; return b; }
+void *func_0c169b60(void *a, void *b) { (void)a; return b; }
+void *func_0c169b80(void *a, void *b) { (void)a; return b; }

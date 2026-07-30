@@ -91,3 +91,6 @@ void func_0c1a5dc0(void *o, int *out) { const int *p = (const int *)PTR8(o); out
 
 /* ---- virtual call, void result ---- */
 void func_0c1a5fa0(void *o) { VT(o)[2](o); }
+
+/* ---- empty function ---- */
+void func_0c1a5da0(void) { }

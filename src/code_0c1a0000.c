@@ -65,3 +65,31 @@ int func_0c1a0b20(void) { return -1; }
 int func_0c1a0b40(void) { return -1; }
 int func_0c1a0b60(void) { return -1; }
 int func_0c1a0b80(void) { return -1; }
+
+/* ---- empty function ---- */
+void func_0c1a02c0(void) { }
+void func_0c1a05a0(void) { }
+
+/* ---- load int at p[1] ---- */
+int func_0c1a0180(const int *p) { return p[1]; }
+int func_0c1a0460(const int *p) { return p[1]; }
+
+/* ---- load int at p[2] ---- */
+int func_0c1a01a0(const int *p) { return p[2]; }
+int func_0c1a0480(const int *p) { return p[2]; }
+
+/* ---- load int at p[3] ---- */
+int func_0c1a01c0(const int *p) { return p[3]; }
+int func_0c1a04a0(const int *p) { return p[3]; }
+
+/* ---- load int at p[4] ---- */
+int func_0c1a0220(const int *p) { return p[4]; }
+int func_0c1a0500(const int *p) { return p[4]; }
+
+/* ---- load int at p[5] ---- */
+int func_0c1a0240(const int *p) { return p[5]; }
+int func_0c1a0520(const int *p) { return p[5]; }
+
+/* ---- load int at p[6] ---- */
+int func_0c1a0260(const int *p) { return p[6]; }
+int func_0c1a0540(const int *p) { return p[6]; }
