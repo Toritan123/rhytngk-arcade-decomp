@@ -91,7 +91,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
 | Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single-only` — byte-exact (see Toolchain) |
-| C reconstruction | ◑ Started | verified-window functions ([0x0C020000, 0x0C026FDC)) |
+| C reconstruction | ◑ 617 functions | 568 rebuild byte-exactly = 1.03% of code bytes (`make rebuild`) |
 
 Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
 and "DTPK→MIDI" claims were **retracted** — `0x0c1008f0`/`func_0c1203e0` is
@@ -104,22 +104,44 @@ engine is function-pointer records, not byte-opcodes.
 The ROM was built with **GCC 4.1.2** (build stamp `2007-06-11`; identified
 from its embedded libiberty demangler strings and confirmed by byte-exact
 reassembly). The matching recipe is
-**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single-only -fno-delayed-branch`** — `-O2`/`-Os`
-reschedule and the ROM leaves delay slots as nop. `./Dockerfile` reproduces the
-exact cross toolchain (binutils 2.17 + gcc 4.1.2, little-endian SH-4):
+**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single-only -fno-delayed-branch`** for most of
+the ROM — but not all of it: see the -O2 region below, and note that each `.c`
+records its own recipe. `./Dockerfile` reproduces the exact cross toolchain
+(binutils 2.17 + gcc 4.1.2, little-endian SH-4):
 
 ```sh
 make toolchain                         # docker build the sh-elf-gcc 4.1.2 image
 make sh4-cc SRC=src/code_0c022224.c    # compile a decomp .c to SH-4 asm
 make verify-asm                        # reassemble asm/ and byte-compare vs ROM
 make verify-c                          # compile the decomp C and byte-compare
-make rebuild                           # assemble a whole segment (C + base ROM)
+make rebuild                           # whole program image (C + base ROM)
+make rebuild-code                      # code region only
 ```
 
-`make rebuild` proves the decomp is genuinely **rebuildable**: it assembles the
-verified-window code segment [0x0C020000, 0x0C026FDC) from the 79 byte-verified
-C functions (compiled, call addresses resolved) plus a base-ROM `.incbin` for
-every remaining byte, and the result is byte-identical to the ROM.
+`make rebuild` builds the **whole 8 MB program image** from two sources and
+byte-compares it against the ROM: every function defined under `src/` is
+compiled (each TU with its own recipe) and every remaining byte — untranslated
+functions, data, padding — comes from the base ROM, i.e. the `.incbin` that
+INCLUDE_ASM would pull. `make rebuild-code` does the same for the code region
+[0x0C020000, 0x0C1BFB00) alone.
+
+Relocations are resolved **from the symbol names only**: `func_0cXXXXXX` and
+`g_0CXXXXXX` each encode their own address, so no address is read back out of
+the ROM and an unresolvable symbol name is a hard error. Current state:
+
+| | |
+|---|---|
+| functions translated to C | **617** |
+| of those, rebuilt byte-exactly | **568** |
+| bytes rebuilt from compiled C | 16,556 of 1,612,466 (**1.03%**) |
+| translated but not yet reproducing | 49 (named in the `make rebuild` output) |
+
+Read that 1.03% as the honest figure. The `BYTE-EXACT` line `make rebuild`
+prints cannot fail — a compiled function is overlaid only where its bytes
+already equal the ROM's — so the meaningful numbers are the two counts, and
+the functions that fall back are listed by name every run rather than being
+quietly absorbed. `tools/verify_c.py` classifies the same functions
+independently, so the two can be cross-checked.
 
 `make verify-asm` proves the assembler half (148/175 verified-window
 functions reproduce ROM bytes exactly; the rest are jump tables / shared
