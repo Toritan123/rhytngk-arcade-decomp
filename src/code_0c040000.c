@@ -1,0 +1,30 @@
+/*
+ * code_0c040000.c - single-instruction leaf functions on page 0x0C040xxx.
+ *
+ * Trivial constant / identity / one-load / one-store leaves, recovered
+ * mechanically: each is a 14-byte function whose whole body is one
+ * instruction between the standard -O1 frame setup and teardown, so the C
+ * form follows from that instruction alone [scanner].  The *roles* of these
+ * accessors are unknown and deliberately not named.
+ *
+ * The instruction sits AFTER `mov r15,r14` here; that ordering is what marks
+ * the page as part of the -O1 region (the -O2 region schedules it before the
+ * frame setup -- see src/code_0c17b000.c).
+ *
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c040000.c`.
+ */
+
+#include "rt_types.h"
+
+/* ---- constant stub ---- */
+int func_0c040bfc(void) { return 1; }
+int func_0c040c0a(void) { return 0; }
+int func_0c040c18(void) { return 1; }
+int func_0c040c26(void) { return 0; }
+int func_0c040c6c(void) { return 1; }
+int func_0c040c7a(void) { return 0; }
+int func_0c040c88(void) { return 1; }
+int func_0c040ee0(void) { return 0; }
+int func_0c040eee(void) { return 1; }
+int func_0c040efc(void) { return 0; }

@@ -1,5 +1,5 @@
 /*
- * code_0c1a6000.c - virtual-dispatch thunks and accessors on page 0x0C1A6xxx.
+ * code_0c11c000.c - virtual-dispatch thunks and accessors on page 0x0C11Cxxx.
  *
  * CFLAGS: -O2 -ml -m4-single-only
  *
@@ -11,7 +11,7 @@
  * [scanner].
  *
  * Matching build: sh-elf-gcc 4.1.2 with the CFLAGS line above (see
- * ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c1a6000.c`.
+ * ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c11c000.c`.
  */
 
 #include "rt_types.h"
@@ -27,21 +27,5 @@ typedef V3   (*VFn3)(void *);
 
 
 /* ---- constant stub ---- */
-int func_0c1a6100(void) { return 0; }
-
-/* ---- virtual call, void result ---- */
-void func_0c1a6120(void *o) { VT(o)[2](o); }
-void func_0c1a6140(void *o) { VT(o)[2](o); }
-void func_0c1a61a0(void *o) { VT(o)[4](o); }
-
-/* ---- constant stub ---- */
-int func_0c1a61c0(void) { return 0; }
-
-/* ---- virtual call, void result ---- */
-void func_0c1a6200(void *o) { VT(o)[2](o); }
-
-/* ---- virtual call, 3-float result ---- */
-V3 func_0c1a6220(void *o) { return VT3(o)[3](o); }
-
-/* ---- virtual call, void result ---- */
-void func_0c1a6240(void *o) { VT(o)[4](o); }
+int func_0c11ce60(void) { return 0; }
+int func_0c11ce80(void) { return 0; }

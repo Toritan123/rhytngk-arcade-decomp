@@ -83,3 +83,9 @@ V3 func_0c17bf20(void *o) { return VT3(o)[3](o); }
 
 /* ---- virtual call, void result ---- */
 void func_0c17bf40(void *o) { VT(o)[4](o); }
+
+/* ---- constant stub ---- */
+/* -O2 orders the constant ahead of the frame setup, which is what makes
+   these two distinguishable from their -O1 equivalents. */
+int func_0c17be00(void) { return 0; }
+int func_0c17bec0(void) { return 0; }
