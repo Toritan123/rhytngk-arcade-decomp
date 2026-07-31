@@ -63,7 +63,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm toolchain sh4-cc verify-c status status-failing rebuild rebuild-code dtpk-unpack dtpk-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain sh4-cc verify-c status status-failing rebuild rebuild-code dtpk-unpack dtpk-roundtrip texture-unpack texture-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -263,6 +263,14 @@ dtpk-unpack:
 dtpk-roundtrip:
 	@echo "  DTPK round-trip (unpack -> pack -> byte-compare vs ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/dtpk_pack.py roundtrip
+
+texture-unpack:
+	@echo "  STX unpack (PNG + verbatim blocks + manifests)"
+	@$(PYTHON) $(TOOLS_DIR)/texture_pack.py unpack
+
+texture-roundtrip:
+	@echo "  STX round-trip (unpack -> pack -> byte-compare)"
+	@$(PYTHON) $(TOOLS_DIR)/texture_pack.py roundtrip
 
 status: $(BUILD_DIR)/sh4_functions_v3.json
 	@echo "  STATUS (authoritative decomp state -- compile every TU, byte-compare)"

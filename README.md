@@ -31,6 +31,7 @@ rhytngk-arcade-decomp/
 │   └── handclap/ …
 ├── system/                 non-game subsystem folders (title, result, seqsel, …)
 ├── audio/dtpk/             DTPK package manifests (the tracked sound decomp)
+├── textures/stx/           STX texture manifests (the tracked graphics decomp)
 ├── tools/                  pure-python pipeline (disassembler, extractors, scanners)
 ├── CLAUDE.md               working notes / onboarding for continuing the decomp
 └── Makefile                GBA-decomp-compatible build + extract targets
@@ -85,7 +86,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | ROM decryption | ✓ Done | `roms/fpr-24423_decrypted.bin` |
 | SFFS volume extract | ✓ Done | 350 files under `extracted/ic{9,11}/` |
 | FARC + gzip extract | ✓ Done | 425 inner files (95 aet + 165 stx + 165 shd) |
-| Texture → PNG | ✓ Done | 177 PNG files (ROM-derived, untracked) |
+| STX textures | ◑ Rebuildable (blob only) | 165/165 STX round-trip byte-exact (`make texture-roundtrip`); 177 subtextures editable as PNG |
 | DTPK sound packages | ✓ Rebuildable | 89/89 round-trip byte-exact (`make dtpk-roundtrip`); manifests in `audio/dtpk/` |
 | SH-4 sound pipeline | ✓ Traced | RIQ→AICA control path fully mapped (SH-4 side) |
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
@@ -254,6 +255,38 @@ known fact that the AM2 note handler only acts on the values {0, 32, 36}. A
 converter that reads notes out of the stream invents them; the earlier one is
 retracted and its output is no longer tracked. The honest route to real note
 data is still an ARM7 `aicadrv` trace.
+
+## Texture data (rebuilding)
+
+Same contract as the sound side: unpack to byte-exact pieces, edit, put back
+byte-for-byte.
+
+```sh
+make texture-roundtrip  # unpack -> pack -> byte-compare            (the gate)
+make texture-unpack     # PNGs -> textures/raw/, manifests -> textures/stx/
+```
+
+**165/165 STX blobs round-trip byte-exact.** 177 subtextures are stored as
+PNG, 0 fall back to verbatim, so twiddled ARGB1555 does hold for every
+subtexture an SHD entry actually reaches (10 entries are unreachable —
+non-power-of-2 or out of range). 71.5% of STX bytes are covered by subtexture
+blocks; the rest is stored verbatim. Editing works: painting a 16x16 square
+into a 1024x1024 subtexture changes exactly 256 bytes of the blob and nothing
+else.
+
+A subtexture becomes a PNG **only if** decoding and re-encoding reproduces its
+bytes exactly; otherwise it is kept verbatim and counted as undecoded. That
+check found a real bug in `tools/stx_to_png.py`: it interleaves the two
+dimensions directly, which drops a bit whenever width ≠ height and aliases two
+source pixels onto one. PowerVR2 twiddles in *square* blocks of min(w, h).
+The bug is latent on this ROM — all 177 subtextures happen to be square — but
+the old converter's non-square output would have been wrong.
+
+**Scope, stated plainly: this is stage 1 of 4.** The STX blobs sit inside gzip
+inside FARC inside the SFFS volume, and none of those three layers has a
+repack yet, so a modified texture cannot reach the ROM today. Compare with the
+sound side, where `make dtpk-roundtrip` covers the whole path from package to
+data ROM and a sample swap does reach the ROM.
 
 ## Make targets
 
