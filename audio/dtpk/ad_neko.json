@@ -1,0 +1,221 @@
+{
+ "name": "ad_neko",
+ "total": 95936,
+ "header": {
+  "offset": 0,
+  "length": 64,
+  "payload": "ad_neko/_header.bin"
+ },
+ "sample_table": {
+  "offset": 2108,
+  "length": 212,
+  "payload": "ad_neko/_sample_table.bin"
+ },
+ "samples": [
+  {
+   "idx": 0,
+   "offset": 2320,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 8252,
+   "loop_end": 8276,
+   "stereo": 128,
+   "length": 4140,
+   "payload": "ad_neko/s0000.bin"
+  },
+  {
+   "idx": 1,
+   "offset": 10600,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 9284,
+   "loop_end": 9308,
+   "stereo": 128,
+   "length": 4656,
+   "payload": "ad_neko/s0001.bin"
+  },
+  {
+   "idx": 2,
+   "offset": 19912,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 9084,
+   "loop_end": 9108,
+   "stereo": 128,
+   "length": 4556,
+   "payload": "ad_neko/s0002.bin"
+  },
+  {
+   "idx": 3,
+   "offset": 29024,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 11084,
+   "loop_end": 11108,
+   "stereo": 128,
+   "length": 5556,
+   "payload": "ad_neko/s0003.bin"
+  },
+  {
+   "idx": 4,
+   "offset": 40136,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 11332,
+   "loop_end": 11356,
+   "stereo": 128,
+   "length": 5680,
+   "payload": "ad_neko/s0004.bin"
+  },
+  {
+   "idx": 5,
+   "offset": 51496,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 12828,
+   "loop_end": 12852,
+   "stereo": 128,
+   "length": 6428,
+   "payload": "ad_neko/s0005.bin"
+  },
+  {
+   "idx": 6,
+   "offset": 64352,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 4548,
+   "loop_end": 4572,
+   "stereo": 0,
+   "length": 2288,
+   "payload": "ad_neko/s0006.bin"
+  },
+  {
+   "idx": 7,
+   "offset": 66640,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6212,
+   "loop_end": 6236,
+   "stereo": 0,
+   "length": 3120,
+   "payload": "ad_neko/s0007.bin"
+  },
+  {
+   "idx": 8,
+   "offset": 69760,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7484,
+   "loop_end": 7508,
+   "stereo": 0,
+   "length": 3756,
+   "payload": "ad_neko/s0008.bin"
+  },
+  {
+   "idx": 9,
+   "offset": 73516,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 3948,
+   "loop_end": 3972,
+   "stereo": 0,
+   "length": 1988,
+   "payload": "ad_neko/s0009.bin"
+  },
+  {
+   "idx": 10,
+   "offset": 75504,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6580,
+   "loop_end": 6604,
+   "stereo": 128,
+   "length": 3304,
+   "payload": "ad_neko/s0010.bin"
+  },
+  {
+   "idx": 11,
+   "offset": 82112,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 14220,
+   "loop_end": 14244,
+   "stereo": 0,
+   "length": 7124,
+   "payload": "ad_neko/s0011.bin"
+  },
+  {
+   "idx": 12,
+   "offset": 89236,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 13348,
+   "loop_end": 13372,
+   "stereo": 0,
+   "length": 6688,
+   "payload": "ad_neko/s0012.bin"
+  }
+ ],
+ "unclaimed": [
+  {
+   "offset": 64,
+   "length": 2044,
+   "payload": "ad_neko/_unclaimed_00000040.bin"
+  },
+  {
+   "offset": 6460,
+   "length": 4140,
+   "payload": "ad_neko/_unclaimed_0000193c.bin"
+  },
+  {
+   "offset": 15256,
+   "length": 4656,
+   "payload": "ad_neko/_unclaimed_00003b98.bin"
+  },
+  {
+   "offset": 24468,
+   "length": 4556,
+   "payload": "ad_neko/_unclaimed_00005f94.bin"
+  },
+  {
+   "offset": 34580,
+   "length": 5556,
+   "payload": "ad_neko/_unclaimed_00008714.bin"
+  },
+  {
+   "offset": 45816,
+   "length": 5680,
+   "payload": "ad_neko/_unclaimed_0000b2f8.bin"
+  },
+  {
+   "offset": 57924,
+   "length": 6428,
+   "payload": "ad_neko/_unclaimed_0000e244.bin"
+  },
+  {
+   "offset": 78808,
+   "length": 3304,
+   "payload": "ad_neko/_unclaimed_000133d8.bin"
+  },
+  {
+   "offset": 95924,
+   "length": 12,
+   "payload": "ad_neko/_unclaimed_000176b4.bin"
+  }
+ ],
+ "rom": "ic9",
+ "rom_offset": 13631744
+}

@@ -30,7 +30,7 @@ rhytngk-arcade-decomp/
 │   │                       + graphics/audio symlinks into the asset trees
 │   └── handclap/ …
 ├── system/                 non-game subsystem folders (title, result, seqsel, …)
-├── audio/                  DTPK samples + banks + sequence data (decomp'd)
+├── audio/dtpk/             DTPK package manifests (the tracked sound decomp)
 ├── tools/                  pure-python pipeline (disassembler, extractors, scanners)
 ├── CLAUDE.md               working notes / onboarding for continuing the decomp
 └── Makefile                GBA-decomp-compatible build + extract targets
@@ -86,7 +86,7 @@ is named for its arcade game and carries a GBA-comparison stub).
 | SFFS volume extract | ✓ Done | 350 files under `extracted/ic{9,11}/` |
 | FARC + gzip extract | ✓ Done | 425 inner files (95 aet + 165 stx + 165 shd) |
 | Texture → PNG | ✓ Done | 177 PNG files (ROM-derived, untracked) |
-| DTPK sample extract | ✓ Done | 11,893 WAV samples (PCM + ADPCM, with loop points) |
+| DTPK sound packages | ✓ Rebuildable | 89/89 round-trip byte-exact (`make dtpk-roundtrip`); manifests in `audio/dtpk/` |
 | SH-4 sound pipeline | ✓ Traced | RIQ→AICA control path fully mapped (SH-4 side) |
 | id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
 | Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
@@ -223,6 +223,37 @@ Six source-form rules came out of those passes and generalise:
 - multi-component equality is an early-return `if (a != b) return 0;` chain;
   `&&` makes GCC materialise the result with `negc`/`xor`/`extu.b` where the
   ROM just uses `movt`.
+
+## Sound data (rebuilding)
+
+The sound packages are rebuildable in the same sense as the code: unpack to
+byte-exact pieces, edit, put back together byte-for-byte.
+
+```sh
+make dtpk-roundtrip     # unpack -> pack -> byte-compare vs ROM   (the gate)
+make dtpk-unpack        # payloads -> audio/raw/, manifests -> audio/dtpk/
+```
+
+`make dtpk-roundtrip` currently reports **89/89 packages byte-exact**. A
+package is modelled as regions over its byte range — header, the +0x3C sample
+table, each sample payload, and `unclaimed` runs for everything else. Of
+122,070,752 package bytes, **89.6% are decoded as structure** and 10.4% are
+stored verbatim because that part of the format is not understood yet (the
+sequence streams live there). Round-trip is byte-exact either way; the
+coverage figure is the honest measure of how much of the format is decoded,
+and it says nothing about understanding the *music*.
+
+Modding works today without any of that understanding. Replacing one sample's
+payload and repacking `ad_neko` changes 5,398 bytes of the 64 MB `ic9` image
+and nothing else — the changed range lies entirely inside that sample.
+
+**This does not make a faithful MIDI possible.** Samples are short one-shots
+(median 0.21 s), so pitch cannot be coming from the sequence stream — it comes
+from the AICA playback-rate registers at runtime, which is consistent with the
+known fact that the AM2 note handler only acts on the values {0, 32, 36}. A
+converter that reads notes out of the stream invents them; the earlier one is
+retracted and its output is no longer tracked. The honest route to real note
+data is still an ARM7 `aicadrv` trace.
 
 ## Make targets
 

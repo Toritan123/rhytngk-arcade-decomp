@@ -1,0 +1,742 @@
+{
+ "name": "SE",
+ "total": 762240,
+ "header": {
+  "offset": 0,
+  "length": 64,
+  "payload": "SE/_header.bin"
+ },
+ "sample_table": {
+  "offset": 7580,
+  "length": 740,
+  "payload": "SE/_sample_table.bin"
+ },
+ "samples": [
+  {
+   "idx": 0,
+   "offset": 8320,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 30796,
+   "loop_end": 30820,
+   "stereo": 0,
+   "length": 15412,
+   "payload": "SE/s0000.bin"
+  },
+  {
+   "idx": 1,
+   "offset": 23732,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 11156,
+   "loop_end": 11180,
+   "stereo": 0,
+   "length": 5592,
+   "payload": "SE/s0001.bin"
+  },
+  {
+   "idx": 2,
+   "offset": 29324,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 15044,
+   "loop_end": 15068,
+   "stereo": 128,
+   "length": 7536,
+   "payload": "SE/s0002.bin"
+  },
+  {
+   "idx": 3,
+   "offset": 44396,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7484,
+   "loop_end": 7508,
+   "stereo": 128,
+   "length": 3756,
+   "payload": "SE/s0003.bin"
+  },
+  {
+   "idx": 4,
+   "offset": 51908,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 45756,
+   "loop_end": 45780,
+   "stereo": 128,
+   "length": 22892,
+   "payload": "SE/s0004.bin"
+  },
+  {
+   "idx": 5,
+   "offset": 97692,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 15140,
+   "loop_end": 15164,
+   "stereo": 0,
+   "length": 7584,
+   "payload": "SE/s0005.bin"
+  },
+  {
+   "idx": 6,
+   "offset": 105276,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7884,
+   "loop_end": 7908,
+   "stereo": 128,
+   "length": 3956,
+   "payload": "SE/s0006.bin"
+  },
+  {
+   "idx": 7,
+   "offset": 113188,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 17124,
+   "loop_end": 17148,
+   "stereo": 128,
+   "length": 8576,
+   "payload": "SE/s0007.bin"
+  },
+  {
+   "idx": 8,
+   "offset": 130340,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 2532,
+   "loop_end": 2556,
+   "stereo": 128,
+   "length": 1280,
+   "payload": "SE/s0008.bin"
+  },
+  {
+   "idx": 9,
+   "offset": 132900,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 9212,
+   "loop_end": 9236,
+   "stereo": 0,
+   "length": 4620,
+   "payload": "SE/s0009.bin"
+  },
+  {
+   "idx": 10,
+   "offset": 137520,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 12452,
+   "loop_end": 12476,
+   "stereo": 128,
+   "length": 6240,
+   "payload": "SE/s0010.bin"
+  },
+  {
+   "idx": 11,
+   "offset": 150000,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 16412,
+   "loop_end": 16436,
+   "stereo": 0,
+   "length": 8220,
+   "payload": "SE/s0011.bin"
+  },
+  {
+   "idx": 12,
+   "offset": 158220,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 22876,
+   "loop_end": 22900,
+   "stereo": 128,
+   "length": 11452,
+   "payload": "SE/s0012.bin"
+  },
+  {
+   "idx": 13,
+   "offset": 181124,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 4628,
+   "loop_end": 4652,
+   "stereo": 128,
+   "length": 2328,
+   "payload": "SE/s0013.bin"
+  },
+  {
+   "idx": 14,
+   "offset": 185780,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6684,
+   "loop_end": 6708,
+   "stereo": 0,
+   "length": 3356,
+   "payload": "SE/s0014.bin"
+  },
+  {
+   "idx": 15,
+   "offset": 189136,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 2972,
+   "loop_end": 2996,
+   "stereo": 128,
+   "length": 1500,
+   "payload": "SE/s0015.bin"
+  },
+  {
+   "idx": 16,
+   "offset": 192136,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 5980,
+   "loop_end": 6004,
+   "stereo": 0,
+   "length": 3004,
+   "payload": "SE/s0016.bin"
+  },
+  {
+   "idx": 17,
+   "offset": 195140,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 8020,
+   "loop_end": 8044,
+   "stereo": 0,
+   "length": 4024,
+   "payload": "SE/s0017.bin"
+  },
+  {
+   "idx": 18,
+   "offset": 199164,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 17748,
+   "loop_end": 17772,
+   "stereo": 0,
+   "length": 8888,
+   "payload": "SE/s0018.bin"
+  },
+  {
+   "idx": 19,
+   "offset": 208052,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6388,
+   "loop_end": 6412,
+   "stereo": 128,
+   "length": 3208,
+   "payload": "SE/s0019.bin"
+  },
+  {
+   "idx": 20,
+   "offset": 214468,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 12956,
+   "loop_end": 12980,
+   "stereo": 128,
+   "length": 6492,
+   "payload": "SE/s0020.bin"
+  },
+  {
+   "idx": 21,
+   "offset": 227452,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 1716,
+   "loop_end": 1740,
+   "stereo": 0,
+   "length": 872,
+   "payload": "SE/s0021.bin"
+  },
+  {
+   "idx": 22,
+   "offset": 228324,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 0,
+   "loop_start": 0,
+   "loop_end": 14174,
+   "stereo": 128,
+   "length": 28352,
+   "payload": "SE/s0022.bin"
+  },
+  {
+   "idx": 23,
+   "offset": 285028,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 24996,
+   "loop_end": 25020,
+   "stereo": 128,
+   "length": 12512,
+   "payload": "SE/s0023.bin"
+  },
+  {
+   "idx": 24,
+   "offset": 310052,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 19964,
+   "loop_end": 19988,
+   "stereo": 128,
+   "length": 9996,
+   "payload": "SE/s0024.bin"
+  },
+  {
+   "idx": 25,
+   "offset": 330044,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6964,
+   "loop_end": 6988,
+   "stereo": 128,
+   "length": 3496,
+   "payload": "SE/s0025.bin"
+  },
+  {
+   "idx": 26,
+   "offset": 337036,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 18004,
+   "loop_end": 18028,
+   "stereo": 128,
+   "length": 9016,
+   "payload": "SE/s0026.bin"
+  },
+  {
+   "idx": 27,
+   "offset": 355068,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 12924,
+   "loop_end": 12948,
+   "stereo": 128,
+   "length": 6476,
+   "payload": "SE/s0027.bin"
+  },
+  {
+   "idx": 28,
+   "offset": 368020,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7948,
+   "loop_end": 7972,
+   "stereo": 128,
+   "length": 3988,
+   "payload": "SE/s0028.bin"
+  },
+  {
+   "idx": 29,
+   "offset": 375996,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 6492,
+   "loop_end": 6516,
+   "stereo": 128,
+   "length": 3260,
+   "payload": "SE/s0029.bin"
+  },
+  {
+   "idx": 30,
+   "offset": 382516,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 8404,
+   "loop_end": 8428,
+   "stereo": 128,
+   "length": 4216,
+   "payload": "SE/s0030.bin"
+  },
+  {
+   "idx": 31,
+   "offset": 390948,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7612,
+   "loop_end": 7636,
+   "stereo": 128,
+   "length": 3820,
+   "payload": "SE/s0031.bin"
+  },
+  {
+   "idx": 32,
+   "offset": 398588,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 7316,
+   "loop_end": 7340,
+   "stereo": 128,
+   "length": 3672,
+   "payload": "SE/s0032.bin"
+  },
+  {
+   "idx": 33,
+   "offset": 405932,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 28868,
+   "loop_end": 28892,
+   "stereo": 128,
+   "length": 14448,
+   "payload": "SE/s0033.bin"
+  },
+  {
+   "idx": 34,
+   "offset": 434828,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 31308,
+   "loop_end": 31332,
+   "stereo": 128,
+   "length": 15668,
+   "payload": "SE/s0034.bin"
+  },
+  {
+   "idx": 35,
+   "offset": 466164,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 39916,
+   "loop_end": 39940,
+   "stereo": 128,
+   "length": 19972,
+   "payload": "SE/s0035.bin"
+  },
+  {
+   "idx": 36,
+   "offset": 506108,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 32332,
+   "loop_end": 32356,
+   "stereo": 128,
+   "length": 16180,
+   "payload": "SE/s0036.bin"
+  },
+  {
+   "idx": 37,
+   "offset": 538468,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 34476,
+   "loop_end": 34500,
+   "stereo": 128,
+   "length": 17252,
+   "payload": "SE/s0037.bin"
+  },
+  {
+   "idx": 38,
+   "offset": 572972,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 27772,
+   "loop_end": 27796,
+   "stereo": 0,
+   "length": 13900,
+   "payload": "SE/s0038.bin"
+  },
+  {
+   "idx": 39,
+   "offset": 586872,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 32956,
+   "loop_end": 32980,
+   "stereo": 128,
+   "length": 16492,
+   "payload": "SE/s0039.bin"
+  },
+  {
+   "idx": 40,
+   "offset": 619856,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 42940,
+   "loop_end": 42964,
+   "stereo": 128,
+   "length": 21484,
+   "payload": "SE/s0040.bin"
+  },
+  {
+   "idx": 41,
+   "offset": 662824,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 38860,
+   "loop_end": 38884,
+   "stereo": 128,
+   "length": 19444,
+   "payload": "SE/s0041.bin"
+  },
+  {
+   "idx": 42,
+   "offset": 701712,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 38356,
+   "loop_end": 38380,
+   "stereo": 128,
+   "length": 19192,
+   "payload": "SE/s0042.bin"
+  },
+  {
+   "idx": 43,
+   "offset": 740096,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 23708,
+   "loop_end": 23732,
+   "stereo": 0,
+   "length": 11868,
+   "payload": "SE/s0043.bin"
+  },
+  {
+   "idx": 44,
+   "offset": 751964,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 17236,
+   "loop_end": 17260,
+   "stereo": 0,
+   "length": 8632,
+   "payload": "SE/s0044.bin"
+  },
+  {
+   "idx": 45,
+   "offset": 760596,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 3228,
+   "loop_end": 3252,
+   "stereo": 0,
+   "length": 1628,
+   "payload": "SE/s0045.bin"
+  }
+ ],
+ "unclaimed": [
+  {
+   "offset": 64,
+   "length": 7516,
+   "payload": "SE/_unclaimed_00000040.bin"
+  },
+  {
+   "offset": 36860,
+   "length": 7536,
+   "payload": "SE/_unclaimed_00008ffc.bin"
+  },
+  {
+   "offset": 48152,
+   "length": 3756,
+   "payload": "SE/_unclaimed_0000bc18.bin"
+  },
+  {
+   "offset": 74800,
+   "length": 22892,
+   "payload": "SE/_unclaimed_00012430.bin"
+  },
+  {
+   "offset": 109232,
+   "length": 3956,
+   "payload": "SE/_unclaimed_0001aab0.bin"
+  },
+  {
+   "offset": 121764,
+   "length": 8576,
+   "payload": "SE/_unclaimed_0001dba4.bin"
+  },
+  {
+   "offset": 131620,
+   "length": 1280,
+   "payload": "SE/_unclaimed_00020224.bin"
+  },
+  {
+   "offset": 143760,
+   "length": 6240,
+   "payload": "SE/_unclaimed_00023190.bin"
+  },
+  {
+   "offset": 169672,
+   "length": 11452,
+   "payload": "SE/_unclaimed_000296c8.bin"
+  },
+  {
+   "offset": 183452,
+   "length": 2328,
+   "payload": "SE/_unclaimed_0002cc9c.bin"
+  },
+  {
+   "offset": 190636,
+   "length": 1500,
+   "payload": "SE/_unclaimed_0002e8ac.bin"
+  },
+  {
+   "offset": 211260,
+   "length": 3208,
+   "payload": "SE/_unclaimed_0003393c.bin"
+  },
+  {
+   "offset": 220960,
+   "length": 6492,
+   "payload": "SE/_unclaimed_00035f20.bin"
+  },
+  {
+   "offset": 256676,
+   "length": 28352,
+   "payload": "SE/_unclaimed_0003eaa4.bin"
+  },
+  {
+   "offset": 297540,
+   "length": 12512,
+   "payload": "SE/_unclaimed_00048a44.bin"
+  },
+  {
+   "offset": 320048,
+   "length": 9996,
+   "payload": "SE/_unclaimed_0004e230.bin"
+  },
+  {
+   "offset": 333540,
+   "length": 3496,
+   "payload": "SE/_unclaimed_000516e4.bin"
+  },
+  {
+   "offset": 346052,
+   "length": 9016,
+   "payload": "SE/_unclaimed_000547c4.bin"
+  },
+  {
+   "offset": 361544,
+   "length": 6476,
+   "payload": "SE/_unclaimed_00058448.bin"
+  },
+  {
+   "offset": 372008,
+   "length": 3988,
+   "payload": "SE/_unclaimed_0005ad28.bin"
+  },
+  {
+   "offset": 379256,
+   "length": 3260,
+   "payload": "SE/_unclaimed_0005c978.bin"
+  },
+  {
+   "offset": 386732,
+   "length": 4216,
+   "payload": "SE/_unclaimed_0005e6ac.bin"
+  },
+  {
+   "offset": 394768,
+   "length": 3820,
+   "payload": "SE/_unclaimed_00060610.bin"
+  },
+  {
+   "offset": 402260,
+   "length": 3672,
+   "payload": "SE/_unclaimed_00062354.bin"
+  },
+  {
+   "offset": 420380,
+   "length": 14448,
+   "payload": "SE/_unclaimed_00066a1c.bin"
+  },
+  {
+   "offset": 450496,
+   "length": 15668,
+   "payload": "SE/_unclaimed_0006dfc0.bin"
+  },
+  {
+   "offset": 486136,
+   "length": 19972,
+   "payload": "SE/_unclaimed_00076af8.bin"
+  },
+  {
+   "offset": 522288,
+   "length": 16180,
+   "payload": "SE/_unclaimed_0007f830.bin"
+  },
+  {
+   "offset": 555720,
+   "length": 17252,
+   "payload": "SE/_unclaimed_00087ac8.bin"
+  },
+  {
+   "offset": 603364,
+   "length": 16492,
+   "payload": "SE/_unclaimed_000934e4.bin"
+  },
+  {
+   "offset": 641340,
+   "length": 21484,
+   "payload": "SE/_unclaimed_0009c93c.bin"
+  },
+  {
+   "offset": 682268,
+   "length": 19444,
+   "payload": "SE/_unclaimed_000a691c.bin"
+  },
+  {
+   "offset": 720904,
+   "length": 19192,
+   "payload": "SE/_unclaimed_000b0008.bin"
+  },
+  {
+   "offset": 762224,
+   "length": 16,
+   "payload": "SE/_unclaimed_000ba170.bin"
+  }
+ ],
+ "rom": "ic10",
+ "rom_offset": 37851392
+}

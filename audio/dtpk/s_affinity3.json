@@ -1,0 +1,162 @@
+{
+ "name": "s_affinity3",
+ "total": 188000,
+ "header": {
+  "offset": 0,
+  "length": 64,
+  "payload": "s_affinity3/_header.bin"
+ },
+ "sample_table": {
+  "offset": 27856,
+  "length": 180,
+  "payload": "s_affinity3/_sample_table.bin"
+ },
+ "samples": [
+  {
+   "idx": 0,
+   "offset": 28036,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 4703,
+   "loop_end": 5163,
+   "stereo": 0,
+   "length": 5164,
+   "payload": "s_affinity3/s0000.bin"
+  },
+  {
+   "idx": 1,
+   "offset": 33200,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 0,
+   "loop_start": 0,
+   "loop_end": 10,
+   "stereo": 0,
+   "length": 24,
+   "payload": "s_affinity3/s0001.bin"
+  },
+  {
+   "idx": 2,
+   "offset": 33224,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 0,
+   "loop_end": 11161,
+   "stereo": 0,
+   "length": 11164,
+   "payload": "s_affinity3/s0002.bin"
+  },
+  {
+   "idx": 3,
+   "offset": 44388,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 4109,
+   "loop_end": 5126,
+   "stereo": 0,
+   "length": 10256,
+   "payload": "s_affinity3/s0003.bin"
+  },
+  {
+   "idx": 4,
+   "offset": 54644,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 6366,
+   "loop_end": 13080,
+   "stereo": 0,
+   "length": 13084,
+   "payload": "s_affinity3/s0004.bin"
+  },
+  {
+   "idx": 5,
+   "offset": 67728,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 8117,
+   "loop_end": 22506,
+   "stereo": 0,
+   "length": 22508,
+   "payload": "s_affinity3/s0005.bin"
+  },
+  {
+   "idx": 6,
+   "offset": 90236,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 2930,
+   "loop_end": 4694,
+   "stereo": 0,
+   "length": 9392,
+   "payload": "s_affinity3/s0006.bin"
+  },
+  {
+   "idx": 7,
+   "offset": 99628,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 11200,
+   "loop_end": 12545,
+   "stereo": 0,
+   "length": 25092,
+   "payload": "s_affinity3/s0007.bin"
+  },
+  {
+   "idx": 8,
+   "offset": 124720,
+   "is_8bit": false,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 21246,
+   "loop_end": 24512,
+   "stereo": 0,
+   "length": 49028,
+   "payload": "s_affinity3/s0008.bin"
+  },
+  {
+   "idx": 9,
+   "offset": 173748,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 0,
+   "loop_start": 0,
+   "loop_end": 3047,
+   "stereo": 0,
+   "length": 3052,
+   "payload": "s_affinity3/s0009.bin"
+  },
+  {
+   "idx": 10,
+   "offset": 176800,
+   "is_8bit": true,
+   "is_adpcm": false,
+   "loc_high": 1,
+   "loop_start": 7181,
+   "loop_end": 11174,
+   "stereo": 0,
+   "length": 11176,
+   "payload": "s_affinity3/s0010.bin"
+  }
+ ],
+ "unclaimed": [
+  {
+   "offset": 64,
+   "length": 27792,
+   "payload": "s_affinity3/_unclaimed_00000040.bin"
+  },
+  {
+   "offset": 187976,
+   "length": 24,
+   "payload": "s_affinity3/_unclaimed_0002de48.bin"
+  }
+ ],
+ "rom": "ic10",
+ "rom_offset": 52072704
+}

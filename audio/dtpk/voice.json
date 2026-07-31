@@ -1,0 +1,162 @@
+{
+ "name": "voice",
+ "total": 194304,
+ "header": {
+  "offset": 0,
+  "length": 64,
+  "payload": "voice/_header.bin"
+ },
+ "sample_table": {
+  "offset": 1728,
+  "length": 180,
+  "payload": "voice/_sample_table.bin"
+ },
+ "samples": [
+  {
+   "idx": 0,
+   "offset": 1908,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 35428,
+   "loop_end": 35452,
+   "stereo": 0,
+   "length": 17728,
+   "payload": "voice/s0000.bin"
+  },
+  {
+   "idx": 1,
+   "offset": 19636,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 33884,
+   "loop_end": 33908,
+   "stereo": 0,
+   "length": 16956,
+   "payload": "voice/s0001.bin"
+  },
+  {
+   "idx": 2,
+   "offset": 36592,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 27652,
+   "loop_end": 27676,
+   "stereo": 0,
+   "length": 13840,
+   "payload": "voice/s0002.bin"
+  },
+  {
+   "idx": 3,
+   "offset": 50432,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 29348,
+   "loop_end": 29372,
+   "stereo": 0,
+   "length": 14688,
+   "payload": "voice/s0003.bin"
+  },
+  {
+   "idx": 4,
+   "offset": 65120,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 30804,
+   "loop_end": 30828,
+   "stereo": 0,
+   "length": 15416,
+   "payload": "voice/s0004.bin"
+  },
+  {
+   "idx": 5,
+   "offset": 80536,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 61564,
+   "loop_end": 61588,
+   "stereo": 0,
+   "length": 30796,
+   "payload": "voice/s0005.bin"
+  },
+  {
+   "idx": 6,
+   "offset": 111332,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 31332,
+   "loop_end": 31356,
+   "stereo": 0,
+   "length": 15680,
+   "payload": "voice/s0006.bin"
+  },
+  {
+   "idx": 7,
+   "offset": 127012,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 21364,
+   "loop_end": 21388,
+   "stereo": 0,
+   "length": 10696,
+   "payload": "voice/s0007.bin"
+  },
+  {
+   "idx": 8,
+   "offset": 137708,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 37260,
+   "loop_end": 37284,
+   "stereo": 0,
+   "length": 18644,
+   "payload": "voice/s0008.bin"
+  },
+  {
+   "idx": 9,
+   "offset": 156352,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 39756,
+   "loop_end": 39780,
+   "stereo": 0,
+   "length": 19892,
+   "payload": "voice/s0009.bin"
+  },
+  {
+   "idx": 10,
+   "offset": 176244,
+   "is_8bit": false,
+   "is_adpcm": true,
+   "loc_high": 1,
+   "loop_start": 36068,
+   "loop_end": 36092,
+   "stereo": 0,
+   "length": 18048,
+   "payload": "voice/s0010.bin"
+  }
+ ],
+ "unclaimed": [
+  {
+   "offset": 64,
+   "length": 1664,
+   "payload": "voice/_unclaimed_00000040.bin"
+  },
+  {
+   "offset": 194292,
+   "length": 12,
+   "payload": "voice/_unclaimed_0002f6f4.bin"
+  }
+ ],
+ "rom": "ic11",
+ "rom_offset": 20787456
+}
