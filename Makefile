@@ -114,9 +114,11 @@ check-tools:
 	@command -v $(PYTHON) >/dev/null   || (echo "ERROR: $(PYTHON) not in PATH"; exit 1)
 	@$(PYTHON) -c "from PIL import Image"    2>/dev/null \
 		|| (echo "ERROR: pip install pillow"; exit 1)
-	@$(PYTHON) -c "from capstone import Cs" 2>/dev/null \
-		|| echo "WARN: pip install capstone (only needed for disasm tools)"
-	@echo "Tools OK ($(PYTHON), pillow installed)"
+	@$(PYTHON) -c "import numpy" 2>/dev/null \
+		|| (echo "ERROR: pip install numpy"; exit 1)
+	@command -v docker >/dev/null \
+		|| echo "NOTE: docker not found — needed only for the C matching targets"
+	@echo "Tools OK ($(PYTHON), pillow, numpy)"
 
 # ──────────────────────────────────────────────────────────────────────
 #  Step 1: Decrypt the encrypted SH-4 program ROM

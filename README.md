@@ -1,312 +1,140 @@
-# Rhythm Tengoku Arcade (NAOMI) Decompilation
+# Rhythm Tengoku Arcade — decompilation
 
-Work-in-progress decompilation of the SEGA NAOMI arcade game
-**「リズム天国 アーケード版」** (Rhythm Tengoku Arcade).
+A work-in-progress decompilation of the SEGA NAOMI arcade game
+**「リズム天国 アーケード版」** (*Rhythm Tengoku Arcade*, 2007).
 
-The deliverable is **decompiled data** — SH-4/ARM7 source and disassembly,
-extracted audio, per-game/per-subsystem asset trees — organized so the ROM
-can eventually be modified and rebuilt. It follows the conventions of the
-GBA decompilation
-[arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
-(directory layout, Makefile workflow, per-game folders) so the two can be
-cross-referenced directly.
+The goal is **data you can rebuild the ROM from**: the SH-4 program as C and
+assembly, and the sound and texture packages split into editable pieces that
+put back together byte-for-byte. It follows the layout and Makefile
+conventions of the GBA decompilation
+[arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku), so
+the two can be cross-referenced.
 
-## Quick start
+**No ROM data is included.** You need your own dump of the four ROM chips.
 
-```sh
-brew install --cask flycast            # install Flycast emulator (to run the ROM)
-make check-tools                        # verify python + pillow
-make all                                # decrypt + extract + organize
-```
-
-## Project layout
-
-```
-rhytngk-arcade-decomp/
-├── src/                    decompiled C (shared engine + subsystems)
-├── include/                shared headers (rt_types.h, dtpk.h, naomi.h, …)
-├── asm/                    full SH-4 (sh4/) + ARM7 (arm/aicadrv.s) disassembly
-├── games/                  per-game folders (GBA-decomp style): source stubs
-│   │                       + graphics/audio symlinks into the asset trees
-│   └── handclap/ …
-├── system/                 non-game subsystem folders (title, result, seqsel, …)
-├── audio/dtpk/             DTPK package manifests (the tracked sound decomp)
-├── textures/stx/           STX texture manifests (the tracked graphics decomp)
-├── tools/                  pure-python pipeline (disassembler, extractors, scanners)
-├── CLAUDE.md               working notes / onboarding for continuing the decomp
-└── Makefile                GBA-decomp-compatible build + extract targets
-```
-
-The `roms/`, `build/`, extracted textures, and RE working notes (`docs/`)
-are **not tracked** — the first two are regenerable from the ROM via
-`make`, and the repo is meant to be read as decompiled data rather than
-prose. See `.gitignore`.
-
-## ROM set
-
-| File | Type | Size | Status |
-|------|------|------|--------|
-| `fpr-24423.ic8` | SH-4 program (encrypted) | 8 MB | ✓ Decrypted (PIC subkey1=0xf5e4, subkey2=0x9c6a) |
-| `fpr-24424.ic9` | Data (sound + sprites) | 64 MB | ✓ Mapped (SFFS volume, 232 inner files) |
-| `fpr-24425.ic10` | Data (sound) | 64 MB | ✓ Mapped (35 DTPK, SE.bin) |
-| `fpr-24426.ic11` | Data (sound + sprites) | 64 MB | ✓ Mapped (SFFS volume, 118 inner files) |
-
-`vaddr = file_offset + 0x0C01FB00` for the SH-4 program (verified against
-the independent EstexNT decomp). CODE_END = 0x0C1BFB00.
-
-## Architecture
-
-- **Main CPU**: Hitachi SH-4 @ 200 MHz (the encrypted ROM; ~10,200 functions)
-- **Sound CPU**: ARM7 (AICA) — full disassembly of `aicadrv.bin` in `asm/arm/`
-- **GPU**: PowerVR2 CLX2 (KAMUI2 library); TA store-queue geometry submit
-- **Filesystem**: SimpleFlashFS on ic9/ic10/ic11, plus FARC archives + gzip +
-  PowerVR2 ARGB1555 twiddled textures
-- **Engine**: indirection-driven (RIQ scene manager + function-pointer command
-  records); the sound path is RIQ scene lifecycle → voice-control API → AICA
-  param-encoder ring → ARM7 `aicadrv`
-
-## Game roster
-
-78 game entries identified — ~47 with a confirmed GBA counterpart, 14
-arcade-exclusive, plus 12 GBA games with no arcade port. The full
-arcade↔GBA mapping is materialized in the `games/` folder tree (each folder
-is named for its arcade game and carries a GBA-comparison stub).
-
-| 14 arcade-only games | 12 GBA-only games |
-|---|---|
-| `aisyou`, `bigband`, `bomber_demo`, `gyrotest`, | `drum_intro`, `drum_live`, `metronome` (GBA Mr. Upbeat), |
-| `logo_adv`, `music_image`, `name_double`, `name_single`, | `remix_1` … `remix_8`, |
-| `option`, `poster`, `tanuki`, `test`, | `rhythm_toys` |
-| `title_op`, `warning` | |
-
-## Pipelines (status)
-
-| Subsystem | Status | Output |
-|---|---|---|
-| ROM decryption | ✓ Done | `roms/fpr-24423_decrypted.bin` |
-| SFFS volume extract | ✓ Done | 350 files under `extracted/ic{9,11}/` |
-| FARC + gzip extract | ✓ Done | 425 inner files (95 aet + 165 stx + 165 shd) |
-| STX textures | ◑ Rebuildable (blob only) | 165/165 STX round-trip byte-exact (`make texture-roundtrip`); 177 subtextures editable as PNG |
-| DTPK sound packages | ✓ Rebuildable | 89/89 round-trip byte-exact (`make dtpk-roundtrip`); manifests in `audio/dtpk/` |
-| SH-4 sound pipeline | ✓ Traced | RIQ→AICA control path fully mapped (SH-4 side) |
-| id → sample binding | ◑ Boundary | sound-id→DTPK-package is static in ROM; package→PCM sample resolves on ARM7 `aicadrv` (runtime) |
-| Function attribution | ◑ Partial | source-file manifest from `__FILE__` strings |
-| Matching toolchain | ✓ Identified | GCC 4.1.2 `-O1 -ml -m4-single-only` — byte-exact (see Toolchain) |
-| C reconstruction | ◑ 739 functions | 690 rebuild byte-exactly = 1.49% of code bytes (`make status`) |
-
-Honesty note: the earlier "BeatScript bytecode interpreter at `0x0c1008f0`"
-and "DTPK→MIDI" claims were **retracted** — `0x0c1008f0`/`func_0c1203e0` is
-the C++ name **demangler**, and the AM2 sequencer stream is not a
-pitched-note stream, so no faithful MIDI exists yet. The real RIQ command
-engine is function-pointer records, not byte-opcodes.
-
-## Toolchain (rebuilding)
-
-The ROM was built with **GCC 4.1.2** (build stamp `2007-06-11`; identified
-from its embedded libiberty demangler strings and confirmed by byte-exact
-reassembly). The matching recipe is
-**`sh-elf-gcc-4.1.2 -O1 -ml -m4-single-only -fno-delayed-branch`** for most of
-the ROM — but not all of it: see the -O2 region below, and note that each `.c`
-records its own recipe. `./Dockerfile` reproduces the exact cross toolchain
-(binutils 2.17 + gcc 4.1.2, little-endian SH-4):
-
-```sh
-make toolchain                         # docker build the sh-elf-gcc 4.1.2 image
-make sh4-cc SRC=src/code_0c022224.c    # compile a decomp .c to SH-4 asm
-make verify-asm                        # reassemble asm/ and byte-compare vs ROM
-make status                            # authoritative state: every TU, byte-compared
-make status-failing                    # only the functions that do not reproduce
-make verify-c                          # per-TU drill-down (looser MATCH* class)
-make rebuild                           # whole program image (C + base ROM)
-make rebuild-code                      # code region only
-```
-
-`make rebuild` builds the **whole 8 MB program image** from two sources and
-byte-compares it against the ROM: every function defined under `src/` is
-compiled (each TU with its own recipe) and every remaining byte — untranslated
-functions, data, padding — comes from the base ROM, i.e. the `.incbin` that
-INCLUDE_ASM would pull. `make rebuild-code` does the same for the code region
-[0x0C020000, 0x0C1BFB00) alone.
-
-Relocations are resolved **from the symbol names only**: `func_0cXXXXXX` and
-`g_0CXXXXXX` each encode their own address, so no address is read back out of
-the ROM and an unresolvable symbol name is a hard error. Current state:
+## Requirements
 
 | | |
 |---|---|
-| functions translated to C | **739** |
-| of those, rebuilt byte-exactly | **690** |
-| bytes rebuilt from compiled C | 23,948 of 1,612,466 (**1.49%**) |
-| translated but not yet reproducing | 49 (34 MISMATCH + 15 SHORT, all named by `make status`) |
+| Python 3 | plus `pillow` and `numpy` (`pip install pillow numpy`) |
+| Docker | only for the C matching targets — it builds the period-correct GCC |
+| ROM files | `fpr-24423.ic8`, `fpr-24424.ic9`, `fpr-24425.ic10`, `fpr-24426.ic11` in `roms/` |
 
-**`make status` is the authoritative state** — it compiles every TU with that
-TU's recipe, resolves relocations from symbol names, byte-compares against the
-ROM, and prints a per-TU table plus these totals (`--json` for machine
-output). Do not count functions with `grep`: a `.c` also holds prototypes,
-forward declarations, INCLUDE_ASM placeholders and calls, and counting those
-inflated the total by ~20% before this tool existed. `make status` and
-`make rebuild` use the same strict criterion and agree by construction;
-`tools/verify_c.py` is the per-TU drill-down and reports a looser `MATCH*`
-class for functions that are exact apart from unlinked call addresses.
-
-Read that 1.49% as the honest figure. The `BYTE-EXACT` line `make rebuild`
-prints cannot fail — a compiled function is overlaid only where its bytes
-already equal the ROM's — so the meaningful numbers are the two counts, and
-the functions that fall back are listed by name every run rather than being
-quietly absorbed. `tools/verify_c.py` classifies the same functions
-independently, so the two can be cross-checked.
-
-`make verify-asm` proves the assembler half (148/175 verified-window
-functions reproduce ROM bytes exactly; the rest are jump tables / shared
-literal pools). `make verify-c` proves the compiler half: **79/119**
-translated verified-window functions are byte-verified — 34 recompile fully
-byte-exact from our C, and 45 more are byte-exact modulo their unlinked
-extern-call addresses (EXACT once linked). The rest are iterated by source
-form (helper inlining, eval/branch order) — the delay-slot flag,
-helper-inlining, and an inverted-branch correctness bug were all found this way.
-
-Outside the verified window three clusters are now translated near-completely,
-all true EXACT (no relocations involved):
-
-| TU | Cluster | Byte-exact |
-|---|---|---|
-| `src/code_0c148260.c` | 0x0C148260–0x0C148BF8 config bit-field accessors | **77/77** |
-| `src/code_0c145000.c` | 0x0C145xxx float vector primitives | **59/59** |
-| `src/code_0c141000.c` | 0x0C141xxx vector/matrix float primitives | **56/60** |
-| `src/code_0c142000.c` | 0x0C142xxx float library (dot/cross/length/distance) | **37/42** |
-| `src/code_0c17b000.c` | 0x0C17Bxxx virtual-dispatch thunks (**-O2**) | **30/30** |
-| `src/code_0c143000.c` / `0c144000.c` | 3x3 and 4x4 matrix products | **13/13** |
-
-These pages are C++ inline members emitted once per instantiating type, so
-they collapse to a handful of distinct bodies — 60 functions on 0x0C141xxx
-are only 33 distinct bodies. Grouping by exact ROM bytes and writing one C
-form per body is what makes a whole page tractable at once.
-
-**The ROM is not a single-flag build.** Page 0x0C17Bxxx is compiled at
-**-O2**, not at the -O1 recipe the rest of the decomp uses — at -O2 and only
-at -O2 this GCC fills the jsr/rts delay slots, turns void-result virtual
-thunks into `jmp` sibling calls, schedules the pointer load ahead of the frame
-setup, and aligns functions to 32 bytes; 71 of that page's 76 leaf functions
-start on a 32-byte boundary. All translated functions there are byte-exact at
--O2 and none of them match at -O1.
-
-A caution about that region's function count [scanner, heuristic]: of the
-untranslated call-free leaves there that a conservative def/use model can fully
-decode, **47% are entered with a live-in scratch register** (`r1`/`r2`), which
-no function can be under the SH-4 ABI. They are boundary artifacts — at -O2 the
-scheduler moves instructions across what a prologue-based scanner reads as a
-function entry, so it splits continuations off as separate "functions". Do not
-try to write C for those; the ~10,200 figure in the architecture section is an
-upper bound, not a count of real functions. A `.c` file records its own recipe with
-a `/* CFLAGS: ... */` line, which `tools/verify_c.py` and `tools/rebuild.py`
-read; the default stays the -O1 recipe.
-
-Six source-form rules came out of those passes and generalise:
-
-- packed-word getters/setters are C **bit-fields**, not shift/mask
-  expressions (shift/mask C reorders the setter's `or` operands);
-- comparison accessors compare **unsigned** — a bare `u8` parameter promotes
-  to `int` and yields signed `cmp/gt` where the ROM has `cmp/hi`;
-- the FPU flag is **`-m4-single-only`**, not `-m4-single`. This was found
-  from the float-argument ABI (the ROM passes `float` args in `fr4, fr5,
-  fr6`; `-m4-single` pairs them into double registers and emits `fr5, fr4,
-  fr7`) and it also restores `fldi0` for `0.0f` in place of a constant-pool
-  load. It is a strict improvement on the previously recorded recipe: no
-  function that matched before regressed, and the verified window went
-  78/119 → 79/119.
-- component-wise operators use **temporaries**, not compound assignment: the
-  ROM computes every component before storing any, which `d[0] += s[0];
-  d[1] += s[1];` does not reproduce but `x = d[0]+s[0]; y = d[1]+s[1];
-  d[0]=x; d[1]=y;` does.
-- scalar min/max helpers select a **pointer**, not a value —
-  `d[0] = *(k > d[0] ? &k : &d[0])`. Taking the address of the by-value
-  parameter is what produces the ROM's stack spill.
-- multi-component equality is an early-return `if (a != b) return 0;` chain;
-  `&&` makes GCC materialise the result with `negc`/`xor`/`extu.b` where the
-  ROM just uses `movt`.
-
-## Sound data (rebuilding)
-
-The sound packages are rebuildable in the same sense as the code: unpack to
-byte-exact pieces, edit, put back together byte-for-byte.
+## Build
 
 ```sh
-make dtpk-roundtrip     # unpack -> pack -> byte-compare vs ROM   (the gate)
-make dtpk-unpack        # payloads -> audio/raw/, manifests -> audio/dtpk/
+make check-tools     # verify python + pillow + numpy
+make all             # decrypt the program ROM, unpack the data ROMs, build the asset trees
 ```
 
-`make dtpk-roundtrip` currently reports **89/89 packages byte-exact**. A
-package is modelled as regions over its byte range — header, the +0x3C sample
-table, each sample payload, and `unclaimed` runs for everything else. Of
-122,070,752 package bytes, **89.6% are decoded as structure** and 10.4% are
-stored verbatim because that part of the format is not understood yet (the
-sequence streams live there). Round-trip is byte-exact either way; the
-coverage figure is the honest measure of how much of the format is decoded,
-and it says nothing about understanding the *music*.
+That produces `roms/fpr-24423_decrypted.bin` and the extracted asset trees.
+Everything it writes is regenerable, so none of it is tracked.
 
-Modding works today without any of that understanding. Replacing one sample's
-payload and repacking `ad_neko` changes 5,398 bytes of the 64 MB `ic9` image
-and nothing else — the changed range lies entirely inside that sample.
-
-**This does not make a faithful MIDI possible.** Samples are short one-shots
-(median 0.21 s), so pitch cannot be coming from the sequence stream — it comes
-from the AICA playback-rate registers at runtime, which is consistent with the
-known fact that the AM2 note handler only acts on the values {0, 32, 36}. A
-converter that reads notes out of the stream invents them; the earlier one is
-retracted and its output is no longer tracked. The honest route to real note
-data is still an ARM7 `aicadrv` trace.
-
-## Texture data (rebuilding)
-
-Same contract as the sound side: unpack to byte-exact pieces, edit, put back
-byte-for-byte.
+To work on the C side you also need the matching compiler, which builds in
+Docker (once, ~15 min):
 
 ```sh
-make texture-roundtrip  # unpack -> pack -> byte-compare            (the gate)
-make texture-unpack     # PNGs -> textures/raw/, manifests -> textures/stx/
+make toolchain       # build the sh-elf-gcc 4.1.2 image
+make status          # compile every .c under src/ and byte-compare against the ROM
+make rebuild         # rebuild the whole 8 MB program image (compiled C + base ROM)
 ```
 
-**165/165 STX blobs round-trip byte-exact.** 177 subtextures are stored as
-PNG, 0 fall back to verbatim, so twiddled ARGB1555 does hold for every
-subtexture an SHD entry actually reaches (10 entries are unreachable —
-non-power-of-2 or out of range). 71.5% of STX bytes are covered by subtexture
-blocks; the rest is stored verbatim. Editing works: painting a 16x16 square
-into a 1024x1024 subtexture changes exactly 256 bytes of the blob and nothing
-else.
+## Layout
 
-A subtexture becomes a PNG **only if** decoding and re-encoding reproduces its
-bytes exactly; otherwise it is kept verbatim and counted as undecoded. That
-check found a real bug in `tools/stx_to_png.py`: it interleaves the two
-dimensions directly, which drops a bit whenever width ≠ height and aliases two
-source pixels onto one. PowerVR2 twiddles in *square* blocks of min(w, h).
-The bug is latent on this ROM — all 177 subtextures happen to be square — but
-the old converter's non-square output would have been wrong.
+```
+src/            decompiled C, one file per ROM page (code_0cXXXXXX.c)
+include/        shared headers
+asm/            SH-4 disassembly (sh4/) and the ARM7 sound driver (arm/aicadrv.s)
+audio/dtpk/     DTPK sound package manifests
+textures/stx/   STX texture manifests
+games/          per-game folders, GBA-decomp style
+system/         non-game subsystems (title, result, seqsel, …)
+tools/          the whole pipeline — pure Python, no build step
+```
 
-**Scope, stated plainly: this is stage 1 of 4.** The STX blobs sit inside gzip
-inside FARC inside the SFFS volume, and none of those three layers has a
-repack yet, so a modified texture cannot reach the ROM today. Compare with the
-sound side, where `make dtpk-roundtrip` covers the whole path from package to
-data ROM and a sample swap does reach the ROM.
+`roms/`, `build/`, and the unpacked payloads (`audio/raw/`, `textures/raw/`)
+are not tracked; `make` regenerates them.
 
-## Make targets
+## Modifying the game
+
+**Sound works end to end today.** Unpack a package, change a sample, put it
+back — the result is byte-identical apart from your edit:
 
 ```sh
-make all                # full pipeline (decrypt + extract + organize)
-make decrypt            # NAOMI PIC decryption
-make extract-rom        # SFFS unpack
-make extract-graphics   # FARC + gzip + PowerVR2 → PNGs
-make extract-audio      # DTPK → WAV samples
-make generate-games     # build games/ + system/ folder trees
-make find-funcs-v3      # SH-4 function set → build/sh4_functions_v3.json
-make validate-gt        # regression-check function set vs EstexNT ground truth
-make clean              # remove build artifacts
+make dtpk-roundtrip                 # 89/89 packages rebuild byte-exactly (the gate)
+make dtpk-unpack                    # payloads -> audio/raw/<pkg>/
+# edit audio/raw/<pkg>/sNNNN.bin, then:
+python3 tools/dtpk_pack.py pack --pkg ad_neko --out /tmp/ad_neko.bin
 ```
+
+Replacing one sample in `ad_neko` changes 5,398 bytes of the 64 MB `ic9` image
+and nothing else.
+
+**Textures unpack and repack, but cannot reach the ROM yet.**
+
+```sh
+make texture-roundtrip              # 165/165 STX blobs rebuild byte-exactly
+make texture-unpack                 # 177 subtextures -> textures/raw/**.png
+```
+
+Editing a PNG and repacking changes exactly the bytes of that subtexture. But
+the STX blobs live inside gzip inside FARC inside the SFFS volume, and none of
+those three layers has a repacker yet — so an edited texture stops at the blob.
+That chain is the next thing to build.
+
+## Status
+
+| Area | State |
+|---|---|
+| Program ROM decryption | done |
+| Data ROM unpacking (SFFS, FARC, gzip) | done, read-only |
+| DTPK sound packages | **rebuildable**, 89/89 byte-exact; 89.6% of bytes decoded as structure |
+| STX textures | **rebuildable (blob only)**, 165/165 byte-exact; 177 subtextures as PNG |
+| SH-4 → C | 739 functions translated, **690 rebuild byte-exactly** = 1.49% of code bytes |
+| Sound control path | traced on the SH-4 side (RIQ scene → voice API → AICA ring → ARM7) |
+
+Run `make status` for the current, authoritative C figures — the numbers above
+are a snapshot. Every round-trip claim here is checked by a `make` target that
+fails if it stops being true.
+
+**Known limits, so nobody re-derives them:**
+
+- **There is no faithful MIDI**, and none is derivable from the ROM alone.
+  Samples are short one-shots, so pitch comes from the AICA playback-rate
+  registers at runtime, not from the sequence stream. An earlier converter that
+  read notes out of the stream was inventing them and has been retracted.
+- The **~10,200 function count** from the scanner is an upper bound. In the
+  `-O2` region a large share of the small "functions" are boundary artifacts —
+  they start with a live-in scratch register, which no real function does.
+- 49 of the 739 translated functions do not reproduce byte-exactly yet.
+  `make status` names every one of them.
+
+## Technical notes
+
+The ROM was built with **GCC 4.1.2**, and not with one set of flags: most of it
+is `-O1 -ml -m4-single-only -fno-delayed-branch`, but one region is `-O2`. Each
+`.c` records its own recipe in a `/* CFLAGS: ... */` line.
+
+The detail lives in the tools rather than in prose — each has a docstring
+explaining its format, its method, and what it does *not* establish:
+
+| | |
+|---|---|
+| `tools/status.py` | the authoritative decomp state, and why not to count with `grep` |
+| `tools/rebuild.py` | how the program image is reassembled, and what its pass does not prove |
+| `tools/verify_c.py` | per-function classification and the per-TU `CFLAGS` mechanism |
+| `tools/dtpk_pack.py` | the DTPK region model |
+| `tools/texture_pack.py` | PowerVR2 twiddling and the ARGB1555 round-trip check |
+| `tools/sh4_disasm.py` | the SH-4 disassembler |
+
+Addresses: `vaddr = file_offset + 0x0C01FB00` for the program ROM; code ends at
+`0x0C1BFB00`.
 
 ## Credits
 
-- DTPK format RE: [Preppy](https://github.com/Preppy/DTPKDump) (`AM2-DTPK.txt`)
+- DTPK format: [Preppy](https://github.com/Preppy/DTPKDump)
 - DSF conversion reference: KingShriek (`dsfdtpk`)
-- GBA decomp cross-reference: [arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
+- GBA decompilation: [arthurtilly/rhythmtengoku](https://github.com/arthurtilly/rhythmtengoku)
 - Ground-truth function boundaries: EstexNT/rhythmtengokuarcade
 - AICA ADPCM tables: MAME `aica.cpp`
 - This project: 角凛太朗 (Toritan123) + Claude
