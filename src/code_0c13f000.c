@@ -96,3 +96,88 @@ void func_0c13fd9c(f32 *d)
     d[7] = -d[7];
     d[8] = -d[8];
 }
+
+/* ---- copy 4 words ---- */
+
+void func_0c13f966(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+    d[3] = s[3];
+}
+
+/* ---- copy 3 words ---- */
+
+void func_0c13f9aa(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+}
+
+void func_0c13f9c2(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+}
+
+/* ---- copy 4 words ---- */
+
+void func_0c13f9da(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+    d[3] = s[3];
+}
+
+void func_0c13f9f6(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+    d[3] = s[3];
+}
+
+/* ---- copy 9 words ---- */
+
+void func_0c13feaa(u32 *d, const u32 *s)
+{
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+    d[3] = s[3];
+    d[4] = s[4];
+    d[5] = s[5];
+    d[6] = s[6];
+    d[7] = s[7];
+    d[8] = s[8];
+}
+
+/* ---- set 4 floats from arguments ---- */
+
+void func_0c13f854(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c13f870(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c13f94a(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}

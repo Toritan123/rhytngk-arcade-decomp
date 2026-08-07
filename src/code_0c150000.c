@@ -13,6 +13,11 @@
  *
  * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c150000.c`.
+ *
+ * NOTE on the empty functions: a 12-byte empty body is identical whatever the
+ * signature is, so the `(void)` arity here is not established by the bytes.
+ * The ROM really does contain these as separate functions with a full
+ * prologue and rts; only their parameter lists are unknown.
  */
 
 #include "rt_types.h"
@@ -25,3 +30,49 @@ int func_0c150476(void) { return 1; }
 
 /* ---- identity stub ---- */
 void *func_0c15049c(void *p) { return p; }
+
+/* ---- empty function ---- */
+
+void func_0c150410(void)
+{
+}
+
+void func_0c15041c(void)
+{
+}
+
+void func_0c150444(void)
+{
+}
+
+void func_0c150450(void)
+{
+}
+
+void func_0c15045c(void)
+{
+}
+
+void func_0c150484(void)
+{
+}
+
+void func_0c150490(void)
+{
+}
+
+void func_0c1504aa(void)
+{
+}
+
+void func_0c1504b6(void)
+{
+}
+
+void func_0c1504c2(void)
+{
+}
+
+void func_0c1504ce(void)
+{
+}

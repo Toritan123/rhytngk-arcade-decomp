@@ -87,7 +87,7 @@ are not tracked; `make` regenerates them.
 |---|---|
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable as blobs, 165/165 byte-exact |
-| SH-4 → C | 739 functions translated, 690 rebuild byte-exactly (1.49% of code bytes) |
+| SH-4 → C | 1,243 functions translated, 1,194 rebuild byte-exactly (1.90% of code bytes) |
 | gzip / FARC / SFFS repack | not started — this is what blocks texture modding |
 
 `make status` prints the current C figures and names every function that does

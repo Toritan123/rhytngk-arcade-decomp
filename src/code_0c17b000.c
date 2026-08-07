@@ -16,6 +16,11 @@
  * that this GCC always turns into a sibling call, so the ROM's non-sibling
  * form is unreachable from any source shape tried), and the forwarding
  * wrappers that spill arguments to the stack.
+ *
+ * NOTE on the empty functions: a 12-byte empty body is identical whatever the
+ * signature is, so the `(void)` arity here is not established by the bytes.
+ * The ROM really does contain these as separate functions with a full
+ * prologue and rts; only their parameter lists are unknown.
  */
 
 #include "rt_types.h"

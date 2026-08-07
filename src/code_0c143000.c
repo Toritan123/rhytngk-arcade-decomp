@@ -231,3 +231,85 @@ void func_0c143f5c(f32 *o, const f32 *a, const f32 *b)
     o[7] = t7;
     o[8] = t8;
 }
+
+/* ---- set 4 floats from arguments ---- */
+
+void func_0c14380a(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c143826(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c143842(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c14385e(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c14387a(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c143896(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c143906(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c143922(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c14393e(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
+
+void func_0c14395a(f32 *d, f32 v0, f32 v1, f32 v2, f32 v3)
+{
+    d[0] = v0;
+    d[1] = v1;
+    d[2] = v2;
+    d[3] = v3;
+}
