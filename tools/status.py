@@ -31,6 +31,9 @@ the one that matches `make rebuild`.
     tools/status.py             # per-TU table + totals
     tools/status.py --failing   # only TUs that have non-EXACT functions
     tools/status.py --json      # machine-readable
+    tools/status.py --recipes   # recompile every non-EXACT function under all
+                                # known recipes — answers "is this the wrong
+                                # build recipe, or a real codegen difference?"
 
 Needs the `rhytngk-sh4` image (`make toolchain`) and roms/fpr-24423_decrypted.bin.
 """
@@ -148,6 +151,44 @@ def classify(addr, b, rels):
     return ("MISMATCH", f"first diff @+0x{d:x}")
 
 
+RECIPES = {
+    "-O1 nodelay": "-O1 -ml -m4-single-only -fno-delayed-branch",
+    "-O1 delay":   "-O1 -ml -m4-single-only",
+    "-O2":         "-O2 -ml -m4-single-only",
+    "-O2 nodelay": "-O2 -ml -m4-single-only -fno-delayed-branch",
+    "-Os":         "-Os -ml -m4-single-only",
+}
+
+
+def cmd_recipes(per_tu):
+    """Recompile the non-EXACT functions under every recipe.  A function that
+    goes EXACT under a different one is in a TU with the wrong `CFLAGS:` line;
+    one that fails under all of them is a genuine codegen difference."""
+    bad = {tu: {a for a, (k, _) in rows.items() if k != "EXACT"}
+           for tu, (cf, rows) in per_tu.items()}
+    bad = {tu: v for tu, v in bad.items() if v}
+    n = sum(len(v) for v in bad.values())
+    print(f"\nrecipe sweep: {n} non-EXACT functions in {len(bad)} TUs\n")
+    res = defaultdict(dict)
+    for tag, cf in RECIPES.items():
+        built, _ = compile_group(cf + " -ffunction-sections -Iinclude", sorted(bad))
+        for tu in sorted(bad):
+            for a, (b, rels) in built.get(tu, {}).items():
+                if a in bad[tu]:
+                    res[a][tag] = classify(a, bytearray(b), dict(rels))[0]
+    fixed = {a: [t for t, k in v.items() if k == "EXACT"] for a, v in res.items()}
+    fixed = {a: t for a, t in fixed.items() if t}
+    if fixed:
+        print(f"  RESOLVED by a different recipe: {len(fixed)}")
+        for a, tags in sorted(fixed.items()):
+            print(f"    func_0c{a & 0xffffff:06x}  EXACT under {', '.join(tags)}"
+                  f"  -> give its TU that CFLAGS line")
+    else:
+        print("  RESOLVED by a different recipe: none — every one of these is a "
+              "codegen difference, not a wrong recipe")
+    return 0
+
+
 def main():
     only_failing = "--failing" in sys.argv
     as_json = "--json" in sys.argv
@@ -189,6 +230,9 @@ def main():
                                           for a, (k, d) in rows.items() if k != "EXACT"}}
                        for tu, (cf, rows) in per_tu.items()}}, indent=2))
         return 0
+
+    if "--recipes" in sys.argv:
+        return cmd_recipes(per_tu)
 
     if all_errs:
         print("COMPILE ERRORS:")
