@@ -53,17 +53,26 @@ python3 tools/dtpk_pack.py pack --pkg ad_neko --out /tmp/ad_neko.bin
 Replacing one sample in `ad_neko` changes 5,398 bytes of the 64 MB `ic9` image
 and nothing else.
 
-**Textures unpack and repack, but cannot reach the ROM yet.**
+**Textures work end to end too.** A data ROM is a SimpleFlashFS volume holding
+FArC archives of gzip streams, some of which are STX texture blobs; all four
+layers unpack and rebuild:
 
 ```sh
+make rom-roundtrip                  # all 3 data ROMs rebuild byte-exactly (the gate)
 make texture-roundtrip              # 165/165 STX blobs rebuild byte-exactly
 make texture-unpack                 # 177 subtextures -> textures/raw/**.png
+make rom-unpack                     # every layer -> data/rom/
 ```
 
-Editing a PNG and repacking changes exactly the bytes of that subtexture. But
-the STX blobs live inside gzip inside FARC inside the SFFS volume, and none of
-those three layers has a repacker yet — so an edited texture stops at the blob.
-That chain is the next thing to build.
+Painting a 16x16 square into a 1024x1024 subtexture changes 15,797 bytes of the
+64 MB `ic11` image, all inside that one archive, with the image size unchanged.
+
+One limit: the gzip streams cannot be reproduced bit-for-bit (`gzip -9` matches
+304 of 425, the rest came from a better encoder), so they are stored verbatim
+and only recompressed when you actually edit one. An edited stream may grow
+into the padding before the next FArC entry — a few hundred bytes to ~1.4 KB.
+Past that, `pack` tells you how many bytes over you are instead of corrupting
+the image.
 
 ## Layout
 
@@ -86,9 +95,9 @@ are not tracked; `make` regenerates them.
 | Area | State |
 |---|---|
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
-| STX textures | rebuildable as blobs, 165/165 byte-exact |
+| STX textures | rebuildable, 165/165 byte-exact |
+| Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
 | SH-4 → C | 1,243 functions translated, 1,194 rebuild byte-exactly (1.90% of code bytes) |
-| gzip / FARC / SFFS repack | not started — this is what blocks texture modding |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -111,7 +120,7 @@ Addresses: `vaddr = file_offset + 0x0C01FB00` for the program ROM; code ends at
 
 Formats, methods and their limits are documented in the docstring of the tool
 that implements them — `tools/status.py`, `rebuild.py`, `verify_c.py`,
-`dtpk_pack.py`, `texture_pack.py`, `sh4_disasm.py`.
+`dtpk_pack.py`, `texture_pack.py`, `rom_pack.py`, `sh4_disasm.py`.
 
 ## Credits
 

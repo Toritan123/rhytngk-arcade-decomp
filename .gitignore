@@ -62,9 +62,13 @@ rhytngk_*.mid
 #                    "pitch": "C5" on every sample, which is not a ROM fact
 audio/raw/
 audio/samples/
-# textures/raw/ is the same idea: regenerable by `make texture-unpack`; the
+# textures/raw/
+# data/rom/ likewise: regenerable by `make rom-unpack`.
+data/rom/ is the same idea: regenerable by `make texture-unpack`; the
 # tracked graphics decomp is textures/stx/*.json.
 textures/raw/
+# data/rom/ likewise: regenerable by `make rom-unpack`.
+data/rom/
 audio/sequences/
 audio/banks/
 audio/sample_table.json

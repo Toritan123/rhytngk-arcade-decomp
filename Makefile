@@ -63,7 +63,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm toolchain sh4-cc verify-c status status-failing rebuild rebuild-code dtpk-unpack dtpk-roundtrip texture-unpack texture-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain sh4-cc verify-c status status-failing rebuild rebuild-code dtpk-unpack dtpk-roundtrip texture-unpack texture-roundtrip rom-unpack rom-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -265,6 +265,14 @@ dtpk-unpack:
 dtpk-roundtrip:
 	@echo "  DTPK round-trip (unpack -> pack -> byte-compare vs ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/dtpk_pack.py roundtrip
+
+rom-unpack:
+	@echo "  DATA ROM unpack (SFFS -> FArC -> gzip -> payloads)"
+	@$(PYTHON) $(TOOLS_DIR)/rom_pack.py unpack
+
+rom-roundtrip:
+	@echo "  DATA ROM round-trip (all four layers -> byte-compare)"
+	@$(PYTHON) $(TOOLS_DIR)/rom_pack.py roundtrip
 
 texture-unpack:
 	@echo "  STX unpack (PNG + verbatim blocks + manifests)"
