@@ -5,10 +5,10 @@
  *
  * Function boundaries: [verified] (EstexNT ground truth,
  * tools/ground_truth_estex.txt).  Bodies: hand-translated from
- * tools/sh4_disasm.py disassembly with literal pools resolved from the
- * decrypted ROM.  NO sh-elf toolchain is installed, so nothing here is
- * byte-verified; the goal is instruction-faithful C structured for a
- * future matching build.  Functions that cannot yet be expressed
+ * tools/sh4_disasm.py output with literal pools resolved from
+ * roms/fpr-24423_decrypted.bin, then byte-compared against the ROM by
+ * `make status` — run it for this TU's current state rather than trusting
+ * a count written here.  Functions that cannot yet be expressed
  * faithfully in C carry an INCLUDE_ASM placeholder instead (EstexNT
  * convention) — an honest placeholder beats wrong C.
  *
@@ -21,11 +21,11 @@
  * Roles for the spine functions are established in docs/boot_and_main.md
  * and docs/frame_pipeline_stages.md.  CORRECTIONS to those docs found
  * while translating (flagged, not silently diverged):
- *   1. docs/frame_pipeline_stages.md lists stage 5 (func_0c020440)
+ *   1. docs/frame_pipeline_stages.md lists stage 5 (frame_stage5_update)
  *      calling func_0c03099c twice.  The pool at 0x0C0204C4 reads
  *      0x0C02039C: the 5th call is the in-window func_0c02039c (once),
  *      and func_0c03099c runs once (pool 0x0C0204D8).
- *   2. The same doc describes stage 6 (func_0c02074c) as looping over a
+ *   2. The same doc describes stage 6 (frame_stage6_update) as looping over a
  *      runtime-sized list.  There is no loop: the "body at 0x020792" is
  *      an unreachable EH landing pad.  The function is a straight-line
  *      update group instrumented with tick counters (see below).
@@ -60,7 +60,7 @@ extern void func_0c0309c4(void);
 extern void func_0c037e70(void);
 extern void func_0c0ebd4c(void);
 
-/* stage-sync (func_0c020304) */
+/* stage-sync (frame_stage8_sync) */
 extern s32  func_0c0f1a90(void);      /* free-running counter/timer read */
 extern void func_0c0f1634(void *);
 
@@ -74,7 +74,7 @@ extern void func_0c040fa0(s32);
 extern void func_0c0368ac(void);
 extern void func_0c037a78(void);
 
-/* stage 5 (func_0c020440) targets */
+/* stage 5 (frame_stage5_update) targets */
 extern void func_0c037db8(void);
 extern void func_0c037ea0(void);
 extern void func_0c037ed0(void);
@@ -129,7 +129,7 @@ extern void func_0c0f1388(void);
 extern void func_0c036718(void);
 extern void func_0c02f3c4(void);
 
-/* stage 6 (func_0c02074c) targets */
+/* stage 6 (frame_stage6_update) targets */
 extern void func_0c037d94(void);
 extern s32  func_0c037d00(void);      /* read tick/counter */
 extern u32  func_0c037ca8(s32);       /* elapsed since tick */
@@ -140,7 +140,7 @@ extern void func_0c066358(void);
 extern void func_0c062b78(s32);
 extern void func_0c037d1c(void);
 
-/* frame pipeline (func_0c0208f0) targets */
+/* frame pipeline (frame) targets */
 extern void func_0c0f2164(void);
 extern void func_0c03c652(void);
 extern void func_0c0f1a70(void);
@@ -151,7 +151,7 @@ extern void func_0c0f1ac8(void);
 /* main (func_0c020c08) targets */
 extern void func_0c037f00(void);      /* init 2 [scanner boundary] */
 extern void func_0c03c4cc(s32);       /* init 3 [scanner boundary] */
-extern s32  func_0c037a90(void);      /* loop predicate: *(u8*)0x0C4655F8 */
+extern s32  is_quit_requested(void);  /* 0x0C037A90; reads *(u8*)0x0C4655F8 */
 
 /* interrupt-mask bracketing used by init4:
  *   raise: sr = (sr & 0xFFFFFF0F) | 0xE0   (IMASK = 14)
@@ -182,14 +182,14 @@ void func_0c020200(s32 mode, s32 key);
 void func_0c02039c(void);
 s32  func_0c0206fc(void);
 s32  func_0c020724(void);
-void func_0c020440(void);
-void func_0c02074c(void);
-void func_0c020304(void);
+void frame_stage5_update(void);
+void frame_stage6_update(void);
+void frame_stage8_sync(void);
 void func_0c02095c(s32 boot_mode, void *boot_ptr); /* INCLUDE_ASM below */
 void func_0c020d64(s32 mode, s32 key);             /* INCLUDE_ASM below */
 void func_0c020f30(s32 mode, s32 key);
 void func_0c0204e8(void);
-void func_0c0208f0(void);
+void frame(void);
 void func_0c02028c(void);
 void func_0c0202b0(void);
 
@@ -291,13 +291,13 @@ void func_0c0202b0(void)
 }
 
 /* ================================================================== */
-/* func_0c020304 @ 0x0C020304, size 0x98 — frame pipeline stage 8:    */
+/* frame_stage8_sync @ 0x0C020304, size 0x98 — frame pipeline stage 8:    */
 /* bounded spin-wait on the frame-sync flag (set from the callback    */
 /* func_0c0206fc), then clear it and notify func_0c0f1634.            */
 /* docs/frame_pipeline_stages.md ("stage_sync").                      */
 /* confidence: high                                                   */
 /* ================================================================== */
-void func_0c020304(void)
+void frame_stage8_sync(void)
 {
     u8 m[2][4];                 /* debug markers passed to the no-op hook */
 
@@ -343,14 +343,14 @@ void func_0c02039c(void)
 }
 
 /* ================================================================== */
-/* func_0c020440 @ 0x0C020440, size 0xA8 — frame pipeline stage 5:    */
+/* frame_stage5_update @ 0x0C020440, size 0xA8 — frame pipeline stage 5:    */
 /* flat update group, 12 calls in fixed order.                        */
 /* NOTE: corrects docs/frame_pipeline_stages.md — the 5th call is the */
 /* in-window func_0c02039c (pool 0x0C0204C4 = 0x0C02039C), not a      */
 /* second func_0c03099c.                                              */
 /* confidence: high (straight-line)                                   */
 /* ================================================================== */
-void func_0c020440(void)
+void frame_stage5_update(void)
 {
     u8 m[4];
 
@@ -428,7 +428,7 @@ void func_0c0204e8(void)
 /* ================================================================== */
 /* func_0c0206fc @ 0x0C0206FC, size 0x28 — callback registered via    */
 /* func_0c0e7664(0, ...): sets the frame-sync flag consumed by stage  */
-/* func_0c020304 (VBlank-ish notification), then func_0c0f1388().     */
+/* frame_stage8_sync (VBlank-ish notification), then func_0c0f1388().     */
 /* confidence: high                                                   */
 /* ================================================================== */
 s32 func_0c0206fc(void)
@@ -450,7 +450,7 @@ s32 func_0c020724(void)
 }
 
 /* ================================================================== */
-/* func_0c02074c @ 0x0C02074C, size 0x1A4 — frame pipeline stage 6:   */
+/* frame_stage6_update @ 0x0C02074C, size 0x1A4 — frame pipeline stage 6:   */
 /* straight-line update group instrumented with tick counters: three  */
 /* sub-groups are timed with func_0c037d00() (tick read) and          */
 /* func_0c037ca8(tick) (elapsed), results stored to the globals       */
@@ -460,7 +460,7 @@ s32 func_0c020724(void)
 /* then resumes unwinding via 0x0C129EE0); there is no iteration.     */
 /* confidence: high (straight-line once pads are excluded)            */
 /* ================================================================== */
-void func_0c02074c(void)
+void frame_stage6_update(void)
 {
     u8 m[5][4];
     s32 tick;
@@ -498,20 +498,20 @@ void func_0c02074c(void)
 }
 
 /* ================================================================== */
-/* func_0c0208f0 @ 0x0C0208F0, size 0x6C — per-frame body: the 9-stage*/
+/* frame @ 0x0C0208F0, size 0x6C — per-frame body: the 9-stage*/
 /* pipeline, called from main's loop (docs/boot_and_main.md).         */
 /* confidence: high (straight-line, matches docs)                     */
 /* ================================================================== */
-void func_0c0208f0(void)
+void frame(void)
 {
     func_0c0f2164();
     func_0c03c652();
     func_0c0f1a70();
     func_0c0f1608();
-    func_0c020440();
-    func_0c02074c();
+    frame_stage5_update();
+    frame_stage6_update();
     func_0c0ef608();
-    func_0c020304();
+    frame_stage8_sync();
     func_0c0f1ac8();
 }
 
@@ -528,21 +528,19 @@ void func_0c0208f0(void)
 // INCLUDE_ASM("asm/code_0c020140/func_0c02095c")
 
 /* ================================================================== */
-/* func_0c020c08 @ 0x0C020C08, size 0x6C — main (docs/boot_and_main.md*/
-/* [verified]).  Alias: main(boot_mode, boot_ptr).                    */
+/* main @ 0x0C020C08, size 0x6C — named in symbols.txt [T].          */
 /* NOTE: r4/r5 are not reloaded before the func_0c02095c call, so     */
 /* init 1 observes main's own arguments.                              */
-/* confidence: high                                                   */
 /* ================================================================== */
-s32 func_0c020c08(s32 boot_mode, void *boot_ptr)
+s32 main(s32 boot_mode, void *boot_ptr)
 {
     func_0c02095c(boot_mode, boot_ptr);  /* init 1 (in-window) */
     func_0c037f00();                     /* init 2 [scanner]   */
     func_0c03c4cc(1);                    /* init 3 [scanner]   */
     func_0c0204e8();                     /* init 4 (in-window) */
 
-    while (func_0c037a90() == 0) {       /* while (!*(u8*)0x0C4655F8) */
-        func_0c0208f0();                 /* one frame */
+    while (is_quit_requested() == 0) {   /* while (!*(u8*)0x0C4655F8) */
+        frame();                 /* one frame */
     }
 
     func_0c0202b0();                     /* teardown */

@@ -1,0 +1,33 @@
+# Named SH-4 symbols.
+#
+# Every function in src/ is normally called func_0cXXXXXX, which carries its
+# own address — that is how the build resolves relocations without a linker
+# script.  A function given a real name here loses that property, so the name
+# must be mapped back to its address, and this file is that map.
+#
+#   <address> <name>       one per line, '#' starts a comment
+#
+# A name only goes in here when the role is established, not guessed.  The
+# confidence tag says on what basis:
+#
+#   [V] verified   — cross-checked against the independent EstexNT decomp, or
+#                    forced by the hardware/ABI (entry point, ABI-fixed calls)
+#   [T] traced     — established by following the code, stated in CLAUDE.md
+#   [S] scanner    — from a scan; the address is certain, the role is not
+#
+# tools/status.py and tools/rebuild.py read this file.
+
+0x0C020000  _start                  # [V] crt0 entry, first instruction of the ROM
+0x0C020100  early_init              # [T] sets the PIC base r12 = 0x0C3D4D74, then calls main
+0x0C020C08  main                    # [T] 9-stage frame pipeline, gated by the quit flag
+0x0C037A90  is_quit_requested       # [T] main's loop predicate; reads the byte at 0x0C4655F8
+
+# The per-frame pipeline.  main's loop body calls nine stages in a fixed
+# order; three of them are inside the verified window, so their positions and
+# their shape are established.  The other six are only known by address and
+# stay unnamed — as do the ~12 leaf updates each stage fans out to.
+0x0C0208F0  frame                   # [T] main's loop body: the nine stages, in order
+0x0C020440  frame_stage5_update     # [T] stage 5/9: flat fan-out to 12 subsystem updates
+0x0C02074C  frame_stage6_update     # [T] stage 6/9: straight-line update group
+0x0C020304  frame_stage8_sync       # [T] stage 8/9: bounded spin-wait on the flag at
+                                    #     0x0C431E58, then clears it

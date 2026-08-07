@@ -6,9 +6,9 @@
  * Function boundaries: [verified] (EstexNT ground truth,
  * tools/ground_truth_estex.txt).  Bodies: hand-translated from
  * tools/sh4_disasm.py output with literal pools resolved from
- * roms/fpr-24423_decrypted.bin.  NO sh-elf toolchain is installed, so
- * nothing here is byte-verified; the goal is instruction-faithful C
- * structured for a future matching build.  Per-function confidence
+ * roms/fpr-24423_decrypted.bin, then byte-compared against the ROM by
+ * `make status` — run it for this TU's current state rather than trusting
+ * a count written here.  Per-function confidence
  * tags below; functions not yet expressible in faithful C carry an
  * INCLUDE_ASM placeholder (EstexNT convention).
  *

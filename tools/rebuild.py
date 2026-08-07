@@ -66,7 +66,7 @@ def compile_group(cflags, tus):
         "echo ===R===; sh-elf-objdump -r /tmp/o.o\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /tmp/o.o "
-        "| grep -oE '[.]text[.]func_0c[0-9a-f]{6}' | sort -u); do "
+        "| grep -oE '[.]text[.][A-Za-z_][A-Za-z_0-9]*' | sort -u); do "
         "  sh-elf-objcopy -O binary --only-section=$s /tmp/o.o /tmp/s.bin 2>/dev/null; "
         "  printf '%s ' \"$s\"; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n"
         for t in tus)
@@ -79,7 +79,7 @@ def compile_group(cflags, tus):
             phase = ln
             continue
         if "R===" in phase:
-            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.](func_0c[0-9a-f]{6})\]", ln)
+            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
             if m:
                 cur = m.group(1); relocs[cur] = {}; continue
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
@@ -87,26 +87,50 @@ def compile_group(cflags, tus):
                 relocs[cur][int(rm.group(1), 16)] = rm.group(2).lstrip("_")
         elif "B===" in phase:
             p = ln.split()
-            if len(p) == 2 and p[0].startswith(".text.func_"):
+            if len(p) == 2 and p[0].startswith(".text."):
                 name = p[0][6:]
-                out[0x0C000000 | int(name[7:], 16)] = (
-                    bytearray.fromhex(p[1]), relocs.get(name, {}))
+                a = sym_addr(name)
+                if a is not None:
+                    out[a] = (bytearray.fromhex(p[1]), relocs.get(name, {}))
     return out
 
 
-SYM = re.compile(r"(?:func_0c([0-9a-f]{6})|g_0C([0-9A-Fa-f]{6}))$")
+# ---- named symbols -------------------------------------------------------
+# Functions are normally called func_0cXXXXXX so the name carries the address.
+# symbols.txt maps real names back to addresses for the ones that have been
+# named; see that file for the confidence tags.
+def _load_symbols():
+    m = {}
+    p = REPO / "symbols.txt"
+    if p.exists():
+        for ln in p.read_text().splitlines():
+            ln = ln.split("#")[0].split()
+            if len(ln) == 2:
+                m[ln[1]] = int(ln[0], 16)
+    return m
+
+
+SYMS = _load_symbols()
+
+
+def sym_addr(name):
+    """Address for a symbol name, or None if it does not encode/have one."""
+    m = re.fullmatch(r"func_0c([0-9a-f]{6})", name) or \
+        re.fullmatch(r"g_0C([0-9A-Fa-f]{6})", name)
+    if m:
+        return 0x0C000000 | int(m.group(1), 16)
+    return SYMS.get(name)
 
 
 def resolve(b, rels):
     """Patch every relocated word from its symbol NAME.  Unknown symbol names
     are fatal: silently borrowing the ROM's word would fake a rebuild."""
     for off, sym in rels.items():
-        m = SYM.fullmatch(sym)
-        if not m:
-            sys.exit(f"rebuild: cannot resolve relocation symbol {sym!r} from its "
-                     f"name; give it an address-encoding name (func_0cXXXXXX / "
-                     f"g_0CXXXXXX) or define it in a symbol table")
-        val = 0x0C000000 | int(m.group(1) or m.group(2), 16)
+        val = sym_addr(sym)
+        if val is None:
+            sys.exit(f"rebuild: cannot resolve relocation symbol {sym!r}; give it "
+                     f"an address-encoding name (func_0cXXXXXX / g_0CXXXXXX) or "
+                     f"add it to symbols.txt")
         b[off:off + 4] = struct.pack("<I", val)
     return b
 
