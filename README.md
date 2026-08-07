@@ -97,7 +97,7 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C | 1,243 functions translated, 1,194 rebuild byte-exactly (1.90% of code bytes) |
+| SH-4 → C | 1,253 functions translated, 1,204 rebuild byte-exactly (1.92% of code bytes) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -111,9 +111,16 @@ them, and has been retracted.
 
 ## Notes
 
-The ROM was built with **GCC 4.1.2**, and not with one set of flags: most of it
-is `-O1 -ml -m4-single-only -fno-delayed-branch`, but one region is `-O2`. Each
-`.c` records its own recipe in a `/* CFLAGS: ... */` line that the build reads.
+The ROM was built with **GCC 4.1.2**, and not with one set of flags. Three
+recipes are known so far: `-O1 -ml -m4-single-only -fno-delayed-branch` for
+most of it, `-O2 -ml -m4-single-only` for one region, and the same -O1 recipe
+*with* delayed branches for another. Each `.c` records its own in a
+`/* CFLAGS: ... */` line that the build reads.
+
+Functions are normally named `func_0cXXXXXX` so the name carries the address —
+that is how relocations resolve without a linker script. `symbols.txt` maps
+real names back to addresses for the ones that have been named, and says on
+what basis each name was given.
 
 Addresses: `vaddr = file_offset + 0x0C01FB00` for the program ROM; code ends at
 `0x0C1BFB00`.

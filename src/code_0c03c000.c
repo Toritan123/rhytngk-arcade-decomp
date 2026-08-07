@@ -68,3 +68,7 @@ void func_0c03c646(void)
 void func_0c03c660(void)
 {
 }
+
+/* ---- empty function ---- */
+
+void func_0c03c652(void) { }

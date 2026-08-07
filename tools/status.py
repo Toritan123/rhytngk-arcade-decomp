@@ -181,6 +181,8 @@ def main():
             "mismatch": total["MISMATCH"], "short": total["SHORT"],
             "nobound": total["NOBOUND"], "unresolved": total["UNRESOLVED"],
             "exact_bytes": exact_bytes, "known_function_bytes": known,
+            "defined": sorted(f"0x{a:08X}" for tu, (cf, rows) in per_tu.items()
+                              for a in rows),
             "per_tu": {tu: {"cflags": cf,
                             "counts": dict(Counter(k for k, _ in rows.values())),
                             "not_exact": {f"func_0c{a & 0xffffff:06x}": f"{k}: {d}"

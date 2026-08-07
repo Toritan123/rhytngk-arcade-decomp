@@ -22,3 +22,11 @@
 void func_0c062254(void)
 {
 }
+
+extern void func_0c062500(void *obj, s32 v);
+
+/* ---- stage 6 callee: forward the argument to a fixed object ---- */
+void func_0c062b78(s32 v)
+{
+    func_0c062500((void *)0x0C4E94B8, v);
+}

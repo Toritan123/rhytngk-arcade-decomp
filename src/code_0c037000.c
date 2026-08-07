@@ -29,3 +29,36 @@ int func_0c03797c(void)
 void func_0c03798a(void)
 {
 }
+
+extern s32 func_0c037c8c(void);   /* free-running tick source */
+
+/* Frame-timing block.  Declared as a named symbol rather than written as an
+   address literal so GCC keeps the base in the literal pool and reaches the
+   member with a displacement, the way the ROM does; folding base+offset into
+   one constant is what an address literal produces. */
+extern s32 g_0C465638[];
+
+/* ---- main's loop predicate ---- */
+/* [T] named in symbols.txt: main spins on this byte. */
+int is_quit_requested(void)
+{
+    return *(const u8 *)0x0C4655F8;
+}
+
+/* ---- read the tick counter ---- */
+s32 func_0c037d00(void)
+{
+    return func_0c037c8c();
+}
+
+/* ---- ticks elapsed since a captured value ---- */
+s32 func_0c037ca8(s32 since)
+{
+    return func_0c037c8c() - since;
+}
+
+/* ---- latch the tick into the frame-timing block at 0x0C465638 ---- */
+void func_0c037d94(void)
+{
+    g_0C465638[5] = func_0c037d00();
+}
