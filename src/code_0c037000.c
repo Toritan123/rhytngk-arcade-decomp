@@ -62,3 +62,41 @@ void func_0c037d94(void)
 {
     g_0C465638[5] = func_0c037d00();
 }
+
+/* Base of the frame bookkeeping block; byte 0 is the quit flag main polls.
+   Named so GCC keeps the base in the pool and reaches members by
+   displacement, the way the ROM does. */
+extern s32 g_0C4655F8[];
+
+extern void func_0c036a30(void);
+extern void func_0c035100(void);
+extern void func_0c03c660(void);
+extern void func_0c0365a8(void);
+extern void func_0c035c20(void);
+extern void func_0c03cac8(void);
+
+/* ---- stage 5 callee: record this frame's elapsed time and its peak ---- */
+void func_0c037ccc(void)
+{
+    const s32 *blk = &g_0C4655F8[16];        /* +0x40 */
+    s32 t = func_0c037ca8(blk[4]);
+
+    g_0C4655F8[11] = t;                      /* +0x2C: this frame */
+    if (t > g_0C4655F8[12])                  /* +0x30: peak so far */
+        g_0C4655F8[12] = t;
+}
+
+/* ---- stage 5 callees: fixed three-call update groups ---- */
+void func_0c037ea0(void)
+{
+    func_0c036a30();
+    func_0c035100();
+    func_0c03c660();
+}
+
+void func_0c037ed0(void)
+{
+    func_0c0365a8();
+    func_0c035c20();
+    func_0c03cac8();
+}

@@ -12,6 +12,13 @@
  * jsr/jmp delay slots are nop, concentrated around 0x0C0E1xxx-0x0C105xxx and
  * 0x0C124xxx-0x0C12Dxxx.
  *
+ * func_0c0f1a90 and func_0c0f1ac8 are byte-identical duplicates in the ROM
+ * (stages 3 and 9 of the frame).  Neither reproduces: the ROM loads the second
+ * call's target into r0, which leaves its delay slot unfillable, while this
+ * GCC picks r1 and slides `mov r0,r4` into the slot.  Same instructions, two
+ * bytes apart in order.  A temporary for the intermediate result changes
+ * nothing, so this is register choice, not source form.
+ *
  * Verify with `make status`.
  */
 
@@ -61,4 +68,23 @@ void func_0c0f1634(u32 *out)
 void func_0c0f1a70(void)
 {
     *(u32 *)0x0C428C9C = func_0c0f1a2c();
+}
+
+/* ---- two identical stages: latch a counter, transform it, submit it ---- */
+/* Both are called from `frame` (stages 3 and 9); they differ only in
+   address, not in code. */
+extern s32  func_0c0f1a60(u32 a, s32 b);
+extern void func_0c0f1a40(s32 v);
+
+void func_0c0f1a90(void)
+{
+    s32 t = func_0c0f1a2c();
+    s32 u = func_0c0f1a60(*(u32 *)0x0C428C9C, t);
+    func_0c0f1a40(u);
+}
+
+void func_0c0f1ac8(void)
+{
+    s32 t = func_0c0f1a2c();
+    func_0c0f1a40(func_0c0f1a60(*(u32 *)0x0C428C9C, t));
 }
