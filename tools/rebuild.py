@@ -114,12 +114,20 @@ SYMS = _load_symbols()
 
 
 def sym_addr(name):
-    """Address for a symbol name, or None if it does not encode/have one."""
+    """Address for a relocation symbol, or None if it has no known address.
+
+    objdump writes an addend as `sym+0x...`, which is how a reference to a
+    member of a named object appears; strip and add it."""
+    add = 0
+    m = re.fullmatch(r"(.+)\+0x([0-9a-f]+)", name)
+    if m:
+        name, add = m.group(1), int(m.group(2), 16)
     m = re.fullmatch(r"func_0c([0-9a-f]{6})", name) or \
         re.fullmatch(r"g_0C([0-9A-Fa-f]{6})", name)
     if m:
-        return 0x0C000000 | int(m.group(1), 16)
-    return SYMS.get(name)
+        return (0x0C000000 | int(m.group(1), 16)) + add
+    base = SYMS.get(name)
+    return None if base is None else base + add
 
 
 def resolve(b, rels):
