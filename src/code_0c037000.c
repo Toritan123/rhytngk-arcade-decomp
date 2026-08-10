@@ -100,3 +100,33 @@ void func_0c037ed0(void)
     func_0c035c20();
     func_0c03cac8();
 }
+
+/* ---- stage 6 callee: three more elapsed/peak pairs and the frame count ---- */
+/* Does not reproduce, and the residue is the ROM being LESS optimised: it
+   reloads the block base from the literal pool before the second and third
+   groups, where this GCC keeps it in a register across all three.  Eight bytes
+   short; the instructions that are emitted are identical. */
+/* Same shape as func_0c037ccc, applied to three more captured timestamps.
+   The ROM keeps two separate pool constants here -- the block base and the
+   sub-block at +0x40 -- so the two are declared as distinct symbols. */
+void func_0c037d1c(void)
+{
+    s32 t;
+
+    t = func_0c037ca8(g_0C465638[5]);
+    g_0C4655F8[13] = t;
+    if (t > g_0C4655F8[14])
+        g_0C4655F8[14] = t;
+
+    t = func_0c037ca8(func_0c037d00());
+    g_0C465638[1] = t;
+    if (t > g_0C465638[2])
+        g_0C465638[2] = t;
+
+    t = func_0c037ca8(g_0C465638[3]);
+    g_0C4655F8[9] = t;
+    if (t > g_0C4655F8[10])
+        g_0C4655F8[10] = t;
+
+    g_0C4655F8[1]++;
+}
