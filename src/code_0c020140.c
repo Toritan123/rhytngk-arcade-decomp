@@ -97,30 +97,34 @@ extern void func_0c0e7664(s32, s32 (*fn)(void));  /* callback registration */
 extern void func_0c0f2e7c(void);
 extern void func_0c0f175c(u32);
 extern void func_0c0f17d8(u32);
-extern void func_0c0f2938(s32, s32, u32, s32);
+/* func_0c0f2938, func_0c0f5b1c, func_0c0eb63c, func_0c037218, func_0c03c86c
+   and func_0c039424 return a value that init 4 ignores [verified by codegen:
+   GCC calls a value-returning function through r0 and a void one through r1,
+   and the ROM uses r0 for these six -- see src/code_0c0f1000.c]. */
+extern s32  func_0c0f2938(s32, s32, u32, s32);
 extern void func_0c0f33a4(void);
-extern void func_0c0f5b1c(void *, s32);
+extern s32  func_0c0f5b1c(void *, s32);
 extern void func_0c0f08b4(void *, s32, s32);
 extern void func_0c0e591c(void *, s32, s32);
 extern void func_0c0f110c(void *, s32);
 extern void func_0c0f135c(s32);
 extern void func_0c0f1348(s32);
 extern void func_0c0dfbe4(void);
-extern void func_0c0eb63c(s32, s32);
+extern s32  func_0c0eb63c(s32, s32);
 extern void func_0c0f3fd8(void *);
 extern void func_0c0f44f0(void);
 extern void func_0c0f4220(void);
 extern void func_0c0f4254(s32, s32);
 extern void func_0c03e730(void);
-extern void func_0c037218(void);
+extern s32  func_0c037218(void);
 extern void func_0c030730(void);
 extern void func_0c03c1c8(void *);
 extern void func_0c03511c(void);
 extern void func_0c03e97c(s32, s32);
 extern void func_0c0380a8(void);
 extern void func_0c02ec38(void);
-extern void func_0c03c86c(void);
-extern void func_0c039424(void);
+extern s32  func_0c03c86c(void);
+extern s32  func_0c039424(void);
 
 /* frame-sync flag setter callback (func_0c0206fc) */
 extern void func_0c0f1388(void);

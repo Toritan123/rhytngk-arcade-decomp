@@ -58,7 +58,7 @@ void func_0c022470(void *self, void *src);   /* INCLUDE_ASM below */
 void func_0c0223e8(void *self, void *src);   /* alt-entry -> func_0c0223ec */
 void func_0c0223ec(void *self, void *src);   /* INCLUDE_ASM below */
 void func_0c0225fc(s32 mode, s32 key);
-s32  func_0c02296c(s32 mode, s32 key);
+void func_0c02296c(s32 mode, s32 key);
 void func_0c0226d0(s32 mode, s32 key);
 
 /* ================================================================== */
@@ -258,7 +258,7 @@ void func_0c022940(char *out, s32 v)
 /* pair of subsystems at 0x0C461CB9: mode==1 -> func_0c111f80,         */
 /* mode==0 -> func_0c111e40.  confidence: high                        */
 /* ================================================================== */
-s32 func_0c02296c(s32 mode, s32 key)
+void func_0c02296c(s32 mode, s32 key)
 {
     if (mode == 1) {
         if (key == 0xFFFF) {
@@ -267,7 +267,6 @@ s32 func_0c02296c(s32 mode, s32 key)
     } else if (mode == 0 && key == 0xFFFF) {
         func_0c111e40((void *)0x0C461CB9);
     }
-    return 0;
 }
 
 /* func_0c0229b8 @ 0x0C0229B8, size 0x24 — wrapper: mode-0 entry. */

@@ -13,11 +13,14 @@
  * 0x0C124xxx-0x0C12Dxxx.
  *
  * func_0c0f1a90 and func_0c0f1ac8 are byte-identical duplicates in the ROM
- * (stages 3 and 9 of the frame).  Neither reproduces: the ROM loads the second
- * call's target into r0, which leaves its delay slot unfillable, while this
- * GCC picks r1 and slides `mov r0,r4` into the slot.  Same instructions, two
- * bytes apart in order.  A temporary for the intermediate result changes
- * nothing, so this is register choice, not source form.
+ * (stages 3 and 9 of the frame).  CORRECTION: this file used to say neither
+ * reproduces because of register choice (the ROM loads the last call's
+ * target into r0).  It was source form, and both are now exact: GCC puts a
+ * call's target address in r0 when the callee RETURNS A VALUE -- r0 is
+ * clobbered by the return anyway -- and in r1 when it returns void.  The ROM
+ * uses r0, so func_0c0f1a40 returns something that is ignored here.  The rule
+ * lets the register in `jsr @r0` / `jsr @r1` be read as a return-type fact
+ * about the callee.
  *
  * Verify with `make status`.
  */
@@ -74,7 +77,7 @@ void func_0c0f1a70(void)
 /* Both are called from `frame` (stages 3 and 9); they differ only in
    address, not in code. */
 extern s32  func_0c0f1a60(u32 a, s32 b);
-extern void func_0c0f1a40(s32 v);
+extern s32  func_0c0f1a40(s32 v);   /* returns a value: called via r0 */
 
 void func_0c0f1a90(void)
 {

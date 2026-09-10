@@ -39,7 +39,7 @@ extern void *func_0c116360(void *node);            /* free node, return next */
 extern void func_0c134694(void *self);
 extern void func_0c116700(void *out, void *node);
 extern void func_0c1342ac(void *self, void *p, s32 f);
-extern s32  func_0c133fd4(void *p);
+extern void func_0c133fd4(void *p);   /* void: called via r1 */
 extern void func_0c12c914(void *dst, s32 n, s32 src);  /* memset/fill-like */
 extern void func_0c11ccc0(s32 sz);                 /* typed allocator (size arg) */
 extern void func_0c134860(void *self, void *node);
@@ -59,7 +59,7 @@ extern void func_0c13431c(void *self, s32 n);
  * 0x0C24ED70 / 0x0C24ED78 shared reps; 0x0C24EE3C dtor-state marker. */
 
 /* forward decls for in-window callees used before definition */
-s32  func_0c0213ae(s32 mode, s32 key);
+void func_0c0213ae(s32 mode, s32 key);
 s32  func_0c021790(s32 sz);
 void func_0c021af4(void *p);        /* INCLUDE_ASM below */
 s32  func_0c021764(void **out, s32 unused, s32 size);
@@ -86,12 +86,11 @@ s32 func_0c02139e(s16 x) { return (s32)x + 10; }
 /* mode==1 && key==0xFFFF -> func_0c133fd4(0x0C461C88).               */
 /* confidence: high                                                   */
 /* ================================================================== */
-s32 func_0c0213ae(s32 mode, s32 key)
+void func_0c0213ae(s32 mode, s32 key)
 {
     if (mode == 1 && key == 0xFFFF) {
         func_0c133fd4(g_unk_0C461C88);
     }
-    return 0;   /* r0 undefined-but-preserved; caller ignores */
 }
 
 /* func_0c0213e0 @ 0x0C0213E0, size 0x24 — wrapper: mode-1 entry. */
