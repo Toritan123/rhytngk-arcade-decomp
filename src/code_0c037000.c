@@ -223,3 +223,28 @@ void func_0c037f00(void)
     blk[9]  = 0;
     blk[10] = 0;
 }
+
+/* ---- teardown group (reached from main's teardown) ----
+   Return types of the callees follow the call register: r1 -> void,
+   r0 -> returns a value (see src/code_0c0f1000.c). */
+extern void func_0c037c74(void);
+extern s32  func_0c03c66c(void);
+extern s32  func_0c0365c8(void);
+
+void func_0c037e70(void)
+{
+    func_0c037c74();
+    func_0c03c66c();
+    func_0c0365c8();
+}
+
+/* ---- main's init 4 callee: initialise the block at 0x0C4654CC ---- */
+extern u32 g_0C4654CC;
+extern s32 func_0c037090(u32 *blk);
+
+/* Returns a value -- init 4 calls it through r0 -- and the only value in r0
+   at its rts is the callee's, so it passes that through. */
+s32 func_0c037218(void)
+{
+    return func_0c037090(&g_0C4654CC);
+}

@@ -44,3 +44,9 @@ void func_0c036544(void)
 void func_0c036604(void)
 {
 }
+
+/* ---- store a byte flag at 0x0C4654C8 ---- */
+void func_0c036574(u8 v)
+{
+    *(u8 *)0x0C4654C8 = v;
+}

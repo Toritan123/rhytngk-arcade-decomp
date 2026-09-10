@@ -155,3 +155,41 @@ void func_0c03c4cc(s32 id)
     g_0C467208.unk_14[2] = 0.0f;
     g_0C467208.unk_20 = 0.0f;
 }
+
+/* ---- a pair of 12-byte channel records at 0x0C467240 ----
+
+   {id, word, byte, byte}: func_0c03c6bc / func_0c03c6ca above set the two
+   words (they are written against int* and serve these records), and the
+   three below are the byte accessors.  main's init 4 resets both records
+   through them. */
+void func_0c03c6f8(u8 *rec, u8 v) { rec[8] = v; }
+u8   func_0c03c708(const u8 *rec) { return rec[9]; }
+void func_0c03c71a(u8 *rec, u8 v) { rec[9] = v; }
+
+extern u8   g_0C467240[2][12];
+extern u32  g_0C467268;
+extern void func_0c0ecfac(u32 *p);
+
+/* ---- main's init 4 callee: reset both channels ----
+
+   SHORT by 12 bytes: the ROM recomputes base + i*12 every iteration, where
+   this GCC's tree loop optimiser turns it into a pointer stepped by 12.  With
+   -fno-tree-loop-optimize it is exact.  Recompiling the whole ROM with that
+   flag added gains this one function and loses none of the other 1,270 --
+   not enough to call it the ROM's recipe on one data point, so the default
+   stays and the observation is recorded here.  A loop that the flag would
+   change in an already-EXACT function would settle it. */
+s32 func_0c03c86c(void)
+{
+    s32 i;
+
+    for (i = 0; i != 2; i++) {
+        u8 *rec = g_0C467240[i];
+
+        func_0c03c6bc((int *)rec, i);
+        func_0c03c6f8(rec, 0);
+        func_0c03c71a(rec, 0);
+    }
+    func_0c0ecfac(&g_0C467268);
+    return 1;
+}

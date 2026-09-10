@@ -202,3 +202,22 @@ void func_0c038b38(void)
 
     func_0c0387cc(1, 0);
 }
+
+extern void func_0c14a720(Node38 *end);   /* free every node */
+
+/* ---- teardown: empty the list and re-point the header at itself ----
+   The std::list clear() shape: free the nodes, then make the sentinel's
+   next and prev both the sentinel. */
+void func_0c038628(void)
+{
+    Node38 *end = *(Node38 **)0x0C465674;
+
+    func_0c14a720(end);
+    end->next = end;
+    end->prev = end;
+}
+
+/* ---- empty function (stage-6 slot) ---- */
+void func_0c0380a8(void)
+{
+}

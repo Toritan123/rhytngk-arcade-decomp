@@ -23,3 +23,24 @@ int func_0c03e7dc(void) { return 0; }
 int func_0c03ece4(void) { return 1; }
 int func_0c03ecf2(void) { return 1; }
 int func_0c03ed00(void) { return 0; }
+
+/* ---- main's init / teardown callees ---- */
+extern s32  func_0c02caac(s32 a);
+extern void func_0c0f3aac(s32 v);
+extern void func_0c03e8b0(s32 a, s32 b);
+extern void func_0c0394fc(void);
+
+void func_0c03e730(void)
+{
+    func_0c0f3aac(func_0c02caac(0));
+}
+
+void func_0c03e97c(void)
+{
+    func_0c03e8b0(0, 22);
+}
+
+void func_0c03eaa0(void)
+{
+    func_0c0394fc();
+}
