@@ -130,3 +130,52 @@ void func_0c037d1c(void)
 
     g_0C4655F8[1]++;
 }
+
+/* ---- stage-5 callee: publish last frame's numbers, then advance the
+   seconds accumulator ----
+
+   Two fresh timestamps are latched into the block at 0x0C465638, the
+   previous frame's float and flag are copied down from +0x6C/+0x70 to
+   +0x0C/+0x18, and -- only while func_0c037b3c() returns zero -- the
+   elapsed seconds from func_0c037be8() are added to the
+   running total at +0x10.  The total is split by modff into a whole part
+   (published as the integer at +0x14) and a fraction that is kept.  The
+   fraction is snapped to zero when it lands within 0.001 of either end,
+   carrying into the integer at the top end; that is what keeps the counter
+   from sitting one ulp below a whole second.
+
+   0x0C124ACC is modff: the ABI puts the float in fr4 and the pointer in r4,
+   and the callee writes the integral part through that pointer -- which is
+   the stack slot func_0c037db8 allocates and immediately reloads. */
+extern s32 func_0c037b3c(void);       /* non-zero suppresses the accumulator */
+extern f32 func_0c037be8(void);       /* seconds elapsed this frame */
+extern f32 modff(f32 x, f32 *iptr);   /* 0x0C124ACC */
+
+void func_0c037db8(void)
+{
+    s32 *blk = &g_0C4655F8[16];       /* 0x0C465638 */
+    f32 total, whole, frac;
+
+    blk[3] = func_0c037d00();
+    blk[4] = func_0c037d00();
+
+    *(f32 *)&g_0C4655F8[3] = *(f32 *)&g_0C4655F8[27];
+    *(s8 *)&g_0C4655F8[6]  = *(s8 *)&g_0C4655F8[28];
+
+    if (func_0c037b3c() != 0)
+        return;
+
+    total = func_0c037be8() + *(f32 *)&g_0C4655F8[4];
+    *(f32 *)&g_0C4655F8[4] = total;
+
+    frac = modff(total, &whole);
+    *(f32 *)&g_0C4655F8[4] = frac;
+    g_0C4655F8[5] = (s32)whole;
+
+    if (0.001f > frac) {
+        *(f32 *)&g_0C4655F8[4] = 0.0f;
+    } else if (0.001f > 1.0f - frac) {
+        g_0C4655F8[5] = (s32)whole + 1;
+        *(f32 *)&g_0C4655F8[4] = 0.0f;
+    }
+}

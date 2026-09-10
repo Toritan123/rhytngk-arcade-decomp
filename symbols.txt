@@ -31,3 +31,8 @@
 0x0C02074C  frame_stage6_update     # [T] stage 6/9: straight-line update group
 0x0C020304  frame_stage8_sync       # [T] stage 8/9: bounded spin-wait on the flag at
                                     #     0x0C431E58, then clears it
+
+# libc.  Named from the body, not from a string: exponent = (bits >> 23) - 127,
+# the three cases j0 > 22 / j0 < 0 / otherwise, the 0x80000000 sign mask and
+# the 0x007FFFFF >> j0 fraction mask are newlib's sf_modf.c line for line.
+0x0C124ACC  modff                   # [T] float modff(float x, float *iptr)
