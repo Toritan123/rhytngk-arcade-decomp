@@ -76,3 +76,7 @@
 0x0C11CCC0  _Znwj                   # [T] operator new(unsigned int)
 0x0C110700  _ZN9__gnu_cxx17__pool_alloc_base9_M_refillEj  # [T]
 0x0C24E8A4  "GLIBCXX_FORCE_NEW"     # [V] ROM data
+# __pool_alloc<SoundRecord>::deallocate -- the class name is ours (the ROM
+# has no symbols); the address is the call site's in func_0c03b3d4.
+0x0C14A844  _ZN9__gnu_cxx12__pool_allocI11SoundRecordE10deallocateEPS1_j  # [T]
+0x0C467204  _ZN9__gnu_cxx12__pool_allocI11SoundRecordE12_S_force_newE  # [T]
