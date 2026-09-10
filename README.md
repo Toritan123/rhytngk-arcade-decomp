@@ -17,7 +17,7 @@ the two can be cross-referenced.
 | | |
 |---|---|
 | Python 3 | plus `pillow` and `numpy` (`pip install pillow numpy`) |
-| Docker | only for the C matching targets — it builds the period-correct GCC |
+| Docker | only for the C matching targets — it builds the period-correct GCC (C and C++) |
 | ROM files | `fpr-24423.ic8`, `fpr-24424.ic9`, `fpr-24425.ic10`, `fpr-24426.ic11` in `roms/` |
 
 ## Build
@@ -33,7 +33,7 @@ To work on the C side you also need the matching compiler, which builds in
 Docker (once, ~15 min):
 
 ```sh
-make toolchain       # build the sh-elf-gcc 4.1.2 image
+make toolchain       # build the sh-elf-gcc/g++ 4.1.2 image
 make status          # compile every .c under src/ and byte-compare against the ROM
 make rebuild         # rebuild the whole 8 MB program image (compiled C + base ROM)
 ```
@@ -97,7 +97,7 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C | 1,313 functions translated, 1,260 rebuild byte-exactly (2.15% of code bytes) |
+| SH-4 → C | 1,313 functions translated, 1,262 rebuild byte-exactly (2.17% of code bytes) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -116,6 +116,12 @@ recipes are known so far: `-O1 -ml -m4-single-only -fno-delayed-branch` for
 most of it, `-O2 -ml -m4-single-only` for one region, and the same -O1 recipe
 *with* delayed branches for another. Each `.c` records its own in a
 `/* CFLAGS: ... */` line that the build reads.
+
+The program is C++, but the same source does not always come out of the C
+and C++ front ends identically: some functions reproduce only as C, a few
+only as C++. A `.c` that must be compiled as C++ says so with a
+`/* LANG: c++ */` line (it is wrapped in `extern "C"` so names stay
+unmangled).
 
 Functions are normally named `func_0cXXXXXX` so the name carries the address —
 that is how relocations resolve without a linker script. `symbols.txt` maps

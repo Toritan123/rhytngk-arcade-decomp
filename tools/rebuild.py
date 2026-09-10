@@ -80,9 +80,13 @@ def compile_group(cflags, tus):
             phase = ln
             continue
         if "R===" in phase:
-            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
-            if m:
-                cur = m.group(1); relocs[cur] = {}; continue
+            if ln.startswith("RELOCATION RECORDS FOR"):
+                # other sections (.eh_frame of a C++ TU) end the function's list
+                m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
+                cur = m.group(1) if m else None
+                if cur:
+                    relocs[cur] = {}
+                continue
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
             if rm and cur:
                 relocs[cur][int(rm.group(1), 16)] = rm.group(2).lstrip("_")

@@ -1,6 +1,11 @@
 /*
  * code_0c03c000.c - single-instruction leaf functions on page 0x0C03Cxxx.
  *
+ * LANG: c++
+ *   Compiled as C++ (the ROM is a C++ program).  func_0c03c86c reproduces only
+ *   through the C++ front end, and nothing else in this TU changes; see
+ *   tu_lang() in tools/status.py.
+ *
  * Trivial constant / identity / one-load / one-store leaves, recovered
  * mechanically: each is a 14-byte function whose whole body is one
  * instruction between the standard -O1 frame setup and teardown, so the C
@@ -75,8 +80,8 @@ void func_0c03c652(void) { }
 
 /* ---- screen modes ----
 
-   A mode is a 20-byte record {id, width, height, aspect, class}.  Modes 0-12
-   come from a static table of {width, height, class} at 0x0C1CB090; the
+   A mode is a 20-byte record {id, width, height, aspect, kind}.  Modes 0-12
+   come from a static table of {width, height, kind} at 0x0C1CB090; the
    entries read [verified, ROM data]:
 
       0  320x240   0      5  1400x1050  0      10  1360x768  1
@@ -85,7 +90,7 @@ void func_0c03c652(void) { }
       3 1024x768   0      8  1024x600   1
       4 1280x1024  0      9  1280x768   1
 
-   so `class` is 0 for 4:3, 1 for widescreen, and 2 for the GBA's 240x160
+   so `kind` is 0 for 4:3, 1 for widescreen, and 2 for the GBA's 240x160
    and its 2x -- the resolution of the handheld game this one follows.  Mode
    13 is "custom": its table slot is a {0, 1, 2} placeholder, and the lookup
    returns the current mode's values instead.  `aspect` is computed, not
@@ -95,13 +100,13 @@ typedef struct ScreenMode {
     s32 width;
     s32 height;
     f32 aspect;      /* width / height */
-    s32 class;       /* 0 = 4:3, 1 = wide, 2 = GBA-sized */
+    s32 kind;        /* 0 = 4:3, 1 = wide, 2 = GBA-sized */
 } ScreenMode;
 
 typedef struct ScreenModeDef {
     s32 width;
     s32 height;
-    s32 class;
+    s32 kind;
 } ScreenModeDef;
 
 /* The current mode, followed by four floats that selecting a mode clears. */
@@ -132,14 +137,14 @@ void func_0c03c468(ScreenMode *out, s32 id)
         h = g_0C1CB090[id].height;
         out->height = h;
         out->aspect = (f32)w / (f32)h;
-        out->class  = g_0C1CB090[id].class;
+        out->kind  = g_0C1CB090[id].kind;
     } else {
         const ScreenState *cur = &g_0C467208;
 
         out->width  = cur->mode.width;
         out->height = cur->mode.height;
         out->aspect = cur->mode.aspect;
-        out->class  = cur->mode.class;
+        out->kind  = cur->mode.kind;
     }
 }
 
@@ -172,13 +177,12 @@ extern void func_0c0ecfac(u32 *p);
 
 /* ---- main's init 4 callee: reset both channels ----
 
-   SHORT by 12 bytes: the ROM recomputes base + i*12 every iteration, where
-   this GCC's tree loop optimiser turns it into a pointer stepped by 12.  With
-   -fno-tree-loop-optimize it is exact.  Recompiling the whole ROM with that
-   flag added gains this one function and loses none of the other 1,270 --
-   not enough to call it the ROM's recipe on one data point, so the default
-   stays and the observation is recorded here.  A loop that the flag would
-   change in an already-EXACT function would settle it. */
+   The ROM recomputes base + i*12 every iteration.  Compiled as C this GCC's
+   tree loop optimiser strength-reduces it to a pointer stepped by 12 (12
+   bytes shorter); compiled as C++ it does not, and the function is exact --
+   the reason this TU is LANG c++.  CORRECTION: an earlier note here offered
+   -fno-tree-loop-optimize as a possible ROM-wide recipe flag; the language,
+   not a flag, is the explanation. */
 s32 func_0c03c86c(void)
 {
     s32 i;

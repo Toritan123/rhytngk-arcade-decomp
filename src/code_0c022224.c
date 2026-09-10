@@ -1,5 +1,10 @@
 /*
  * code_0c022224.c — TU 4/5 of the EstexNT-verified window.
+ *
+ * LANG: c++
+ *   Compiled as C++ (the ROM is a C++ program).  func_0c02267c reproduces only
+ *   through the C++ front end, and nothing else in this TU changes; see
+ *   tu_lang() in tools/status.py.
  *   covers func_0c022224 .. func_0c025054   (50 functions)
  *   [0x0C022224, 0x0C025930)
  *
@@ -179,6 +184,10 @@ u32 func_0c02262c(const f32 *ch)
 /* VALUE (hidden aggregate-return pointer in r2); each channel is      */
 /* byteval / 255.0f.  Channels stored [3],[2],[1],[0] via a walking    */
 /* pointer (out+12 down to out+0).  confidence: high                   */
+/* Exact only as C++: from the same source the C front end emits the   */
+/* four channel stores in ascending order (out+0 first), while the C++ */
+/* front end keeps the descending walk the ROM has -- the reason this  */
+/* TU is c++.                                                          */
 /* ================================================================== */
 typedef struct { f32 v[4]; } rgba_f;
 

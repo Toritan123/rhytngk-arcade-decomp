@@ -85,9 +85,12 @@ def raw_tu(rel_c):
         if ln.startswith("==="):
             phase = ln; continue
         if "RELOCS" in phase:
-            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.](func_0c[0-9a-f]{6})\]", ln)
-            if m:
-                cur = m.group(1); relocs[cur] = []; continue
+            if ln.startswith("RELOCATION RECORDS FOR"):
+                m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.](func_0c[0-9a-f]{6})\]", ln)
+                cur = m.group(1) if m else None
+                if cur:
+                    relocs[cur] = []
+                continue
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_(?:DIR32|REL32)", ln)
             if rm and cur:
                 relocs[cur].append(int(rm.group(1), 16))

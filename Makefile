@@ -240,8 +240,8 @@ verify-asm: $(BUILD_DIR)/sh4_functions_v3.json
 
 # Build the matching GCC 4.1.2 SH-4 toolchain (reproducible; see ./Dockerfile).
 toolchain:
-	@echo "  DOCKER build $(SH4_IMAGE) (sh-elf-gcc 4.1.2 + binutils 2.17)"
-	@docker build -t $(SH4_IMAGE) .
+	@echo "  DOCKER build $(SH4_IMAGE) (sh-elf-gcc/g++ 4.1.2 + binutils 2.17)"
+	@docker build -t $(SH4_IMAGE) - < Dockerfile
 
 # Compile a decomp .c to SH-4 asm with the matching compiler+flags, e.g.:
 #   make sh4-cc SRC=src/code_0c022224.c

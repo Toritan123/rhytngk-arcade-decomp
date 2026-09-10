@@ -86,6 +86,17 @@ FUNCS = {f["start"]: f["end"] for f in
          json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
 
 
+def tu_lang(tu):
+    """`c++` for a TU carrying a `/* LANG: c++ */` line (or when SH4_LANG
+    forces it for a sweep), else `c`."""
+    if os.environ.get("SH4_LANG"):
+        return os.environ["SH4_LANG"]
+    for ln in (REPO / tu).read_text().splitlines()[:40]:
+        if re.search(r"LANG:\s*c\+\+", ln):
+            return "c++"
+    return "c"
+
+
 def tu_cflags(tu):
     for ln in (REPO / tu).read_text().splitlines()[:40]:
         m = re.search(r"CFLAGS:\s*(-.+?)\s*(?:\*/)?\s*$", ln)
@@ -121,9 +132,23 @@ def compile_cmd(cflags, t):
            "'/^_[A-Za-z_][A-Za-z_0-9]*:$/ { n=substr($0,2,length($0)-2); "
            "if (n ~ /^func_0c[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][26ae]$/ "
            "|| index(L,\" \" n \" \")) print \"\\t.short 0\" } {print}'")
-    return (f"sh-elf-gcc {cflags} -S {t} -o /tmp/o.s 2>/tmp/e && "
+    src = t
+    if tu_lang(t) == "c++":
+        # The ROM is a C++ program (EH landing pads, the libstdc++
+        # demangler, refcounted strings), but not every function's bytes
+        # come out of the C++ front end the same way they do out of C:
+        # some reproduce only as C++, others only as C.  So the language is
+        # per TU -- a `/* LANG: c++ */` line, which the rhytngk-sh4-cxx
+        # image (./Dockerfile, now with C++) is needed for.  The TU is wrapped in
+        # extern "C" so its symbol names stay unmangled.
+        src = "/tmp/w.cc"
+        pre = (f"printf 'extern \"C\" {{\\n#include \"/src/{t}\"\\n}}\\n' > {src} && ")
+        cflags = cflags + " -x c++"
+    else:
+        pre = ""
+    return (pre + f"sh-elf-gcc {cflags} -S {src} -o /tmp/o.s 2>/tmp/e && "
             f"{awk} /tmp/o.s > /tmp/p.s && "
-            f"sh-elf-gcc {cflags} -c /tmp/p.s -o /tmp/o.o 2>>/tmp/e")
+            f"sh-elf-gcc {cflags.replace(' -x c++', '')} -c /tmp/p.s -o /tmp/o.o 2>>/tmp/e")
 
 
 def unshift(name, b, rels):
@@ -161,9 +186,14 @@ def compile_group(cflags, tus):
         if "ERR" in phase:
             errs.setdefault(tu, []).append(ln)
         elif "R===" in phase:
-            m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
-            if m:
-                cur = m.group(1); relocs[cur] = {}; continue
+            if ln.startswith("RELOCATION RECORDS FOR"):
+                # any other section (.eh_frame, .gcc_except_table) ends the
+                # current function's records
+                m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
+                cur = m.group(1) if m else None
+                if cur:
+                    relocs[cur] = {}
+                continue
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
             if rm and cur:
                 relocs[cur][int(rm.group(1), 16)] = rm.group(2).lstrip("_")
