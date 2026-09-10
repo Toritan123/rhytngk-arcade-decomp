@@ -72,3 +72,86 @@ void func_0c03c660(void)
 /* ---- empty function ---- */
 
 void func_0c03c652(void) { }
+
+/* ---- screen modes ----
+
+   A mode is a 20-byte record {id, width, height, aspect, class}.  Modes 0-12
+   come from a static table of {width, height, class} at 0x0C1CB090; the
+   entries read [verified, ROM data]:
+
+      0  320x240   0      5  1400x1050  0      10  1360x768  1
+      1  640x480   0      6  1600x1200  0      11   240x160  2
+      2  800x600   0      7   800x480   1      12   480x320  2
+      3 1024x768   0      8  1024x600   1
+      4 1280x1024  0      9  1280x768   1
+
+   so `class` is 0 for 4:3, 1 for widescreen, and 2 for the GBA's 240x160
+   and its 2x -- the resolution of the handheld game this one follows.  Mode
+   13 is "custom": its table slot is a {0, 1, 2} placeholder, and the lookup
+   returns the current mode's values instead.  `aspect` is computed, not
+   stored.  main's init 3 selects mode 1, 640x480. */
+typedef struct ScreenMode {
+    s32 id;
+    s32 width;
+    s32 height;
+    f32 aspect;      /* width / height */
+    s32 class;       /* 0 = 4:3, 1 = wide, 2 = GBA-sized */
+} ScreenMode;
+
+typedef struct ScreenModeDef {
+    s32 width;
+    s32 height;
+    s32 class;
+} ScreenModeDef;
+
+/* The current mode, followed by four floats that selecting a mode clears. */
+typedef struct ScreenState {
+    ScreenMode mode;
+    f32        unk_14[3];
+    f32        unk_20;
+} ScreenState;
+
+extern const ScreenModeDef g_0C1CB090[14];
+extern ScreenState g_0C467208;
+
+/* MISMATCH, same length: the ROM reuses r0 (the copy of `id` made for the
+   `cmp/eq #13`) to build id*12 and reads the width with `mov.l @(r0,r3)`,
+   then forms base+off for the other two fields; this GCC takes a fresh copy
+   and forms base+off first.  Instruction counts are equal.  Tried without
+   effect: branch order (the one here IS the ROM's -- the table case falls
+   through), a row pointer, an s32[][3] view, explicit byte offsets, an
+   unsigned id, and repeating the indexed reads. */
+void func_0c03c468(ScreenMode *out, s32 id)
+{
+    out->id = id;
+    if (id != 13) {
+        s32 w = g_0C1CB090[id].width;
+        s32 h;
+
+        out->width  = w;
+        h = g_0C1CB090[id].height;
+        out->height = h;
+        out->aspect = (f32)w / (f32)h;
+        out->class  = g_0C1CB090[id].class;
+    } else {
+        const ScreenState *cur = &g_0C467208;
+
+        out->width  = cur->mode.width;
+        out->height = cur->mode.height;
+        out->aspect = cur->mode.aspect;
+        out->class  = cur->mode.class;
+    }
+}
+
+/* ---- main's init 3: select a screen mode ---- */
+void func_0c03c4cc(s32 id)
+{
+    ScreenMode m;
+
+    func_0c03c468(&m, id);
+    g_0C467208.mode = m;
+    g_0C467208.unk_14[0] = 0.0f;
+    g_0C467208.unk_14[1] = 0.0f;
+    g_0C467208.unk_14[2] = 0.0f;
+    g_0C467208.unk_20 = 0.0f;
+}

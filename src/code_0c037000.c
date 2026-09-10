@@ -179,3 +179,47 @@ void func_0c037db8(void)
         *(f32 *)&g_0C4655F8[4] = 0.0f;
     }
 }
+
+extern s32 func_0c020c74(void);
+
+/* ---- main's init 2: reset the frame-timing block at 0x0C4655F8 ----
+
+   Every field the stage callees above read and write, zeroed -- except the
+   two float scales at +0x0C/+0x6C, which start at 1.0, and the pair at
+   +0x1C/+0x20, which start at 60.0: the frame rate.  The quit flag is the
+   byte at +0x00, so this is also what arms main's loop. */
+void func_0c037f00(void)
+{
+    s32 *blk;
+
+    ((u8 *)g_0C4655F8)[0] = 0;
+    ((u8 *)g_0C4655F8)[1] = 0;
+    ((u8 *)g_0C4655F8)[2] = 0;
+    ((u8 *)g_0C4655F8)[3] = 0;
+    g_0C4655F8[1] = 0;
+    g_0C4655F8[2] = 0;
+    *(f32 *)&g_0C4655F8[3]  = 1.0f;
+    *(f32 *)&g_0C4655F8[27] = 1.0f;
+    *(f32 *)&g_0C4655F8[4]  = 0.0f;
+    g_0C4655F8[5] = 0;
+    ((u8 *)g_0C4655F8)[24]  = 0;
+    ((u8 *)g_0C4655F8)[112] = 0;
+    *(f32 *)&g_0C4655F8[7] = 60.0f;
+    *(f32 *)&g_0C4655F8[8] = 60.0f;
+    g_0C4655F8[9]  = 0;
+    g_0C4655F8[10] = 0;
+    g_0C4655F8[11] = 0;
+    g_0C4655F8[12] = 0;
+    g_0C4655F8[13] = 0;
+    g_0C4655F8[14] = 0;
+    g_0C4655F8[15] = 0;
+
+    blk = &g_0C4655F8[16];
+    blk[0] = 0;
+    blk[1] = 0;
+    blk[2] = 0;
+    func_0c020c74();
+    ((u8 *)g_0C4655F8)[96] = 0;
+    blk[9]  = 0;
+    blk[10] = 0;
+}
