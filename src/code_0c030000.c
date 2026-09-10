@@ -67,3 +67,14 @@ void func_0c030730(void)
     func_0c06de08();
     sr_set(sr_get() & 0xFFFFFF0F);
 }
+
+/* ---- file object: destructor (constructor is func_0c02f448) ----
+   Both callees return a value (called via r0) that is dropped. */
+extern s32 func_0c02f594(s32 *f);
+extern s32 func_0c030320(s32 *f);
+
+void func_0c03037c(s32 *f)
+{
+    func_0c02f594(f);
+    func_0c030320(f);
+}

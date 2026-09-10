@@ -66,3 +66,25 @@ void func_0c0f2164(void)
     if (g_0C543C64)
         g_0C543C64();
 }
+
+extern s32 func_0c0fa87c(s32 a, s32 b);
+
+/* ---- main's init 4 callee ----
+
+   With the mode word at 0x0C428CC0 equal to 1 it adjusts the context
+   directly (word +0x44 cleared, bit 4 of word +0x04 set) and records 2 at
+   0x0C428C98; otherwise it hands off to func_0c0fa87c(1, 0).  The context
+   is the same object as g_0C428CC4 above. */
+void func_0c0f2e7c(void)
+{
+    if (*(s32 *)0x0C428CC0 == 1) {
+        u32 *ctx = &g_0C428CC4;
+        u32 *hi = (u32 *)((u8 *)ctx + 64);
+
+        hi[1] = 0;                       /* +0x44 */
+        ctx[1] |= 16;
+        *(s32 *)0x0C428C98 = 2;
+    } else {
+        func_0c0fa87c(1, 0);
+    }
+}

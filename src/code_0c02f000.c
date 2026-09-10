@@ -37,3 +37,26 @@ void func_0c02f482(int *p, int v) { p[11] = v; }
 
 /* ---- store int at p[1] ---- */
 void func_0c02f51a(int *p, int v) { p[1] = v; }
+
+/* ---- file object: constructor ----
+
+   The 60-byte object main's sound-driver loader (func_0c03c1c8) builds on
+   its stack to read "rom/aicadrv.bin".  Everything zero except +0x04 and
+   +0x2C (2) and +0x08 (7); the roles of those three are not established.
+   The matching destructor is func_0c03037c. */
+void func_0c02f448(s32 *f)
+{
+    f[1]  = 2;
+    f[0]  = 0;
+    f[2]  = 7;
+    f[7]  = 0;
+    f[8]  = 0;
+    f[3]  = 0;
+    f[4]  = 0;
+    f[5]  = 0;
+    f[6]  = 0;
+    f[11] = 2;
+    f[12] = 0;
+    f[13] = 0;
+    f[14] = 0;
+}

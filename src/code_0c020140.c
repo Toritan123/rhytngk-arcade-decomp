@@ -71,7 +71,7 @@ extern s32  func_0c03655e(void);
 extern s32  func_0c03c638(void);
 extern s32  func_0c0365f6(void);
 extern void func_0c040fa0(s32);
-extern void func_0c0368ac(void);
+extern s32  func_0c0368ac(void);      /* returns a value: called via r0 */
 extern void func_0c037a78(void);
 
 /* stage 5 (frame_stage5_update) targets */
@@ -150,7 +150,7 @@ extern void func_0c03c652(void);
 extern void func_0c0f1a70(void);
 extern void func_0c0f1608(void);
 extern void func_0c0ef608(void);
-extern void func_0c0f1ac8(void);
+extern s32  func_0c0f1ac8(void);    /* us since the latch; frame drops it */
 
 /* main (func_0c020c08) targets */
 extern void func_0c037f00(void);      /* init 2 [scanner boundary] */
@@ -333,16 +333,14 @@ void func_0c02039c(void)
     s32 t;
 
     t = func_0c034fcc(0);
-    if (func_0c0354f4(t, 0) != 0 || func_0c0354f4(t, 17) != 0) {
-        if (func_0c03655e() == 0 && func_0c03c638() == 0) {
-            func_0c037a78();
-            return;
-        }
-    }
-    if (func_0c0365f6() == 0) {
-        func_0c040fa0(15);
-    } else if (func_0c03655e() == 0) {
-        func_0c0368ac();
+    if ((func_0c0354f4(t, 0) == 0 && func_0c0354f4(t, 17) == 0)
+        || func_0c03655e() != 0 || func_0c03c638() != 0) {
+        if (func_0c0365f6() == 0)
+            func_0c040fa0(15);
+        else if (func_0c03655e() == 0)
+            func_0c0368ac();
+    } else {
+        func_0c037a78();
     }
 }
 

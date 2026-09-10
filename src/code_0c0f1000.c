@@ -67,27 +67,63 @@ void func_0c0f1634(u32 *out)
     } while (b != (const u32 *)0x0C428C98);
 }
 
-/* ---- latch a counter read into 0x0C428C9C ---- */
+/* ---- latch TCNT0 into 0x0C428C9C ----
+   func_0c0f1a2c reads the SH-4 TMU channel-0 counter (0xFFD8000C), which
+   func_0c0f33a4 starts at 1.28 us per tick. */
 void func_0c0f1a70(void)
 {
     *(u32 *)0x0C428C9C = func_0c0f1a2c();
 }
 
-/* ---- two identical stages: latch a counter, transform it, submit it ---- */
+/* ---- two identical stages: microseconds since the latch ----
+   TCNT0 now, subtracted from the latch (func_0c0f1a60: a - b; the counter
+   runs down), scaled by the 1.28 us/tick at 0x0C428C80 (func_0c0f1a40).
+   The ROM reads the result as a return value; see the note on r0 above. */
 /* Both are called from `frame` (stages 3 and 9); they differ only in
    address, not in code. */
 extern s32  func_0c0f1a60(u32 a, s32 b);
 extern s32  func_0c0f1a40(s32 v);   /* returns a value: called via r0 */
 
-void func_0c0f1a90(void)
+s32 func_0c0f1a90(void)
 {
     s32 t = func_0c0f1a2c();
     s32 u = func_0c0f1a60(*(u32 *)0x0C428C9C, t);
-    func_0c0f1a40(u);
+    return func_0c0f1a40(u);
 }
 
-void func_0c0f1ac8(void)
+s32 func_0c0f1ac8(void)
 {
     s32 t = func_0c0f1a2c();
-    func_0c0f1a40(func_0c0f1a60(*(u32 *)0x0C428C9C, t));
+    return func_0c0f1a40(func_0c0f1a60(*(u32 *)0x0C428C9C, t));
+}
+
+/* ---- small setters reached from main's init 4 ---- */
+extern const u32 g_0C245394[];         /* per-index argument table */
+extern s32  func_0c100160(u32 v);
+extern u32  g_0C428CC4[];              /* the draw context func_0c0f2164 drives */
+
+void func_0c0f1348(u8 v)
+{
+    *(u8 *)0x0C543C48 = v;
+}
+
+/* Record the index, then hand its table entry to func_0c100160 and pass the
+   result back (the callee returns through r0 and nothing touches it). */
+s32 func_0c0f135c(s32 i)
+{
+    *(u8 *)0x0C542B81 = i;
+    return func_0c100160(g_0C245394[i]);
+}
+
+void func_0c0f175c(s32 v)
+{
+    g_0C428CC4[5] = v << 2;
+}
+
+/* Only when the mode word just below the context is 1: store v with the
+   top bits forced to the SH-4 P2 (uncached) segment. */
+void func_0c0f17d8(u32 v)
+{
+    if (*(s32 *)0x0C428CC0 == 1)
+        g_0C428CC4[11] = v | 0xA0000000;
 }
