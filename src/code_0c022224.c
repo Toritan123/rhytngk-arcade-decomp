@@ -1,12 +1,12 @@
 /*
  * code_0c022224.c — TU 4/5 of the EstexNT-verified window.
- *
- * LANG: c++
- *   Compiled as C++ (the ROM is a C++ program).  func_0c02267c reproduces only
- *   through the C++ front end, and nothing else in this TU changes; see
- *   tu_lang() in tools/status.py.
  *   covers func_0c022224 .. func_0c025054   (50 functions)
  *   [0x0C022224, 0x0C025930)
+ *
+ * LANG: c++
+ *   Compiled as C++ (the ROM is a C++ program), inside an extern "C"
+ *   block.  func_0c02267c reproduces only through the C++ front end, and
+ *   nothing else in this TU changes; see tu_lang() in tools/status.py.
  *
  * Function boundaries: [verified] (EstexNT ground truth,
  * tools/ground_truth_estex.txt).  Bodies: hand-translated from
@@ -31,6 +31,10 @@
  */
 
 #include "rt_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* ---- extern targets (addresses [verified] from pools) ------------ */
 extern void func_0c12c398(void *self);              /* container clear/dtor */
@@ -423,3 +427,7 @@ void func_0c024cf8(void *arg)
 
 // INCLUDE_ASM("asm/code_0c022224/func_0c024d18")   /* @0x0C024D18 0x33C */
 // INCLUDE_ASM("asm/code_0c022224/func_0c025054")   /* @0x0C025054 0x8DC */
+
+#ifdef __cplusplus
+}
+#endif

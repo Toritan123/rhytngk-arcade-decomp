@@ -38,3 +38,41 @@
 0x0C124ACC  modff                   # [T] float modff(float x, float *iptr)
 0x0C129EE0  _Unwind_Resume          # [T] every C++ EH landing pad in the ROM ends
                                     #     in a call here with the exception object
+
+# libstdc++ (GCC 4.1.2, pool allocator).  Each address is the target of the
+# call the header code for that function makes in main's init 1
+# (func_0c02095c), whose C++ source now reproduces the call sequence; the
+# argument shapes at each site match the member's signature.
+0x0C1A31C0  _ZNSsC1EPKcRKSaIcE      # [T] std::string(const char*, const allocator&)
+0x0C1A34A0  _ZNSsC1ERKSs            # [T] std::string(const std::string&)
+0x0C1A1A40  _ZNSs4_Rep10_M_destroyERKSaIcE  # [T] std::string::_Rep::_M_destroy
+0x0C1A1BC0  _ZNKSs4findEPKcjj       # [T] std::string::find(const char*, pos, n)
+0x0C1A2340  _ZNKSs7compareEPKc      # [T] std::string::compare(const char*)
+0x0C571988  _ZNSs4_Rep20_S_empty_rep_storageE  # [T] the shared empty string rep
+0x0C118DC0  _ZN9__gnu_cxx18__exchange_and_addEPVii  # [T] atomic refcount add
+0x0C1337DC  _ZNSt6vectorISsSaISsEE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPSsS1_EERKSs  # [T] vector<string>::_M_insert_aux
+0x0C13376C  _ZN9__gnu_cxx12__pool_allocISsE10deallocateEPSsj  # [T] __pool_alloc<string>::deallocate
+
+# String literals: `<address> "<text>"`.  Source that writes a literal gets
+# it placed in the compiler's own .rodata.str; these lines say where the
+# ROM's copy is, so the reference resolves (tools/status.py).
+0x0C2562CC  "-"                     # [V] ROM data, main's init 1
+0x0C24E8D0  "--help"                # [V] ROM data, main's init 1
+0x0C24E8D8  "-t"                    # [V] ROM data, main's init 1
+0x0C461C60  _ZN9__gnu_cxx12__pool_allocISsE12_S_force_newE  # [T] __pool_alloc<string>::_S_force_new
+0x0C11B760  _ZdlPv                  # [T] operator delete(void*) -- the force-new path of pool deallocate
+0x0C110540  _ZN9__gnu_cxx17__pool_alloc_base16_M_get_free_listEj  # [T]
+0x0C110560  _ZN9__gnu_cxx17__pool_alloc_base12_M_get_mutexEv     # [T]
+0x0C1A4A80  _ZNSs6assignERKSs       # [T] std::string::assign(const string&)
+0x0C111360  _ZSt20__throw_length_errorPKc  # [T]
+0x0C133680  _ZN9__gnu_cxx12__pool_allocISsE8allocateEjPKv  # [T] __pool_alloc<string>::allocate
+0x0C11BA20  __cxa_begin_catch       # [T]
+0x0C11C980  __cxa_rethrow           # [T]
+0x0C11B960  __cxa_end_catch         # [T]
+0x0C24E8B8  "vector::_M_insert_aux"  # [V] ROM data
+0x0C110820  _ZSt17__throw_bad_allocv  # [T]
+0x0C02C9E8  getenv                  # [T] called with "GLIBCXX_FORCE_NEW" by the pool allocator
+0x0C118DE0  _ZN9__gnu_cxx12__atomic_addEPVii  # [T]
+0x0C11CCC0  _Znwj                   # [T] operator new(unsigned int)
+0x0C110700  _ZN9__gnu_cxx17__pool_alloc_base9_M_refillEj  # [T]
+0x0C24E8A4  "GLIBCXX_FORCE_NEW"     # [V] ROM data

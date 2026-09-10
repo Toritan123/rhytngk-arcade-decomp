@@ -52,17 +52,25 @@ DEFAULT_CFLAGS = ("-O1 -ml -m4-single-only -fno-delayed-branch "
 # symbols.txt maps real names back to addresses for the ones that have been
 # named; see that file for the confidence tags.
 def _load_symbols():
-    m = {}
+    """(names, literals).  A symbols.txt line is either `<addr> <name>` or
+    `<addr> "<string>"` -- the ROM address of a string literal, so that a
+    reference to a literal the compiler places in its own .rodata.str
+    section can be resolved the way a named symbol is."""
+    m, lits = {}, {}
     p = REPO / "symbols.txt"
     if p.exists():
-        for ln in p.read_text().splitlines():
-            ln = ln.split("#")[0].split()
+        for raw in p.read_text().splitlines():
+            q = re.match(r'\s*(0x[0-9A-Fa-f]+)\s+"((?:[^"\\]|\\.)*)"', raw)
+            if q:
+                lits[q.group(2).encode().decode("unicode_escape")] = int(q.group(1), 16)
+                continue
+            ln = raw.split("#")[0].split()
             if len(ln) == 2:
                 m[ln[1]] = int(ln[0], 16)
-    return m
+    return m, lits
 
 
-SYMS = _load_symbols()
+SYMS, LITERALS = _load_symbols()
 
 
 def sym_addr(name):
@@ -74,6 +82,9 @@ def sym_addr(name):
     m = re.fullmatch(r"(.+)\+0x([0-9a-f]+)", name)
     if m:
         name, add = m.group(1), int(m.group(2), 16)
+    if name.startswith('"'):                  # a literal, see resolve_literals
+        a = LITERALS.get(name[1:-1])
+        return None if a is None else a + add
     m = re.fullmatch(r"func_0c([0-9a-f]{6})", name) or \
         re.fullmatch(r"g_0C([0-9A-Fa-f]{6})", name)
     if m:
@@ -87,10 +98,7 @@ FUNCS = {f["start"]: f["end"] for f in
 
 
 def tu_lang(tu):
-    """`c++` for a TU carrying a `/* LANG: c++ */` line (or when SH4_LANG
-    forces it for a sweep), else `c`."""
-    if os.environ.get("SH4_LANG"):
-        return os.environ["SH4_LANG"]
+    """`c++` for a TU carrying a `/* LANG: c++ */` line, else `c`."""
     for ln in (REPO / tu).read_text().splitlines()[:40]:
         if re.search(r"LANG:\s*c\+\+", ln):
             return "c++"
@@ -132,20 +140,16 @@ def compile_cmd(cflags, t):
            "'/^_[A-Za-z_][A-Za-z_0-9]*:$/ { n=substr($0,2,length($0)-2); "
            "if (n ~ /^func_0c[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][26ae]$/ "
            "|| index(L,\" \" n \" \")) print \"\\t.short 0\" } {print}'")
-    src = t
     if tu_lang(t) == "c++":
         # The ROM is a C++ program (EH landing pads, the libstdc++
         # demangler, refcounted strings), but not every function's bytes
         # come out of the C++ front end the same way they do out of C:
         # some reproduce only as C++, others only as C.  So the language is
-        # per TU -- a `/* LANG: c++ */` line, which the rhytngk-sh4-cxx
-        # image (./Dockerfile, now with C++) is needed for.  The TU is wrapped in
-        # extern "C" so its symbol names stay unmangled.
-        src = "/tmp/w.cc"
-        pre = (f"printf 'extern \"C\" {{\\n#include \"/src/{t}\"\\n}}\\n' > {src} && ")
+        # per TU -- a `/* LANG: c++ */` line.  Such a TU opens its own
+        # extern "C" block (after any standard headers) so the
+        # address-carrying names stay unmangled.
         cflags = cflags + " -x c++"
-    else:
-        pre = ""
+    pre, src = "", t
     return (pre + f"sh-elf-gcc {cflags} -S {src} -o /tmp/o.s 2>/tmp/e && "
             f"{awk} /tmp/o.s > /tmp/p.s && "
             f"sh-elf-gcc {cflags.replace(' -x c++', '')} -c /tmp/p.s -o /tmp/o.o 2>>/tmp/e")
@@ -167,7 +171,7 @@ def compile_group(cflags, tus):
         "echo ===R===; sh-elf-objdump -r /tmp/o.o 2>/dev/null\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /tmp/o.o 2>/dev/null "
-        "| grep -oE '[.]text[.][A-Za-z_][A-Za-z_0-9]*' | sort -u); do "
+        "| grep -oE '[.](text[.][A-Za-z_][A-Za-z_0-9]*|rodata[.A-Za-z_0-9]*)' | sort -u); do "
         "  sh-elf-objcopy -O binary --only-section=$s /tmp/o.o /tmp/s.bin 2>/dev/null; "
         "  printf '%s ' \"$s\"; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n"
         for t in tus)
@@ -176,7 +180,7 @@ def compile_group(cflags, tus):
     r = subprocess.run(["docker", "run", "--rm", "-i", "-v", f"{REPO}:/src", IMAGE,
                         "sh"], input="cd /src\n" + body,
                        capture_output=True, text=True)
-    out, errs = defaultdict(dict), {}
+    out, errs, rodata = defaultdict(dict), {}, {}
     tu, phase, relocs, cur = None, "", {}, None
     for ln in r.stdout.splitlines():
         if ln.startswith("===TU==="):
@@ -199,13 +203,33 @@ def compile_group(cflags, tus):
                 relocs[cur][int(rm.group(1), 16)] = re.sub(r"^_", "", rm.group(2))   # the ABI adds exactly one "_"
         elif "B===" in phase:
             p = ln.split()
-            if len(p) == 2 and p[0].startswith(".text."):
+            if len(p) == 2 and p[0].startswith(".rodata"):
+                rodata.setdefault(tu, {})[p[0]] = bytes.fromhex(p[1])
+            elif len(p) == 2 and p[0].startswith(".text."):
                 name = p[0][6:]
                 a = sym_addr(name)
                 if a is not None:
                     b, rl = unshift(name, bytearray.fromhex(p[1]), relocs.get(name, {}))
                     out[tu][a] = (b, rl)
+    for tu, fns in out.items():
+        for a, (b, rl) in fns.items():
+            resolve_literals(b, rl, rodata.get(tu, {}))
     return out, errs
+
+
+def resolve_literals(b, rels, rodata):
+    """A reference to a string literal is relocated against the compiler's
+    .rodata.str section with the string's offset in the word.  Replace it
+    with the literal itself (as `"text"`, looked up in symbols.txt) and zero
+    the word, so it resolves to the ROM's copy of that string."""
+    for off, sym in list(rels.items()):
+        sec = rodata.get(sym)
+        if sec is None:
+            continue
+        o = struct.unpack_from("<I", b, off)[0]
+        text = sec[o:sec.index(b"\0", o)].decode("latin-1")
+        rels[off] = '"' + text + '"'
+        b[off:off + 4] = b"\0\0\0\0"
 
 
 def classify(addr, b, rels):

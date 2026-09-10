@@ -3,6 +3,11 @@
  *   covers func_0c020140 .. func_0c021174   (37 functions)
  *   [0x0C020140, 0x0C021250)
  *
+ * LANG: c++
+ *   Compiled as C++, inside an extern "C" block: func_0c02095c (main's
+ *   init 1) is C++ proper -- std::vector<std::string>, std::copy -- and
+ *   nothing else in this TU changes under the C++ front end.
+ *
  * Function boundaries: [verified] (EstexNT ground truth,
  * tools/ground_truth_estex.txt).  Bodies: hand-translated from
  * tools/sh4_disasm.py output with literal pools resolved from
@@ -32,6 +37,13 @@
  */
 
 #include "rt_types.h"
+
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+
+extern "C" {
 
 /* ---------------- extern call targets (addresses [verified] from
  * literal pools; signatures inferred from observed argument setup) --- */
@@ -189,7 +201,7 @@ s32  func_0c020724(void);
 void frame_stage5_update(void);
 void frame_stage6_update(void);
 void frame_stage8_sync(void);
-void func_0c02095c(s32 boot_mode, void *boot_ptr); /* INCLUDE_ASM below */
+void func_0c02095c(s32 argc, char **argv);
 void func_0c020d64(s32 mode, s32 key);             /* INCLUDE_ASM below */
 void func_0c020f30(s32 mode, s32 key);
 void func_0c0204e8(void);
@@ -518,28 +530,50 @@ void frame(void)
 }
 
 /* ================================================================== */
-/* func_0c02095c @ 0x0C02095C, size 0x2AC — init 1: boot-argument /   */
-/* configuration parser, run as func_0c02095c(boot_mode, boot_ptr)    */
-/* (inherits main's live r4/r5 — docs/boot_and_main.md).              */
-/* NOT yet expressed in C: the body is C++ using refcounted string    */
-/* objects (empty-string rep 0x0C571988, atomic refcount helper       */
-/* 0x0C118DC0, destructor 0x0C1A1A40, string ctor 0x0C1A31C0, dtor    */
-/* paths via 0x0C129EE0) and multiple EH landing pads.  Faithful C is */
-/* not possible without fabricating the string class; keeping asm.    */
+/* func_0c02095c @ 0x0C02095C, size 0x2AC -- main's init 1: the boot  */
+/* arguments.  main passes its (argc, argv) straight through.         */
+/*                                                                    */
+/* argv[1..] are copied into a std::vector<std::string>; then every   */
+/* argument that starts with '-' is compared against "--help" (which  */
+/* does nothing in this build) and "-t", which sets the byte flag at  */
+/* 0x0C4654C8 through func_0c036574(1).                               */
+/*                                                                    */
+/* CORRECTION: this was kept as asm on the grounds that faithful C    */
+/* would mean fabricating the string class.  It is libstdc++'s own    */
+/* std::string (refcounted rep, empty rep at 0x0C571988) and          */
+/* std::vector; with the C++ toolchain the source is ordinary C++.    */
+/* The copy loop's shape (a count from the pointer difference, then   */
+/* `dt`) is std::copy's random-access form with a back_insert_iterator.*/
 /* ================================================================== */
-// INCLUDE_ASM("asm/code_0c020140/func_0c02095c")
+extern void func_0c036574(u8 flag);
+
+void func_0c02095c(s32 argc, char **argv)
+{
+    std::vector<std::string> args;
+
+    std::copy(argv + 1, argv + argc, std::back_inserter(args));
+    for (std::vector<std::string>::iterator it = args.begin();
+         it != args.end(); ++it) {
+        if (it->find("-") == 0) {
+            if (*it == "--help") {
+            } else if (*it == "-t") {
+                func_0c036574(1);
+            }
+        }
+    }
+}
 
 /* ================================================================== */
 /* main @ 0x0C020C08, size 0x6C — named in symbols.txt [T].          */
-/* NOTE: r4/r5 are not reloaded before the func_0c02095c call, so     */
-/* init 1 observes main's own arguments.                              */
+/* r4/r5 are not reloaded before the func_0c02095c call: init 1 gets  */
+/* main's own arguments, and it treats them as argc/argv.             */
 /* ================================================================== */
-s32 main(s32 boot_mode, void *boot_ptr)
+s32 main(s32 argc, char **argv)
 {
-    func_0c02095c(boot_mode, boot_ptr);  /* init 1 (in-window) */
-    func_0c037f00();                     /* init 2 [scanner]   */
-    func_0c03c4cc(1);                    /* init 3 [scanner]   */
-    func_0c0204e8();                     /* init 4 (in-window) */
+    func_0c02095c(argc, argv);           /* init 1: boot arguments   */
+    func_0c037f00();                     /* init 2: frame timing     */
+    func_0c03c4cc(1);                    /* init 3: screen mode 640x480 */
+    func_0c0204e8();                     /* init 4                   */
 
     while (is_quit_requested() == 0) {   /* while (!*(u8*)0x0C4655F8) */
         frame();                 /* one frame */
@@ -676,3 +710,5 @@ void func_0c020f6c(void) {}
 /* Keeping asm; EH pads present.                                      */
 /* ================================================================== */
 // INCLUDE_ASM("asm/code_0c020140/func_0c021174")
+
+} /* extern "C" */

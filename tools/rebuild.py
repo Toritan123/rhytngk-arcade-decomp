@@ -60,79 +60,22 @@ def drun(script):
 
 
 def compile_group(cflags, tus):
-    """{addr: (bytearray, {reloc_off: symbol})} for every function in `tus`."""
-    body = "".join(
-        f'echo "===TU=== {t}"\n'
-        f"{compile_cmd(cflags, t)} || {{ cat /tmp/e; exit 1; }}\n"
-        "echo ===R===; sh-elf-objdump -r /tmp/o.o\n"
-        "echo ===B===\n"
-        "for s in $(sh-elf-objdump -h /tmp/o.o "
-        "| grep -oE '[.]text[.][A-Za-z_][A-Za-z_0-9]*' | sort -u); do "
-        "  sh-elf-objcopy -O binary --only-section=$s /tmp/o.o /tmp/s.bin 2>/dev/null; "
-        "  printf '%s ' \"$s\"; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n"
-        for t in tus)
-    r = drun("cd /src\n" + body)
-    if r.returncode:
-        sys.exit(f"compile failed:\n{r.stdout}\n{r.stderr}")
-    relocs, out, cur, phase = {}, {}, None, ""
-    for ln in r.stdout.splitlines():
-        if ln.startswith("==="):
-            phase = ln
-            continue
-        if "R===" in phase:
-            if ln.startswith("RELOCATION RECORDS FOR"):
-                # other sections (.eh_frame of a C++ TU) end the function's list
-                m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.]([A-Za-z_][A-Za-z_0-9]*)\]", ln)
-                cur = m.group(1) if m else None
-                if cur:
-                    relocs[cur] = {}
-                continue
-            rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
-            if rm and cur:
-                relocs[cur][int(rm.group(1), 16)] = re.sub(r"^_", "", rm.group(2))   # the ABI adds exactly one "_"
-        elif "B===" in phase:
-            p = ln.split()
-            if len(p) == 2 and p[0].startswith(".text."):
-                name = p[0][6:]
-                a = sym_addr(name)
-                if a is not None:
-                    out[a] = unshift(name, bytearray.fromhex(p[1]), relocs.get(name, {}))
-    return out
+    """{addr: (bytearray, {reloc_off: symbol})} for every function in `tus`
+    (the compile, placement and literal handling are tools/status.py's)."""
+    out, errs = _status.compile_group(cflags, tus)
+    if errs:
+        sys.exit("compile failed:\n" + "\n".join(
+            f"{tu}: {ln}" for tu, lns in errs.items() for ln in lns))
+    flat = {}
+    for fns in out.values():
+        flat.update(fns)
+    return flat
 
 
-# ---- named symbols -------------------------------------------------------
-# Functions are normally called func_0cXXXXXX so the name carries the address.
-# symbols.txt maps real names back to addresses for the ones that have been
-# named; see that file for the confidence tags.
-def _load_symbols():
-    m = {}
-    p = REPO / "symbols.txt"
-    if p.exists():
-        for ln in p.read_text().splitlines():
-            ln = ln.split("#")[0].split()
-            if len(ln) == 2:
-                m[ln[1]] = int(ln[0], 16)
-    return m
-
-
-SYMS = _load_symbols()
-
-
-def sym_addr(name):
-    """Address for a relocation symbol, or None if it has no known address.
-
-    objdump writes an addend as `sym+0x...`, which is how a reference to a
-    member of a named object appears; strip and add it."""
-    add = 0
-    m = re.fullmatch(r"(.+)\+0x([0-9a-f]+)", name)
-    if m:
-        name, add = m.group(1), int(m.group(2), 16)
-    m = re.fullmatch(r"func_0c([0-9a-f]{6})", name) or \
-        re.fullmatch(r"g_0C([0-9A-Fa-f]{6})", name)
-    if m:
-        return (0x0C000000 | int(m.group(1), 16)) + add
-    base = SYMS.get(name)
-    return None if base is None else base + add
+# ---- named symbols: shared with tools/status.py -------------------------
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import status as _status  # noqa: E402
+sym_addr = _status.sym_addr
 
 
 def resolve(b, rels):
@@ -148,12 +91,6 @@ def resolve(b, rels):
         inplace = struct.unpack_from("<I", b, off)[0]
         b[off:off + 4] = struct.pack("<I", (inplace + val) & 0xFFFFFFFF)
     return b
-
-
-# Placement (functions at 2 mod 4 assembled at that parity) is shared with
-# tools/status.py so the two classify identically; see the note there.
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from status import compile_cmd, unshift  # noqa: E402
 
 
 def main():

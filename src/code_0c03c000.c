@@ -2,9 +2,9 @@
  * code_0c03c000.c - single-instruction leaf functions on page 0x0C03Cxxx.
  *
  * LANG: c++
- *   Compiled as C++ (the ROM is a C++ program).  func_0c03c86c reproduces only
- *   through the C++ front end, and nothing else in this TU changes; see
- *   tu_lang() in tools/status.py.
+ *   Compiled as C++ (the ROM is a C++ program), inside an extern "C"
+ *   block.  func_0c03c86c reproduces only through the C++ front end, and
+ *   nothing else in this TU changes; see tu_lang() in tools/status.py.
  *
  * Trivial constant / identity / one-load / one-store leaves, recovered
  * mechanically: each is a 14-byte function whose whole body is one
@@ -26,6 +26,10 @@
  */
 
 #include "rt_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* ---- constant stub ---- */
 int func_0c03c66c(void) { return 1; }
@@ -221,7 +225,7 @@ extern void func_0c030948(void *f);
 extern void *func_0c02f4c6(void *f);           /* the loaded data */
 extern s32  func_0c0e9864(void *data, s32 flags);
 extern void func_0c03083c(void *f);
-extern void *func_0c11ccc0(u32 size);          /* allocator */
+extern void *func_0c11ccc0(u32 size);          /* operator new (symbols.txt) */
 extern void func_0c03b3b4(void *drv);
 extern s32  func_0c03b4d0(void *drv);
 extern const char g_0C250BA8[];                /* "rom/aicadrv.bin" */
@@ -275,3 +279,7 @@ void func_0c03c1c8(SoundBank *bank)
         }
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
