@@ -94,11 +94,51 @@ def tu_cflags(tu):
     return DEFAULT_CFLAGS
 
 
+# ---- placement ------------------------------------------------------------
+# -ffunction-sections puts each function at offset 0 of a 4-aligned section,
+# but in the ROM many functions start at 2 mod 4 (functions are only
+# 2-aligned).  The assembler aligns a literal pool relative to where the
+# function actually sits, so a function with a pool assembled at the wrong
+# parity gets a spurious (or missing) alignment nop and every pool
+# displacement off by one -- it cannot match even when the C is right.
+#
+# So a function whose address is 2 mod 4 is assembled with two filler bytes in
+# front of it in its section, which is exactly the placement the ROM has, and
+# the filler is stripped afterwards.  Nothing is read from the ROM; the only
+# input is the function's address, which its name already carries.
+def shifted(name):
+    a = sym_addr(name)
+    return a is not None and a % 4 == 2
+
+
+def compile_cmd(cflags, t):
+    """Shell to compile TU `t` to /tmp/o.o with 2-mod-4 functions placed."""
+    names = " ".join(n for n, a in SYMS.items() if a % 4 == 2)
+    # The filler goes immediately before the function's label, after any
+    # `.align` the compiler emitted (the -O2 recipe emits `.align 5`), so it
+    # shifts the function itself and not just the padding in front of it.
+    awk = ("awk -v L=' " + names + " ' "
+           "'/^_[A-Za-z_][A-Za-z_0-9]*:$/ { n=substr($0,2,length($0)-2); "
+           "if (n ~ /^func_0c[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][26ae]$/ "
+           "|| index(L,\" \" n \" \")) print \"\\t.short 0\" } {print}'")
+    return (f"sh-elf-gcc {cflags} -S {t} -o /tmp/o.s 2>/tmp/e && "
+            f"{awk} /tmp/o.s > /tmp/p.s && "
+            f"sh-elf-gcc {cflags} -c /tmp/p.s -o /tmp/o.o 2>>/tmp/e")
+
+
+def unshift(name, b, rels):
+    """Drop the placement filler from a shifted function's bytes and relocs."""
+    if not shifted(name):
+        return b, rels
+    assert b[:2] == b"\0\0", name
+    return b[2:], {off - 2: sym for off, sym in rels.items()}
+
+
 def compile_group(cflags, tus):
     """{tu: {addr: (bytearray, {off: symbol})}} — one docker run per recipe."""
     body = "".join(
         f'echo "===TU=== {t}"\n'
-        f"sh-elf-gcc {cflags} -c {t} -o /tmp/o.o 2>/tmp/e || {{ echo ===ERR===; cat /tmp/e; }}\n"
+        f"{compile_cmd(cflags, t)} || {{ echo ===ERR===; cat /tmp/e; }}\n"
         "echo ===R===; sh-elf-objdump -r /tmp/o.o 2>/dev/null\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /tmp/o.o 2>/dev/null "
@@ -106,8 +146,10 @@ def compile_group(cflags, tus):
         "  sh-elf-objcopy -O binary --only-section=$s /tmp/o.o /tmp/s.bin 2>/dev/null; "
         "  printf '%s ' \"$s\"; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n"
         for t in tus)
-    r = subprocess.run(["docker", "run", "--rm", "-v", f"{REPO}:/src", IMAGE,
-                        "sh", "-c", "cd /src\n" + body],
+    # Fed on stdin: one argv string is capped at 128 KB, and a large recipe
+    # group's script is bigger than that.
+    r = subprocess.run(["docker", "run", "--rm", "-i", "-v", f"{REPO}:/src", IMAGE,
+                        "sh"], input="cd /src\n" + body,
                        capture_output=True, text=True)
     out, errs = defaultdict(dict), {}
     tu, phase, relocs, cur = None, "", {}, None
@@ -131,7 +173,8 @@ def compile_group(cflags, tus):
                 name = p[0][6:]
                 a = sym_addr(name)
                 if a is not None:
-                    out[tu][a] = (bytearray.fromhex(p[1]), relocs.get(name, {}))
+                    b, rl = unshift(name, bytearray.fromhex(p[1]), relocs.get(name, {}))
+                    out[tu][a] = (b, rl)
     return out, errs
 
 

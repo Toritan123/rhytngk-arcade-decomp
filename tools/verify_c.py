@@ -54,13 +54,23 @@ END = {f["start"]: f["end"]
        for f in json.loads((REPO / "build/sh4_functions_v3.json").read_text())["functions"]}
 
 
+def _placed(cf, rel_c):
+    from status import compile_cmd
+    return compile_cmd(cf, rel_c)
+
+
+def _shifted(name):
+    from status import shifted
+    return shifted(name)
+
+
 def raw_tu(rel_c):
     """{func: (bytes, reloc_mask)} via -ffunction-sections + objcopy (exact
     bytes; objdump -d elides trailing zero pool words with `...`) and
     objdump -r (exact reloc offsets)."""
     cf = tu_cflags(rel_c).replace("-Iinclude", "-ffunction-sections -Iinclude")
     script = (
-        f"cd /src && sh-elf-gcc {cf} -c {rel_c} -o /tmp/o.o 2>/tmp/e "
+        f"cd /src && {_placed(cf, rel_c)} "
         f"|| {{ cat /tmp/e; exit 1; }}\n"
         "echo ===RELOCS===; sh-elf-objdump -r /tmp/o.o\n"
         "echo ===BYTES===\n"
@@ -86,6 +96,10 @@ def raw_tu(rel_c):
             if len(p) == 2 and p[0].startswith(".text.func_"):
                 byts[p[0][6:]] = bytes.fromhex(p[1])
     res = {}
+    for name in list(byts):
+        if _shifted(name):                       # placement filler, see status.py
+            byts[name] = byts[name][2:]
+            relocs[name] = [r - 2 for r in relocs.get(name, [])]
     for name, b in byts.items():
         mask = bytearray(len(b))
         for r in relocs.get(name, []):

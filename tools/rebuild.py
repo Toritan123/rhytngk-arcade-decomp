@@ -54,15 +54,16 @@ def tu_cflags(tu):
 
 
 def drun(script):
-    return subprocess.run(["docker", "run", "--rm", "-v", f"{REPO}:/src", IMAGE,
-                           "sh", "-c", script], capture_output=True, text=True)
+    # On stdin: one argv string is capped at 128 KB.
+    return subprocess.run(["docker", "run", "--rm", "-i", "-v", f"{REPO}:/src", IMAGE,
+                           "sh"], input=script, capture_output=True, text=True)
 
 
 def compile_group(cflags, tus):
     """{addr: (bytearray, {reloc_off: symbol})} for every function in `tus`."""
     body = "".join(
         f'echo "===TU=== {t}"\n'
-        f"sh-elf-gcc {cflags} -c {t} -o /tmp/o.o 2>/tmp/e || {{ cat /tmp/e; exit 1; }}\n"
+        f"{compile_cmd(cflags, t)} || {{ cat /tmp/e; exit 1; }}\n"
         "echo ===R===; sh-elf-objdump -r /tmp/o.o\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /tmp/o.o "
@@ -91,7 +92,7 @@ def compile_group(cflags, tus):
                 name = p[0][6:]
                 a = sym_addr(name)
                 if a is not None:
-                    out[a] = (bytearray.fromhex(p[1]), relocs.get(name, {}))
+                    out[a] = unshift(name, bytearray.fromhex(p[1]), relocs.get(name, {}))
     return out
 
 
@@ -141,6 +142,12 @@ def resolve(b, rels):
                      f"add it to symbols.txt")
         b[off:off + 4] = struct.pack("<I", val)
     return b
+
+
+# Placement (functions at 2 mod 4 assembled at that parity) is shared with
+# tools/status.py so the two classify identically; see the note there.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from status import compile_cmd, unshift  # noqa: E402
 
 
 def main():
