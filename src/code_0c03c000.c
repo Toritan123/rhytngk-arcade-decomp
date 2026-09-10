@@ -197,3 +197,81 @@ s32 func_0c03c86c(void)
     func_0c0ecfac(&g_0C467268);
     return 1;
 }
+
+/* ---- the sound bank: load the ARM7 driver, then number the voice slots ----
+
+   func_0c03c1c8 initialises the VoiceBank that func_0c03a520 pumps every
+   frame (src/code_0c03a520.c): active byte at +0x00, a 20-byte driver
+   object at +0x04, eight 260-byte slots at +0x08.  It reads
+   "rom/aicadrv.bin" -- the AICA's ARM7 sound driver -- through a stack file
+   object, hands the data to func_0c0e9864 with 0x200 (the upload), builds
+   the driver object, and only if all of that succeeds numbers the slots
+   0..7 (each slot's first word) and marks the bank active.
+
+   This is the first function reproduced from C++ proper: the file object
+   has a destructor, so the ROM carries an EH landing pad that destroys it
+   and resumes unwinding (_Unwind_Resume, 0x0C129EE0) -- the unreachable
+   block in the middle of the function.  The constructor and destructor are
+   the extern "C" functions func_0c02f448 / func_0c03037c, called from
+   inline members so the call targets keep their address-carrying names. */
+extern void func_0c02f448(void *f);
+extern void func_0c03037c(void *f);
+extern s32  func_0c030e40(void *f, const char *path, s32 mode);
+extern void func_0c030948(void *f);
+extern void *func_0c02f4c6(void *f);           /* the loaded data */
+extern s32  func_0c0e9864(void *data, s32 flags);
+extern void func_0c03083c(void *f);
+extern void *func_0c11ccc0(u32 size);          /* allocator */
+extern void func_0c03b3b4(void *drv);
+extern s32  func_0c03b4d0(void *drv);
+extern const char g_0C250BA8[];                /* "rom/aicadrv.bin" */
+
+struct RomFile {
+    u8 raw[60];
+    RomFile()  { func_0c02f448(this); }
+    ~RomFile() { func_0c03037c(this); }
+};
+
+typedef struct SoundBank {
+    u8    active;
+    u8    pad[3];
+    void *driver;              /* +0x04 */
+    struct {
+        s32 index;
+        u8  rest[256];
+    } slot[8];                 /* +0x08, 260 bytes each */
+} SoundBank;
+
+void func_0c03c1c8(SoundBank *bank)
+{
+    bank->active = 0;
+    {
+        RomFile f;
+        void *data;
+        s32 err;
+
+        if (func_0c030e40(&f, g_0C250BA8, 1) == 0)
+            return;
+        func_0c030948(&f);
+        data = func_0c02f4c6(&f);
+        if (data == 0)
+            return;
+        err = func_0c0e9864(data, 0x200);
+        func_0c03083c(&f);
+        if (err != 0)
+            return;
+        {
+            void *drv = func_0c11ccc0(20);
+            s32 i;
+
+            func_0c03b3b4(drv);
+            bank->driver = drv;
+            if (drv == 0)
+                return;
+            func_0c03b4d0(drv);
+            for (i = 0; i != 8; i++)
+                bank->slot[i].index = i;
+            bank->active = 1;
+        }
+    }
+}

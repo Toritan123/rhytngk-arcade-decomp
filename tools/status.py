@@ -196,7 +196,7 @@ def compile_group(cflags, tus):
                 continue
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
             if rm and cur:
-                relocs[cur][int(rm.group(1), 16)] = rm.group(2).lstrip("_")
+                relocs[cur][int(rm.group(1), 16)] = re.sub(r"^_", "", rm.group(2))   # the ABI adds exactly one "_"
         elif "B===" in phase:
             p = ln.split()
             if len(p) == 2 and p[0].startswith(".text."):

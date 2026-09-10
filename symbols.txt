@@ -36,3 +36,5 @@
 # the three cases j0 > 22 / j0 < 0 / otherwise, the 0x80000000 sign mask and
 # the 0x007FFFFF >> j0 fraction mask are newlib's sf_modf.c line for line.
 0x0C124ACC  modff                   # [T] float modff(float x, float *iptr)
+0x0C129EE0  _Unwind_Resume          # [T] every C++ EH landing pad in the ROM ends
+                                    #     in a call here with the exception object
