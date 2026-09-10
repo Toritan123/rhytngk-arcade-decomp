@@ -185,7 +185,11 @@ def classify(addr, b, rels):
             return ("UNRESOLVED",
                     f"relocation symbol {sym!r} has no address — encode it in the "
                     f"name (func_0cXXXXXX / g_0CXXXXXX) or add it to symbols.txt")
-        b[off:off + 4] = struct.pack("<I", a)
+        # R_SH_DIR32 is partial-inplace: gas leaves the addend in the word
+        # itself (e.g. 0x18 for &array[3] of 8-byte elements) and the
+        # linker adds the symbol to it.  Overwriting would drop it.
+        inplace = struct.unpack_from("<I", b, off)[0]
+        b[off:off + 4] = struct.pack("<I", (inplace + a) & 0xFFFFFFFF)
     if addr not in FUNCS:
         return ("NOBOUND", "no boundary record")
     n = FUNCS[addr] - addr

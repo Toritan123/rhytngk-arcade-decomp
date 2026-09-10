@@ -140,7 +140,9 @@ def resolve(b, rels):
             sys.exit(f"rebuild: cannot resolve relocation symbol {sym!r}; give it "
                      f"an address-encoding name (func_0cXXXXXX / g_0CXXXXXX) or "
                      f"add it to symbols.txt")
-        b[off:off + 4] = struct.pack("<I", val)
+        # partial-inplace: add the addend gas left in the word (see status.py)
+        inplace = struct.unpack_from("<I", b, off)[0]
+        b[off:off + 4] = struct.pack("<I", (inplace + val) & 0xFFFFFFFF)
     return b
 
 
