@@ -88,3 +88,70 @@ void func_0c0f2e7c(void)
         func_0c0fa87c(1, 0);
     }
 }
+
+extern s32  func_0c0f21fc(void);
+extern s32  func_0c0f15c8(void);
+extern void func_0c0f26a8(u32 *p);
+extern void func_0c0f2744(u32 *p);
+extern void func_0c0f629c(f32 x, f32 y, f32 w, f32 h);
+extern s32  func_0c0fd1fc(f32 v);
+extern s32  func_0c0faac8(u32 v);
+extern u32  g_0C429AC8;
+extern u32  g_0C4291DC;
+
+/* The screen rectangle: width and height as halfwords at +4 / +6. */
+typedef struct ScreenRect {
+    s16 x, y, w, h;
+} ScreenRect;
+
+/* ---- main's init 4 callee: bring up the renderer ----
+
+   Picks the display path by the mode word at 0x0C428CC0 (its return value
+   is what this returns), initialises two blocks, sets the viewport to the
+   rectangle at 0x0C42CFC8 with origin (0, 0), and sets both store-queue
+   address registers:
+
+   [verified, hardware] 0xFF000038 / 0xFF00003C are QACR0 / QACR1, the SH-4
+   store-queue area registers.  12 selects external area 3 -- the 0x0Cxxxxxx
+   system RAM -- as the target of store-queue flushes, which is what the TA
+   vertex path (func_0c0e6548, 96-byte params via store queues) relies on.
+
+   The first draw context is then built and submitted once, exactly as in
+   the render stage func_0c0f2164, unless 0x0C428C74 is set.
+
+   The four arguments main passes are not read.
+
+   MISMATCH, same length: instruction scheduling only -- the ROM issues the
+   `fldi0 fr5` for the zero origin before loading the rectangle, this GCC
+   after. */
+s32 func_0c0f2938(s32 a, s32 b, u32 c, s32 d)
+{
+    s32 r;
+    const ScreenRect *sr;
+
+    if (*(s32 *)0x0C428CC0 == 1)
+        r = func_0c0f21fc();
+    else
+        r = func_0c0f15c8();
+
+    func_0c0f26a8(&g_0C429AC8);
+    func_0c0f2744(&g_0C4291DC);
+    *(u32 **)0x0C429B8C = &g_0C4291DC;
+    *(s32 *)0x0C429A9C = 0;
+
+    sr = (const ScreenRect *)0x0C42CFC8;
+    func_0c0f629c(0.0f, 0.0f, (f32)sr->w, (f32)sr->h);
+    func_0c0fd1fc(0.02f);
+
+    *(vu32 *)0xFF000038 = 12;         /* QACR0 */
+    *(vu32 *)0xFF00003C = 12;         /* QACR1 */
+
+    func_0c0faac8(*(u32 *)0x0C428C78);
+
+    if (*(s32 *)0x0C428C74 == 0) {
+        func_0c0facc0(&g_0C428CC4);
+        func_0c0faaf8(&g_0C4298E8);
+        g_0C428C6C = g_0C4298E8;
+    }
+    return r;
+}
