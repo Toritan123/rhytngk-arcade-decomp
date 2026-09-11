@@ -63,7 +63,7 @@ PYTHON ?= python3
         extract-rom extract-audio extract-assets extract-graphics \
         generate-games per-game-list per-system-list \
         find-funcs find-funcs-v2 find-funcs-v3 call-graph validate-gt \
-        verify-asm toolchain sh4-cc verify-c status status-failing status-recipes rebuild rebuild-code dtpk-unpack dtpk-roundtrip texture-unpack texture-roundtrip rom-unpack rom-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
+        verify-asm toolchain upstream sh4-cc verify-c status status-failing status-recipes rebuild rebuild-code dtpk-unpack dtpk-roundtrip texture-unpack texture-roundtrip rom-unpack rom-roundtrip symbols-v3 ptr-installs pool-calls hw-mmio \
         check-tools clean clean-build clean-extract
 
 all: setup decrypt extract-rom extract-graphics generate-games
@@ -237,6 +237,26 @@ verify-asm: $(BUILD_DIR)/sh4_functions_v3.json
 	@echo "  VERIFY-ASM (reassemble the verified window; byte-compare vs ROM)"
 	@$(PYTHON) $(TOOLS_DIR)/asm_roundtrip.py --window
 	@echo "  (needs sh-elf binutils; set SH_ELF_BIN if not in ~/opt/sh-elf/bin)"
+
+# Upstream runtime sources (GCC 4.1.2's libstdc++/libsupc++/libgcc, newlib
+# 1.15.0).  The ROM links these libraries; their functions are reproduced by
+# compiling the upstream source (tools/libmap.py), not by decompiling.
+# Fetched into build/, never committed; the hashes pin the exact releases.
+UPSTREAM := build/upstream
+upstream: $(UPSTREAM)/.ok
+$(UPSTREAM)/.ok:
+	@mkdir -p $(UPSTREAM)
+	@cd $(UPSTREAM) && \
+	  curl -sLO https://ftp.gnu.org/gnu/gcc/gcc-4.1.2/gcc-core-4.1.2.tar.bz2 && \
+	  curl -sLO https://ftp.gnu.org/gnu/gcc/gcc-4.1.2/gcc-g++-4.1.2.tar.bz2 && \
+	  curl -sLO https://sourceware.org/pub/newlib/newlib-1.15.0.tar.gz && \
+	  printf '%s  %s\n' \
+	    7be9c5df8000ae35d0928f0a254bfb5e8478cad5e5e57fd07820530c03b3711d gcc-core-4.1.2.tar.bz2 \
+	    0c06aa415f10679bc334f4627242e2b383387d0d44930da2922028dbd98fa2e2 gcc-g++-4.1.2.tar.bz2 \
+	    c4496102d38c59d1a47ddd5481af35caa1f65b76e2a94d9607737e17fd9e4465 newlib-1.15.0.tar.gz \
+	  | shasum -a 256 -c - && \
+	  tar xjf gcc-core-4.1.2.tar.bz2 && tar xjf gcc-g++-4.1.2.tar.bz2 && \
+	  tar xzf newlib-1.15.0.tar.gz && touch .ok
 
 # Build the matching GCC 4.1.2 SH-4 toolchain (reproducible; see ./Dockerfile).
 toolchain:

@@ -73,6 +73,32 @@ def _load_symbols():
 SYMS, LITERALS = _load_symbols()
 
 
+def _load_libmap():
+    """lib/map.txt (tools/libmap.py): where each upstream runtime-library
+    function sits, plus the symbols those functions refer to.  Used as a
+    second symbol table behind symbols.txt, and for the library pass."""
+    funcs, syms, lits = [], {}, {}
+    p = REPO / "lib/map.txt"
+    if p.exists():
+        for ln in p.read_text().splitlines():
+            q = re.match(r'L (0x[0-9A-Fa-f]+) "((?:[^"\\]|\\.)*)"', ln)
+            if q:
+                lits[q.group(2).encode("latin-1").decode("unicode_escape")] = int(q.group(1), 16)
+                continue
+            f = ln.split()
+            if len(f) >= 5 and f[0] == "F":
+                funcs.append((int(f[1], 16), int(f[2]), f[3], f[4]))
+                syms[f[3]] = int(f[1], 16)
+            elif len(f) == 3 and f[0] == "S":   # (local symbols are src:section)
+                syms[f[2]] = int(f[1], 16)
+    return funcs, syms, lits
+
+
+LIBFUNCS, LIBSYMS, LIBLITS = _load_libmap()
+for _k, _v in LIBLITS.items():
+    LITERALS.setdefault(_k, _v)
+
+
 def sym_addr(name):
     """Address for a relocation symbol, or None if it has no known address.
 
@@ -89,7 +115,7 @@ def sym_addr(name):
         re.fullmatch(r"g_0C([0-9A-Fa-f]{6})", name)
     if m:
         return (0x0C000000 | int(m.group(1), 16)) + add
-    base = SYMS.get(name)
+    base = SYMS.get(name, LIBSYMS.get(name))
     return None if base is None else base + add
 
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
@@ -370,9 +396,70 @@ def main():
     for k in ("MISMATCH", "SHORT", "NOBOUND", "UNRESOLVED"):
         if total[k]:
             print(f"  {k:22} : {total[k]}")
+    lib = library_pass()
+    if lib:
+        lc = Counter(r[0] for r in lib.values())
+        lb = sum(r[2] for r in lib.values() if r[0] == "EXACT")
+        mine = {a for tu, (cf, rows) in per_tu.items()
+                for a, (k, _) in rows.items() if k == "EXACT"}
+        dup = [a for a, r in lib.items() if r[0] == "EXACT" and a in mine]
+        dupb = sum(lib[a][2] for a in dup)
+        print(f"  upstream libraries     : {len(lib)} functions placed by lib/map.txt, "
+              f"{lc['EXACT']} EXACT ({lb} B = {100.0 * lb / known:.2f}%)")
+        if dup:
+            print(f"    also hand-translated : {len(dup)} of them ({dupb} B), counted once")
+        lb -= dupb
+        for k in ("MISMATCH", "UNRESOLVED", "NOSRC"):
+            if lc[k]:
+                print(f"    {k:20} : {lc[k]}")
+        print(f"  rebuilt from source    : {exact_bytes + lb} B = "
+              f"{100.0 * (exact_bytes + lb) / known:.2f}% of known function bytes")
     print("  (strict classification: relocations resolved from symbol names, "
           "nothing read from the ROM — same criterion as `make rebuild`)")
     return 1 if all_errs or total["UNRESOLVED"] else 0
+
+
+def library_pass():
+    """Recompile the upstream sources lib/map.txt was built from and check
+    every placed function at its address, relocations resolved by name
+    exactly as for the game's own code.
+    {addr: (kind, detail, size, resolved bytes or None)}."""
+    if not LIBFUNCS:
+        return {}
+    sys.path.insert(0, str(REPO / "tools"))
+    import libmap
+    compiled = libmap.compiled_cached(libmap.sources())
+    rows = {}
+    for a, n, name, src in LIBFUNCS:
+        hit = [(b, rl) for nm, b, rl in compiled.get(src, []) if nm == name]
+        if not hit:
+            rows[a] = ("NOSRC", f"{name} not produced by {src}", n, None); continue
+        b, rl = hit[0]
+        b = bytearray(b[:n])
+        bad = None
+        for o, sym, inplace in rl:
+            if o + 4 > n:
+                continue
+            if sym is None:
+                bad = "non-DIR32 relocation"; break
+            if sym.startswith(".rodata.str"):
+                sym = libmap.literal_at(src, sym, inplace)
+                inplace = 0
+                if sym is None:
+                    bad = "unmapped literal"; break
+            else:
+                sym = libmap.local_key(src, sym)
+            v = sym_addr(sym)
+            if v is None:
+                bad = f"symbol {sym!r} has no address"; break
+            b[o:o + 4] = struct.pack("<I", (inplace + v) & 0xFFFFFFFF)
+        if bad:
+            rows[a] = ("UNRESOLVED", bad, n, None); continue
+        want = rom[a - BASE:a - BASE + n]
+        rows[a] = ("EXACT", "", n, bytes(b)) if bytes(b) == want else \
+                  ("MISMATCH", f"first diff @+0x{next(i for i in range(n) if b[i] != want[i]):x}",
+                   n, bytes(b))
+    return rows
 
 
 if __name__ == "__main__":

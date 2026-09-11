@@ -1,11 +1,20 @@
 /*
  * code_0c066000.c - frame-stage callees on page 0x0C066xxx.
  *
- * These walk an intrusive list whose header lives at 0x0C4EA314 and call a
- * virtual method on each node's object.  The list is sentinel-terminated: the
- * sentinel is the header itself at +0x0C, the first node is at +0x14, and
- * func_0c1162e0 advances to the next node.  Same shape as libstdc++'s
- * std::list walk, which fits a binary that is C++ throughout.
+ * These walk a std::map held by the object at 0x0C4EA314.  RETRACTED: this
+ * comment used to call it an intrusive, std::list-like list.  The advance
+ * function func_0c1162e0 is libstdc++'s _Rb_tree_increment -- placed by
+ * tools/libmap.py and byte-exact from upstream tree.cc -- so the container
+ * is a red-black tree, and the layout reads as std::map's:
+ *   +0x00  the owner's vtable
+ *   +0x08  the tree (its empty comparator/allocator)
+ *   +0x0C  the header node: colour, +0x10 parent (root), +0x14 leftmost
+ *          (= begin(), the "first node"), +0x18 rightmost
+ *   +0x1C  node count
+ *   +0x20  a pointer pair (a std::vector) after the map
+ * A node's value starts at +0x10: key at +0x10, mapped object pointer at
+ * +0x14 -- so std::map<key, Object*>.  The names below (Container, Node,
+ * sentinel) predate this and are kept so the matched code stays as it is.
  *
  * CORRECTION (this file previously said the four-byte residue in
  * func_0c06624c/func_0c066294 was register allocation and not source form).

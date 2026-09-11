@@ -126,12 +126,28 @@ def main():
         else:
             fallback.append(a)
 
+    # Upstream runtime libraries (lib/map.txt): overlay every placed function
+    # the library pass reproduces exactly.
+    lplaced, lnb, lfall = 0, 0, 0
+    for a, (kind, _, n, b) in sorted(_status.library_pass().items()):
+        if not (lo <= a < hi):
+            continue
+        if kind == "EXACT":
+            img[a - lo:a - lo + n] = b
+            lplaced += 1; lnb += n
+        else:
+            lfall += 1
+
     span = hi - lo
     code_b = sum(FUNCS[a] - a for a in FUNCS if CODE_LO <= a < CODE_HI)
     label = "code region" if code_only else "program image"
     print(f"{label} [0x{lo:08X},0x{hi:08X}) = {span} bytes")
     print(f"  rebuilt from compiled C : {len(placed)} functions, {nb} B "
           f"({100.0 * nb / code_b:.2f}% of the {code_b} B in known functions)")
+    if lplaced or lfall:
+        print(f"  rebuilt from upstream   : {lplaced} library functions, {lnb} B "
+              f"({100.0 * lnb / code_b:.2f}%) -- lib/map.txt; {lfall} placed but "
+              f"not reproducing")
     print(f"  fallback to base ROM    : {len(fallback)} translated functions "
           f"that do not reproduce yet, {len(FUNCS) - len(placed) - len(fallback)} "
           f"not translated, plus all data/padding")

@@ -97,7 +97,8 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C | 1,321 functions translated, 1,266 rebuild byte-exactly (2.21% of code bytes) |
+| SH-4 → C (game code) | 1,321 functions translated, 1,266 rebuild byte-exactly (2.21% of code bytes) |
+| SH-4 runtime libraries | 921 libstdc++/libsupc++ functions rebuilt from upstream GCC 4.1.2 source (9.14% of code bytes; with the game code, 11.27% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -110,6 +111,15 @@ stream. An earlier converter that read notes out of the stream was inventing
 them, and has been retracted.
 
 ## Notes
+
+**The runtime libraries are not decompiled — they are recompiled.** The game
+links GCC 4.1.2's libstdc++ and libsupc++ (and newlib). `make upstream`
+fetches those releases (pinned by SHA-256) into `build/`; `tools/libmap.py`
+compiles them with the library's own recipe, finds each function in the ROM
+(bytes must match with relocated words masked, placements must follow the
+object's section order, and every symbol a relocation implies must agree
+across all uses), and records the result in `lib/map.txt`. `make status` and
+`make rebuild` then check those functions exactly like the game's own.
 
 The ROM was built with **GCC 4.1.2**, and not with one set of flags. Three
 recipes are known so far: `-O1 -ml -m4-single-only -fno-delayed-branch` for
