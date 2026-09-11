@@ -138,7 +138,7 @@ RODATA = {}      # {src: {section: bytes}}, filled by compile_all
 def literal_at(src, sec, off):
     """The NUL-terminated string at `off` in an object's .rodata section."""
     data = RODATA.get(src, {}).get(sec)
-    if data is None or off >= len(data):
+    if data is None or off >= len(data) or b"\0" not in data[off:]:
         return None
     return '"' + data[off:data.index(b"\0", off)].decode("latin-1") + '"'
 
@@ -380,7 +380,7 @@ def main():
                 if nm != name:
                     continue
                 for o, sym, inplace in rl:
-                    if sym and sym.startswith(".rodata") and o + 4 <= n:
+                    if sym and sym.startswith(".rodata.str") and o + 4 <= n:
                         t = literal_at(src, sym, inplace)
                         if t is not None:
                             lits.setdefault(t, struct.unpack_from("<I", rom, a + o - BASE)[0])

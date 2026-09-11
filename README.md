@@ -98,7 +98,7 @@ are not tracked; `make` regenerates them.
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
 | SH-4 → C (game code) | 1,321 functions translated, 1,266 rebuild byte-exactly (2.21% of code bytes) |
-| SH-4 runtime libraries | 921 libstdc++/libsupc++ functions rebuilt from upstream GCC 4.1.2 source (9.14% of code bytes; with the game code, 11.27% is rebuilt from source) |
+| SH-4 runtime libraries | 945 libstdc++/libsupc++/newlib functions rebuilt from upstream source (9.51% of code bytes; with the game code, 11.63% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
