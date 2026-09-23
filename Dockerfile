@@ -73,5 +73,13 @@ RUN cp $GCC/libstdc++-v3/libsupc++/exception \
        $GCC/libstdc++-v3/libsupc++/cxxabi.h \
        $PREFIX/include/c++/4.1.2/
 
+# libgcc (libgcc2.c, the unwinder) compiles against headers the gcc build
+# generates (tconfig.h, tm.h, options.h, insn-*.h, ...); keep them, so the
+# libgcc functions linked into the ROM can be rebuilt from upstream source.
+RUN mkdir -p $PREFIX/libgcc-objdir && cd b-gcc/gcc \
+ && cp *.h $PREFIX/libgcc-objdir/ \
+ && cp -r include $PREFIX/libgcc-objdir/include \
+ && cp libgcc.mk $PREFIX/libgcc-objdir/ 2>/dev/null; true
+
 RUN rm -rf /build
 WORKDIR /src

@@ -62,25 +62,50 @@ RECIPES = {
     "libstdcxx": ("gcc-4.1.2/libstdc++-v3",
                   "-x c++ -O2 -ml -m4-single-only -fno-implicit-templates "
                   "-ffunction-sections -fdata-sections -Iinclude -Ilibsupc++", 32),
+    # libgcc -- gcc 4.1.2's own LIBGCC2_CFLAGS/INCLUDES for this multilib,
+    #   run in the gcc build directory the image keeps; the per-object extra
+    #   flags (-DL_<fn>, -fexceptions, ...) come from its libgcc.mk.
+    "libgcc": ("/opt/sh-elf/libgcc-objdir",
+               "-O2 -DIN_GCC -DCROSS_COMPILE -isystem ./include -DIN_LIBGCC2 "
+               "-D__GCC_FLOAT_NOT_NEEDED -Dinhibit_libc -I. "
+               "-I/src/build/upstream/gcc-4.1.2/gcc "
+               "-I/src/build/upstream/gcc-4.1.2/include "
+               "-I/src/build/upstream/gcc-4.1.2/libcpp/include "
+               "-ffunction-sections", 32),
     "newlib": ("newlib-1.15.0/newlib",
                "-O1 -ml -m4-single-only -ffunction-sections -fdata-sections "
-               "-Ilibc/include -Ilibm/common -D__IEEE_LITTLE_ENDIAN", 2),
+               "-Ilibc/include -Ilibm/common", 2),
 }
 
 # Functions shorter than this are placed only when adjacent to a neighbour.
 SHORT = 32
+# Placements this size or larger anchor their library's address range;
+# smaller ones must lie within NEAR bytes of an anchor of the same library.
+ANCHOR = 256
+NEAR = 0x8000
 
 rom = (REPO / "roms/fpr-24423_decrypted.bin").read_bytes()
 code = rom[:CODE_END - BASE]
 
 
 def sources():
+    """[(recipe, source id)].  A lib/sources.txt line is
+    `<recipe> <path> [extra flags...]`; with extra flags (libgcc builds one
+    object per -DL_<function> from the same file) the id is
+    `<path>?<flag>,<flag>...`."""
     out = []
     for ln in (REPO / "lib/sources.txt").read_text().splitlines():
         ln = ln.split("#")[0].split()
         if len(ln) == 2:
             out.append((ln[0], ln[1]))
+        elif len(ln) > 2:
+            out.append((ln[0], ln[1] + "?" + ",".join(ln[2:])))
     return out
+
+
+def split_id(src):
+    path, _, extra = src.partition("?")
+    return path, extra.replace(",", " ")
 
 
 def compile_all(srcs):
@@ -88,36 +113,50 @@ def compile_all(srcs):
     script = ""
     for recipe, src in srcs:
         cwd, flags, _ = RECIPES[recipe]
-        rel = src[len(cwd) + 1:] if src.startswith(cwd + "/") else src
+        path, extra = split_id(src)
+        if cwd.startswith("/"):          # an absolute build directory (libgcc)
+            where, rel = cwd, f"/src/{UP}/{path}"
+        else:
+            where = f"/src/{UP}/{cwd}"
+            rel = path[len(cwd) + 1:] if path.startswith(cwd + "/") else path
         script += (
             f'echo "===SRC=== {src}"\n'
-            f"cd /src/{UP}/{cwd} && sh-elf-gcc {flags} -c {rel} -o /tmp/o.o 2>/tmp/e "
+            f"rm -f /tmp/o.o; cd {where} && sh-elf-gcc {flags} {extra} -c {rel} -o /tmp/o.o 2>/tmp/e "
             f"|| {{ echo ===FAIL===; head -3 /tmp/e; }}\n"
+            "echo ===T===; sh-elf-objdump -t /tmp/o.o\n"
             "echo ===H===; sh-elf-objdump -h /tmp/o.o\n"
             "echo ===R===; sh-elf-objdump -r /tmp/o.o\n"
             "echo ===B===\n"
-            "for x in $(sh-elf-objdump -h /tmp/o.o | grep -oE '[.](text[.][A-Za-z_0-9.$]+|rodata[.A-Za-z_0-9]*)'); do "
+            "for x in $(sh-elf-objdump -h /tmp/o.o | grep -oE '[.](text([.][A-Za-z_0-9.$]+)?|rodata[.A-Za-z_0-9]*)' | sort -u); do "
             "sh-elf-objcopy -O binary --only-section=$x /tmp/o.o /tmp/s.bin; "
             "printf '%s ' $x; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n")
     r = subprocess.run(["docker", "run", "--rm", "-i", "-v", f"{REPO}:/src", IMAGE, "sh"],
                        input=script, capture_output=True, text=True)
     res, src, phase, cur, rel = {}, None, "", None, {}
+    plain = None     # first global symbol in a plain .text (assembler sources)
     for ln in r.stdout.splitlines():
         if ln.startswith("===SRC==="):
-            src = ln.split()[1]; res[src] = []; rel = {}; continue
+            src = ln.split()[1]; res[src] = []; rel = {}; plain = None; continue
         if ln.startswith("==="):
             phase = ln; continue
+        if phase == "===T===":
+            # "<addr> <7 flag chars> <section>\t<size> [.hidden] <name>"
+            m = re.match(r"^([0-9a-f]+) (.{7}) (\S+)\t[0-9a-f]+\s+(?:\.hidden\s+)?(\S+)$", ln)
+            if m and plain is None and m.group(2)[0] == "g" and m.group(3) == ".text" \
+                    and int(m.group(1), 16) == 0:
+                plain = re.sub(r"^_", "", m.group(4))
+            continue
         if phase == "===R===":
             if ln.startswith("RELOCATION RECORDS FOR"):
-                m = re.match(r"RELOCATION RECORDS FOR \[[.]text[.](\S+)\]", ln)
-                cur = m.group(1) if m else None
-                if cur:
+                m = re.match(r"RELOCATION RECORDS FOR \[[.]text(?:[.](\S+))?\]", ln)
+                cur = (m.group(1) or "") if m else None
+                if cur is not None:
                     rel[cur] = []
                 continue
             m = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
-            if m and cur:
+            if m and cur is not None:
                 rel[cur].append((int(m.group(1), 16), re.sub(r"^_", "", m.group(2))))
-            elif re.match(r"^[0-9a-f]+\s+R_SH_", ln) and cur:
+            elif re.match(r"^[0-9a-f]+\s+R_SH_", ln) and cur is not None:
                 rel[cur].append((int(ln.split()[0], 16), None))   # other types: mask only
         elif phase == "===B===":
             p = ln.split()
@@ -125,6 +164,14 @@ def compile_all(srcs):
                 RODATA.setdefault(src, {})[p[0]] = bytes.fromhex(p[1])
             elif len(p) == 2:
                 name = p[0][6:]
+                if p[0] == ".text":               # assembler source: one blob
+                    if plain is None:
+                        continue
+                    b = bytes.fromhex(p[1])
+                    rl = [(o, s, struct.unpack_from("<I", b, o)[0] if o + 4 <= len(b) else 0)
+                          for o, s in rel.get("", [])]
+                    res[src].append((plain, b, rl))
+                    continue
                 b = bytes.fromhex(p[1])
                 rl = [(o, s, struct.unpack_from("<I", b, o)[0] if o + 4 <= len(b) else 0)
                       for o, s in rel.get(name, [])]
@@ -236,7 +283,9 @@ def place(funcs, cands, known, align=32):
             continue
         prev_ok = k > 0 and idx[k - 1] == i - 1 and al(out[i - 1] + cands[i - 1][0]) == a
         next_ok = k + 1 < len(idx) and idx[k + 1] == i + 1 and al(a + n) == out[i + 1]
-        if prev_ok or next_ok:
+        # ...or when its bytes occur exactly once in the whole ROM (still
+        # subject to the isolation rule in main()).
+        if prev_ok or next_ok or len(cands[i][1]) == 1:
             keep[i] = a
     return keep
 
@@ -281,7 +330,10 @@ def compiled_cached(srcs):
 def main():
     srcs = sources()
     compiled = compiled_cached(srcs)
-    align = {src: RECIPES[r][2] for r, src in srcs}
+    # lib1funcs.asm aligns its routines with `.align 2` (4 bytes), not the
+    # compiler's function alignment.
+    align = {src: 4 if split_id(src)[0].endswith(".asm") else RECIPES[r][2]
+             for r, src in srcs}
     cands = {src: [candidates(b, rl, align[src]) for _, b, rl in compiled.get(src, [])]
              for _, src in srcs}
     known = anchors()
@@ -323,11 +375,27 @@ def main():
     # only in their vtable) -- nothing decides which is which, so every
     # placement that asserts or depends on an unsettled symbol is dropped.
     unsettled = {k for k, vs in votes.items() if len(vs) > 1}
+    # An archive's members are linked near one another.  A small placement
+    # (a varargs wrapper, a two-line helper) far from every substantial
+    # placement of the same library is a look-alike in the game's own code,
+    # not the library function, and is dropped.
+    anchors_by = defaultdict(list)
+    for r, src in srcs:
+        for i, a in placements[src].items():
+            if cands[src][i][0] >= ANCHOR:
+                anchors_by[r].append(a)
+    recipe_of = {src: r for r, src in srcs}
+    isolated = 0
     funcs, syms = [], {}
     for _, src in srcs:
         fl = compiled.get(src, [])
         for i, a in list(placements[src].items()):
             name, b, rl = fl[i]
+            n = cands[src][i][0]
+            near = any(abs(a - x) <= NEAR for x in anchors_by[recipe_of[src]] if x != a)
+            if n < ANCHOR and not near:
+                del placements[src][i]; isolated += 1
+                continue
             if name in unsettled or unsettled & set(implied(a, rl, src)):
                 del placements[src][i]
         for i, a in sorted(placements[src].items()):
@@ -358,7 +426,8 @@ def main():
     total = sum(n for _, n, _, _ in funcs)
     print(f"\n{len(funcs)} functions, {total} bytes placed; "
           f"{len(syms)} referenced symbols; {len(unsettled)} unsettled (dropped); "
-          f"{len(overlaps)} overlaps; {dropped} coincident duplicates dropped")
+          f"{len(overlaps)} overlaps; {dropped} coincident duplicates dropped; "
+          f"{isolated} isolated small placements dropped")
     for k in sorted(unsettled):
         print("  UNSETTLED", k, {hex(a): w for a, w in votes[k].items()})
     for f, g in overlaps[:10]:

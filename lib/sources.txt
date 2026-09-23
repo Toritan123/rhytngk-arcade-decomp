@@ -631,3 +631,135 @@ newlib newlib-1.15.0/newlib/libm/math/wr_gamma.c
 newlib newlib-1.15.0/newlib/libm/math/wr_lgamma.c
 newlib newlib-1.15.0/newlib/libm/math/wrf_gamma.c
 newlib newlib-1.15.0/newlib/libm/math/wrf_lgamma.c
+
+# libgcc (gcc 4.1.2), one object per libgcc.mk rule for the -ml -m4-single-only multilib
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_ashiftrt -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_ashiftrt_n -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_ashiftlt -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_lshiftrt -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_movmem -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_movmem_i4 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_mulsi3 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_sdivsi3 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_sdivsi3_i4 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_udivsi3 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_udivsi3_i4 -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/config/sh/lib1funcs.asm -ml -m4-single-only -DL_set_fpscr -xassembler-with-cpp
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_muldi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_negdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_lshrdi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ashldi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ashrdi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_cmpdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ucmpdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_clear_cache
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_enable_execute_stack
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_trampoline
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL__main
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_absvsi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_absvdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_addvsi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_addvdi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_subvsi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_subvdi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_mulvsi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_mulvdi3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_negvsi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_negvdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ctors
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ffssi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ffsdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_clz
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_clzsi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_clzdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ctzsi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_ctzdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_popcount_tab
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_popcountsi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_popcountdi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_paritysi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_paritydi2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_powisf2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_powidf2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_powixf2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_powitf2
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_mulsc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_muldc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_mulxc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_multc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_divsc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_divdc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_divxc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_divtc3
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunssfsi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunsdfsi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunsxfsi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixsfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunssfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_floatdisf
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixdfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunsdfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_floatdidf
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixxfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunsxfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_floatdixf
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixtfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_fixunstfdi
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_floatditf
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_eprintf -fvisibility=hidden -DHIDE_EXPORTS
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL__gcc_bcmp -fvisibility=hidden -DHIDE_EXPORTS
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_divdi3 -fexceptions -fnon-call-exceptions
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_moddi3 -fexceptions -fnon-call-exceptions
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_udivdi3 -fexceptions -fnon-call-exceptions
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_umoddi3 -fexceptions -fnon-call-exceptions
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_udiv_w_sdiv -fexceptions -fnon-call-exceptions
+libgcc gcc-4.1.2/gcc/libgcc2.c -ml -m4-single-only -DL_udivmoddi4 -fexceptions -fnon-call-exceptions
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_pack_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_unpack_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_addsub_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_mul_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_div_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_fpcmp_parts_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_compare_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_eq_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_ne_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_gt_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_ge_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_lt_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_le_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_unord_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_si_to_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_sf_to_si
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_negate_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_make_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_sf_to_df
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_thenan_sf
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_sf_to_usi
+libgcc fp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_usi_to_sf
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_pack_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_unpack_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_addsub_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_mul_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_div_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_fpcmp_parts_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_compare_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_eq_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_ne_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_gt_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_ge_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_lt_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_le_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_unord_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_si_to_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_df_to_si
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_negate_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_make_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_df_to_sf
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_thenan_df
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_df_to_usi
+libgcc dp-bit.c -DFINE_GRAINED_LIBRARIES -ml -m4-single-only -DL_usi_to_df
+libgcc gcc-4.1.2/gcc/unwind-dw2.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
+libgcc gcc-4.1.2/gcc/unwind-dw2-fde.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
+libgcc gcc-4.1.2/gcc/unwind-sjlj.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
+libgcc gcc-4.1.2/gcc/gthr-gnat.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
+libgcc gcc-4.1.2/gcc/unwind-c.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions

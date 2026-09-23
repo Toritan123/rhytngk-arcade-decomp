@@ -98,7 +98,7 @@ are not tracked; `make` regenerates them.
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
 | SH-4 → C (game code) | 1,321 functions translated, 1,266 rebuild byte-exactly (2.21% of code bytes) |
-| SH-4 runtime libraries | 945 libstdc++/libsupc++/newlib functions rebuilt from upstream source (9.51% of code bytes; with the game code, 11.63% is rebuilt from source) |
+| SH-4 runtime libraries | 964 libstdc++/libsupc++/newlib/libgcc functions rebuilt from upstream source (10.15% of code bytes; with the game code, 12.28% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -113,7 +113,7 @@ them, and has been retracted.
 ## Notes
 
 **The runtime libraries are not decompiled — they are recompiled.** The game
-links GCC 4.1.2's libstdc++ and libsupc++ (and newlib). `make upstream`
+links GCC 4.1.2's libstdc++, libsupc++ and libgcc, and newlib 1.15.0. `make upstream`
 fetches those releases (pinned by SHA-256) into `build/`; `tools/libmap.py`
 compiles them with the library's own recipe, finds each function in the ROM
 (bytes must match with relocated words masked, placements must follow the
