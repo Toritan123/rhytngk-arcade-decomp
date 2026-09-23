@@ -763,3 +763,17 @@ libgcc gcc-4.1.2/gcc/unwind-dw2-fde.c -ml -m4-single-only -fvisibility=hidden -D
 libgcc gcc-4.1.2/gcc/unwind-sjlj.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
 libgcc gcc-4.1.2/gcc/gthr-gnat.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
 libgcc gcc-4.1.2/gcc/unwind-c.c -ml -m4-single-only -fvisibility=hidden -DHIDE_EXPORTS -fexceptions
+
+# zlib 1.2.3
+zlib zlib-1.2.3/adler32.c
+zlib zlib-1.2.3/compress.c
+zlib zlib-1.2.3/crc32.c
+zlib zlib-1.2.3/deflate.c
+zlib zlib-1.2.3/gzio.c
+zlib zlib-1.2.3/infback.c
+zlib zlib-1.2.3/inffast.c
+zlib zlib-1.2.3/inflate.c
+zlib zlib-1.2.3/inftrees.c
+zlib zlib-1.2.3/trees.c
+zlib zlib-1.2.3/uncompr.c
+zlib zlib-1.2.3/zutil.c

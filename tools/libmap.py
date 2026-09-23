@@ -54,14 +54,19 @@ UP = "build/upstream"
 # Library recipes: (directory, flags, function alignment).  Each was
 # established by exact matches, not assumed:
 #   libstdcxx -- libstdc++-v3's own CXXFLAGS for this multilib; -O2 aligns
-#                functions to 32 bytes (the "32-byte aligned" pages).
+#                functions to 32 bytes (the "32-byte aligned" pages).  The
+#                ROM's build had wchar_t support (_GLIBCXX_USE_WCHAR_T:
+#                locale::_Impl's constructor installs the wchar_t facets),
+#                which newlib 1.15.0's headers cannot configure; the missing
+#                declarations come from lib/shim/wchar_decls.h.
 #   newlib    -- -O1 with delayed branches: newlib's modff (0x0C124ACC) is
 #                exact under exactly that and under nothing else tried (-O2,
 #                -Os, -O1 -fno-delayed-branch).  -O1 aligns to 2.
 RECIPES = {
     "libstdcxx": ("gcc-4.1.2/libstdc++-v3",
                   "-x c++ -O2 -ml -m4-single-only -fno-implicit-templates "
-                  "-ffunction-sections -fdata-sections -Iinclude -Ilibsupc++", 32),
+                  "-ffunction-sections -fdata-sections -Iinclude -Ilibsupc++ "
+                  "-D_GLIBCXX_USE_WCHAR_T=1 -include /src/lib/shim/wchar_decls.h", 32),
     # libgcc -- gcc 4.1.2's own LIBGCC2_CFLAGS/INCLUDES for this multilib,
     #   run in the gcc build directory the image keeps; the per-object extra
     #   flags (-DL_<fn>, -fexceptions, ...) come from its libgcc.mk.
@@ -72,6 +77,13 @@ RECIPES = {
                "-I/src/build/upstream/gcc-4.1.2/include "
                "-I/src/build/upstream/gcc-4.1.2/libcpp/include "
                "-ffunction-sections", 32),
+    # zlib -- 1.2.3 ("inflate 1.2.3 Copyright ..." is in the ROM's rodata).
+    #   -O2 without the second scheduling pass and without delayed branches:
+    #   inflate_fast (0x0C10FB40) reproduces under that and nothing nearby
+    #   (-O1, -O2, -O3, -Os, with or without the other two flags).
+    "zlib": ("zlib-1.2.3",
+             "-O2 -fno-schedule-insns2 -fno-delayed-branch -ml -m4-single-only "
+             "-ffunction-sections -fdata-sections", 32),
     "newlib": ("newlib-1.15.0/newlib",
                "-O1 -ml -m4-single-only -ffunction-sections -fdata-sections "
                "-Ilibc/include -Ilibm/common", 2),
@@ -127,7 +139,7 @@ def compile_all(srcs):
             "echo ===H===; sh-elf-objdump -h /tmp/o.o\n"
             "echo ===R===; sh-elf-objdump -r /tmp/o.o\n"
             "echo ===B===\n"
-            "for x in $(sh-elf-objdump -h /tmp/o.o | grep -oE '[.](text([.][A-Za-z_0-9.$]+)?|rodata[.A-Za-z_0-9]*)' | sort -u); do "
+            "for x in $(sh-elf-objdump -h /tmp/o.o | grep -oE '[.](text([.][A-Za-z_0-9.$]+)?|rodata[.A-Za-z_0-9]*)' | awk '!seen[$0]++'); do "
             "sh-elf-objcopy -O binary --only-section=$x /tmp/o.o /tmp/s.bin; "
             "printf '%s ' $x; od -An -v -tx1 /tmp/s.bin | tr -d ' \\n'; echo; done\n")
     r = subprocess.run(["docker", "run", "--rm", "-i", "-v", f"{REPO}:/src", IMAGE, "sh"],
@@ -210,12 +222,12 @@ def candidates(b, rl, align):
 
 
 def local_key(src, sym):
-    """Name under which a relocation symbol is recorded: `.text.X` is the
-    function X; other section symbols (.bss.X, .data.X, .LCn) are local to
-    their object, so they are keyed by source; .rodata.str literals are
-    handled separately (L lines)."""
-    if sym.startswith(".text."):
-        return sym[6:]
+    """Name under which a relocation symbol is recorded.  GCC relocates
+    against a section symbol only for something local to the object: a
+    static function (`.text.X`), static data (.bss.X, .data.X, .LCn).  Two
+    objects can each have their own local X (the wchar_t and char locale
+    instantiations both carry a static __verify_grouping), so these are keyed
+    by source; .rodata.str literals are handled separately (L lines)."""
     if sym.startswith(".rodata.str"):
         return None
     if sym.startswith("."):
@@ -246,7 +258,8 @@ def place(funcs, cands, known, align=32):
     for i, (name, b, rl) in enumerate(funcs):
         n, c = cands[i]
         for a in c:
-            if known.get(name, a) != a:
+            if known.get(name, a) != a or \
+                    known.get(f"{SRC_CTX[0]}:.text.{name}", a) != a:
                 continue
             imp = implied(a, rl, SRC_CTX[0])
             if any(known.get(k, v) != v for k, v in imp.items()):
@@ -311,7 +324,7 @@ def compiled_cached(srcs):
                          for src, fl in data.items()}
         except Exception:
             store = {}
-    key = lambda r, src: (RECIPES[r], src)
+    key = lambda r, src: (RECIPES[r], src, 3)   # 3: object section order kept
     missing = [(r, src) for r, src in srcs if key(r, src) not in store]
     if missing:
         RODATA.clear()
@@ -337,6 +350,31 @@ def main():
     cands = {src: [candidates(b, rl, align[src]) for _, b, rl in compiled.get(src, [])]
              for _, src in srcs}
     known = anchors()
+    # names some relocation refers to globally (not via a section symbol)
+    global_refs = {sym for fl in compiled.values() for _, _, rl in fl
+                   for _, sym, _ in rl if sym and not sym.startswith(".")}
+    # Seed: a function whose bytes occur at exactly one address in the ROM
+    # is placed without argument, and the symbols its relocations imply are
+    # facts.  Those seed `known` before any ambiguous placement is made;
+    # the vote below then only extends them.  (Template instantiations are
+    # duplicated all over the ROM -- every game object that used them has
+    # its own copy -- so an unweighted majority of ambiguous placements can
+    # outvote the truth.)
+    seed = defaultdict(set)
+    for _, src in srcs:
+        for i, (name, b, rl) in enumerate(compiled.get(src, [])):
+            n, c = cands[src][i]
+            if len(c) == 1 and n >= SHORT:
+                seed[f"{src}:.text.{name}"].add(c[0])
+                if name in global_refs:
+                    seed[name].add(c[0])
+                for k, v in implied(c[0], rl, src).items():
+                    seed[k].add(v)
+    base = dict(anchors())
+    for k, vs in seed.items():
+        if len(vs) == 1 and k not in base:
+            base[k] = next(iter(vs))
+    known = dict(base)
     for rnd in range(6):
         # place every object under the current symbol constraints
         placements = {}
@@ -351,10 +389,12 @@ def main():
             for i, a in placements[src].items():
                 name, b, rl = fl[i]
                 n = cands[src][i][0]
-                votes[name][a] += n
+                votes[f"{src}:.text.{name}"][a] += n
+                if name in global_refs:
+                    votes[name][a] += n
                 for k, v in implied(a, rl, src).items():
                     votes[k][v] += n
-        newknown = dict(anchors())
+        newknown = dict(base)
         conflicts = 0
         for k, vs in votes.items():
             if len(vs) > 1:
@@ -366,7 +406,7 @@ def main():
             if len(ranked) == 1 or ranked[0][1] >= 2 * ranked[1][1]:
                 newknown[k] = ranked[0][0]
         print(f"round {rnd}: {sum(len(p) for p in placements.values())} placed, "
-              f"{conflicts} symbols with disagreeing votes")
+              f"{conflicts} symbols with disagreeing votes, {len(base)} seeded")
         if newknown == known and conflicts == 0:
             break
         known = newknown
@@ -421,6 +461,17 @@ def main():
         dedup.append(f)
     dropped = len(funcs) - len(dedup)
     funcs = dedup
+    # Two placements that overlap cannot both be right; keep the larger
+    # (more bytes matched), drop the other.
+    changed = True
+    while changed:
+        changed = False
+        for f, g in zip(funcs, funcs[1:]):
+            if f[0] + f[1] > g[0]:
+                funcs.remove(g if g[1] <= f[1] else f)
+                dropped += 1
+                changed = True
+                break
     overlaps = [(f, g) for f, g in zip(funcs, funcs[1:]) if f[0] + f[1] > g[0]]
     placed = {n: a for a, _, n, _ in funcs}
     total = sum(n for _, n, _, _ in funcs)
