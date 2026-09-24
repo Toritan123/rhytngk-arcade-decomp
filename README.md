@@ -97,8 +97,8 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C (game code) | 1,321 functions translated, 1,266 rebuild byte-exactly (2.21% of code bytes) |
-| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 24.73% is rebuilt from source) |
+| SH-4 → C (game code) | 1,351 functions translated, 1,298 rebuild byte-exactly (2.31% of code bytes) |
+| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 24.83% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -137,6 +137,12 @@ Functions are normally named `func_0cXXXXXX` so the name carries the address —
 that is how relocations resolve without a linker script. `symbols.txt` maps
 real names back to addresses for the ones that have been named, and says on
 what basis each name was given.
+
+The ROM keeps its C++ run-time type information, so the game's polymorphic
+classes have their real names: `tools/rtti.py` reads 106 of them (the
+`Task` family, `aet::`, `test_mode::`, `BackupRam*`, …) with their bases and
+vtables straight from the typeinfo objects, and `--symbols` produces the
+vtable/typeinfo lines in `symbols.txt`.
 
 Addresses: `vaddr = file_offset + 0x0C01FB00` for the program ROM; code ends at
 `0x0C1BFB00`.
