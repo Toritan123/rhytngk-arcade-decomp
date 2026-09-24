@@ -448,12 +448,15 @@ def main():
     # debug-mode twin debug_list.cc, operator delete and its nothrow
     # overload, __throw_bad_cast and __cxa_bad_cast): the ROM holds one, so
     # a coincident pair means one of them is not linked.  Keep the name
-    # other placed functions refer to; failing that, the one whose object
-    # has more placements.
+    # other placed functions refer to; failing that, not a debug-mode twin
+    # (debug_list.cc's __gnu_norm:: copies are linked only by code built with
+    # _GLIBCXX_DEBUG, and the game's own std::list code calls the std::
+    # ones); failing that, the one whose object has more placements.
     per_src = defaultdict(int)
     for f in funcs:
         per_src[f[3]] += 1
-    funcs.sort(key=lambda f: (f[0], -(f[2] in syms), -per_src[f[3]]))
+    funcs.sort(key=lambda f: (f[0], -(f[2] in syms), "/debug_" in f[3],
+                              -per_src[f[3]]))
     dedup = []
     for f in funcs:
         if dedup and dedup[-1][0] == f[0]:

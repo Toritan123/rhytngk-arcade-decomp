@@ -123,4 +123,32 @@ s32 func_0c037218(void)
     return func_0c037090(&g_0C4654CC);
 }
 
+/* ---- GCC's __static_initialization_and_destruction_0 for the object, and
+   its _GLOBAL__D / _GLOBAL__I stubs, written out: the object's constructor
+   (C1 at 0x0C037848) and destructor (D1 at 0x0C037590) are not translated,
+   so the definition that would generate these cannot be given yet. ---- */
+extern void func_0c037848(BackupObj *);
+extern void func_0c037590(BackupObj *);
+
+void func_0c0378e8(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c037848(&g_0C4654CC);
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF)
+            func_0c037590(&g_0C4654CC);
+    }
+}
+
+void func_0c037934(void)
+{
+    func_0c0378e8(0, 0xFFFF);
+}
+
+void func_0c037958(void)
+{
+    func_0c0378e8(1, 0xFFFF);
+}
+
 }

@@ -410,3 +410,28 @@
 0x0C257748  _ZTVN3dtm3AetE  # [V] RTTI
 0x0C257770  _ZTIN3dtm3AetE  # [V] RTTI
 0x0C25777C  _ZTSN3dtm3AetE  # [V] RTTI
+0x0C14A764  _ZNSt4listIP4TaskSaIS1_EE5eraseESt14_List_iteratorIS1_E  # [T] std::list<Task*>::erase(iterator)
+0x0C14A720  _ZNSt10_List_baseIP4TaskSaIS1_EE8_M_clearEv  # [T] std::_List_base<Task*>::_M_clear
+0x0C14A6AC  _ZN9__gnu_cxx12__pool_allocISt10_List_nodeIP4TaskEE10deallocateEPS4_j  # [T] the task list's node deallocate
+0x0C465678  _ZN9__gnu_cxx12__pool_allocISt10_List_nodeIP4TaskEE12_S_force_newE  # [T] its static
+# Task / TaskInterface constructors and destructors.  D1 and D0 are Task's
+# vtable slots 0 and 1; each D2 is the byte-identical copy after its D1, and
+# Task's D1 calls TaskInterface's D2.  The two constructor clones are
+# identical, so which one is C1 is not established by the bytes.
+0x0C038704  _ZN13TaskInterfaceD0Ev  # [T]
+0x0C038728  _ZN13TaskInterfaceD1Ev  # [T]
+0x0C03873C  _ZN13TaskInterfaceD2Ev  # [T]
+0x0C038750  _ZN4TaskD0Ev            # [V] vtable slot 1
+0x0C038784  _ZN4TaskD1Ev            # [V] vtable slot 0
+0x0C0387A8  _ZN4TaskD2Ev            # [T]
+0x0C038E4C  _ZN4TaskC1Ev            # [T] (C1/C2 order: hypothesis)
+0x0C038E98  _ZN4TaskC2Ev            # [T]
+0x0C250A74  "unknown"               # [V] ROM data, Task's default name
+0x0C14A5B8  _ZN9__gnu_cxx12__pool_allocISt10_List_nodeIP4TaskEE8allocateEjPKv  # [T] the task list's node allocate
+# The task manager's class name is ours (no vtable, so no RTTI).  C1 is the
+# constructor func_0c03867c's `new` calls and D1 the destructor
+# func_0c038f0c's `delete` calls; C2 / D2 are their identical copies.
+0x0C038090  _ZN11TaskManagerC1Ev    # [T]
+0x0C038B20  _ZN11TaskManagerC2Ev    # [T]
+0x0C038EE4  _ZN11TaskManagerD1Ev    # [T]
+0x0C038654  _ZN11TaskManagerD2Ev    # [T]

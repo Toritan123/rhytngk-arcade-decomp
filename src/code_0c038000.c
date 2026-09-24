@@ -1,223 +1,611 @@
+/* LANG: c++ */
 /*
- * code_0c038000.c - single-instruction leaf functions on page 0x0C038xxx.
+ * code_0c038000.c - the task system: Task, its manager and the frame sweeps.
  *
- * Trivial constant / identity / one-load / one-store leaves, recovered
- * mechanically: each is a 14-byte function whose whole body is one
- * instruction between the standard -O1 frame setup and teardown, so the C
- * form follows from that instruction alone [scanner].  The *roles* of these
- * accessors are unknown and deliberately not named.
+ * The class names are the ROM's own (RTTI, see tools/rtti.py): `Task`
+ * derives from the abstract `TaskInterface`, and every game mode --
+ * adv::TaskTitle, TaskLive, game::TaskResult, test_mode::TaskTestMode,
+ * TaskAgb, ... -- derives from `Task`.  This page holds Task's non-virtual
+ * machinery and the manager every task is registered with.
  *
- * The instruction sits AFTER `mov r15,r14` here; that ordering is what marks
- * the page as part of the -O1 region (the -O2 region schedules it before the
- * frame setup -- see src/code_0c17b000.c).
+ * TaskInterface's virtual slots 2..6 (after the two destructor slots) have
+ * inline defaults returning true / false / true / nothing / nothing.  How
+ * this page calls them fixes their roles in the state machine but not their
+ * names, so they are vf2..vf6 here:
+ *
+ *   state 1 -> 2 when vf2() returns true, 2 -> 3 when vf3() does, and in
+ *   state 3 vf4() returning true ends the task (or restarts it);
+ *   vf5 / vf6 run each frame while the task is live (func_0c0380b4 /
+ *   func_0c0380e0).
+ *
+ * The manager is a std::list<Task *> plus the task being updated and a busy
+ * flag, created on first use through a nifty counter (func_0c03867c /
+ * func_0c038f0c): each translation unit that includes the task header gets
+ * its own static object whose constructor bumps the counter -- this page's is
+ * at 0x0C465670, main's page has another at 0x0C461C5D.  The manager's class
+ * has no vtable, so no RTTI and no known name.
+ *
+ * Several walks here only reproduce through real list iterators: a
+ * post-increment `it++` keeps a copy of the cursor, `++it` does not, and the
+ * backward walk is a reverse_iterator (its `*` reads node->prev).  Written
+ * over hand-rolled nodes they came out shorter than the ROM.
  *
  * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
- * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c038000.c`.
+ * as C++ (see ./Dockerfile).
  */
 
+#include <string.h>
+#include <new>
+#include <list>
+#include <algorithm>
 #include "rt_types.h"
 
-/* ---- load int at p[1] ---- */
-int func_0c03811a(const int *p) { return p[1]; }
-
-/* ---- load int at p[2] ---- */
-int func_0c03815c(const int *p) { return p[2]; }
-
-/* ---- store int at p[1] ---- */
-void func_0c03810c(int *p, int v) { p[1] = v; }
-
-/* Circular list: the header node's address is held at 0x0C465674, `next` is
-   at +0x00, `prev` at +0x04, and each node carries its object at +0x08.  The
-   +0x04 link is [verified] by func_0c038b38, which walks the ring in the
-   opposite direction through it and terminates on the header. */
-typedef struct Node38 Node38;
-struct Node38 {
-    Node38 *next;
-    Node38 *prev;
-    void   *obj;
-    s8      busy;      /* header only: set for the duration of a walk */
+class TaskInterface {
+public:
+    virtual ~TaskInterface() = 0;
+    virtual bool vf2() { return true; }
+    virtual bool vf3() { return false; }
+    virtual bool vf4() { return true; }
+    virtual void vf5() {}
+    virtual void vf6() {}
 };
 
-extern s32  func_0c038128(void *obj, s32 pass);
-extern void func_0c0380e0(void *obj);
+class Task : public TaskInterface {
+public:
+    Task();
+    virtual ~Task();
 
-/* ---- stage 6 callee: three passes over the list, acting on the nodes whose
-   object accepts that pass ---- */
-/* Does not reproduce: the ROM spills the list header to the stack and reloads
-   it at the top of every pass, while this GCC keeps it in a callee-saved
-   register.  Twelve bytes short, same instructions otherwise -- the same
-   "vendor compiler optimises less" class as func_0c037d1c. */
-void func_0c0389e4(void)
+    s32   layer;            /* +0x04: which of the three passes runs it */
+    Task *parent;           /* +0x08 */
+    s32   state;            /* +0x0C: 1 -> 2 -> 3, 4 when finished */
+    s32   status;           /* +0x10 */
+    u32   request;          /* +0x14: pending request, applied by func_0c0381e6 */
+    s32   next_state;       /* +0x18 */
+    s32   next_status;      /* +0x1C */
+    u8    restart;          /* +0x20 */
+    u8    f21;              /* +0x21 */
+    char  name[32];         /* +0x22 */
+    s32   cost;             /* +0x44: accumulated update time */
+    s32   f48;              /* +0x48: last draw time */
+};
+
+/* The class name is ours: the manager has no vtable, hence no RTTI. */
+struct TaskManager {
+    TaskManager();
+    ~TaskManager();
+
+    std::list<Task *> tasks;
+    Task *current;          /* the task being updated, else 0 */
+    bool  busy;             /* set while func_0c038a58 walks */
+};
+
+/* Copy a NUL-terminated string of at most N characters into an (N+1)-byte
+   field -- the same inlined memchr / std::min / memcpy / memset shape as the
+   ID copies in src/code_0c037090.c, with N = 31. */
+template <unsigned N>
+static inline void copy_str(const char *src, char *dst)
 {
-    Node38 *end = *(Node38 **)0x0C465674;
-    s32 pass;
-
-    for (pass = 0; pass != 3; pass++) {
-        Node38 *n = end->next;
-
-        while (n != end) {
-            void *o = n->obj;
-            if (func_0c038128(o, pass))
-                func_0c0380e0(o);
-            n = n->next;
-        }
+    if (dst != src) {
+        const char *e = (const char *)memchr(src, 0, (size_t)-1);
+        size_t len = e ? (size_t)(e - src) : (size_t)-1;
+        size_t n = std::min((size_t)N, len);
+        memcpy(dst, src, n);
+        memset(dst + n, 0, n <= N);
     }
 }
 
-extern s32  func_0c037d00(void);          /* free-running tick */
-extern s32  func_0c037ca8(s32 since);     /* ticks elapsed since */
-extern void func_0c0380b4(void *obj);
-extern void func_0c0383bc(void *obj, s32 elapsed);
+extern "C" {
 
-/* ---- stage 6 callee: the same three passes, timed ----
+extern TaskManager *g_0C465674;
+extern s32 g_0C46566C;                  /* the nifty counter */
 
-   Identical walk to func_0c0389e4 over the same list at 0x0C465674, but each
-   accepted object is run through func_0c0380b4 with the tick taken before and
-   the elapsed ticks handed to func_0c0383bc afterwards -- a per-object cost
-   measurement, matching the frame-time bookkeeping on page 0x0C037xxx.  The
-   header's byte at +0x0C is raised for the whole walk and cleared at the end,
-   which is what makes it a distinct field from the three pointers.
+extern s32  func_0c037d00(void);        /* free-running tick */
+extern s32  func_0c037ca8(s32 since);   /* ticks elapsed since */
 
-   fr12 in the ROM is not a float: `lds r0,fpul; fsts fpul,fr12` bit-copies the
-   integer tick into a callee-saved FPU register and `flds/sts` copies it back.
-   That is register allocation running out of callee-saved general registers,
-   not arithmetic -- in C it is an ordinary s32 local held across two calls.
-
-   SHORT by 4 bytes, and again the residue is allocation: the ROM keeps a
-   second copy of the list header (`mov r13,r11` at the top of every pass) and
-   a second copy of the cursor (`mov r8,r9` at the top of every node), where
-   this GCC needs neither.  Two redundant `mov`s, nothing else differs -- the
-   same class as func_0c0389e4 walking the same list. */
-void func_0c038a58(void)
-{
-    Node38 *end = *(Node38 **)0x0C465674;
-    s32 pass;
-
-    end->busy = 1;
-
-    for (pass = 0; pass != 3; pass++) {
-        Node38 *n = end->next;
-
-        while (n != end) {
-            if (func_0c038128(n->obj, pass)) {
-                s32 t0 = func_0c037d00();
-                void *o;
-
-                func_0c0380b4(n->obj);
-                o = n->obj;
-                func_0c0383bc(o, func_0c037ca8(t0));
-            }
-            n = n->next;
-        }
-    }
-
-    end->busy = 0;
-}
-
-extern void    func_0c0381e6(void *obj);
-extern void    func_0c038388(void *obj, s32 pass);
-extern s32     func_0c038420(void *obj);
-extern void    func_0c0382d8(void *obj);
-extern void    func_0c038398(void *obj, s32 elapsed);
-extern s32     func_0c038484(void *obj);
-extern Node38 *func_0c14a764(Node38 *end, Node38 *n);   /* unlink, returns successor */
-extern void    func_0c0387cc(s32 a, s32 b);
-
-/* ---- stage 6 callee: the list's full per-frame sweep ----
-
-   Three phases over the ring at 0x0C465674:
-
-     1. forward, unconditionally: func_0c0381e6 then func_0c038388(obj, 0).
-     2. backward through the `prev` links, three times, pass counting DOWN
-        from 2 to 0 -- the reverse of func_0c0389e4's forward 0..2.  An object
-        runs only if it accepts the pass (func_0c038128) and then answers yes
-        to func_0c038420.  While it runs, the header's `obj` slot holds it and
-        is cleared afterwards, so the object being updated is reachable from
-        the list head for the duration -- a re-entrancy/current-object hook.
-        The call is timed the same way as in func_0c038a58 (tick before,
-        elapsed to func_0c038398), with the tick again parked in fr12.
-     3. forward again, removing: func_0c038484 asks whether the node goes, and
-        func_0c14a764 unlinks it and returns where to carry on from.
-
-   Then func_0c0387cc(1, 0) closes the frame.
-
-   SHORT by 24 bytes, and every one of them is accounted for -- the emitted
-   instructions are otherwise identical, in order:
-
-     10B  the ROM spills the header to a stack slot (`add #-4,r15`, the store,
-          two reloads, `add #4,r14`) and reloads it for the two `obj` stores
-          in phase 2, while also keeping it live in r11.
-      2B  a second copy of the header (`mov r11,r13`).
-     12B  three `bra` trampolines: the ROM leaves phase 1's two exits and the
-          `pass = 2` initialiser as separate blocks reached by branches, where
-          this GCC falls through into them.
-
-   Not a flag question: -fno-crossjumping, -fno-reorder-blocks, -fno-gcse,
-   -fno-cse-follow-jumps, -fno-tree-dominator-opts, -fno-move-loop-invariants
-   and -fno-schedule-insns all produce the same 284 bytes. */
-void func_0c038b38(void)
-{
-    Node38 *end = *(Node38 **)0x0C465674;
-    Node38 *n;
-    s32 pass;
-
-    n = end->next;
-    if (n != end) {
-        do {
-            func_0c0381e6(n->obj);
-            func_0c038388(n->obj, 0);
-            n = n->next;
-        } while (n != end);
-    }
-
-    for (pass = 2; pass != -1; pass--) {
-        if (end->next == end)
-            continue;
-
-        n = end;
-        do {
-            void *o = n->prev->obj;
-
-            if (func_0c038128(o, pass) && func_0c038420(o)) {
-                s32 t0 = func_0c037d00();
-
-                end->obj = n->prev->obj;
-                func_0c0382d8(n->prev->obj);
-                end->obj = 0;
-
-                o = n->prev->obj;
-                func_0c038398(o, func_0c037ca8(t0));
-            }
-            n = n->prev;
-        } while (end->next != n);
-    }
-
-    n = end->next;
-    while (n != end) {
-        if (func_0c038484(n->obj))
-            n = func_0c14a764(end, n);
-        else
-            n = n->next;
-    }
-
-    func_0c0387cc(1, 0);
-}
-
-extern void func_0c14a720(Node38 *end);   /* free every node */
-
-/* ---- teardown: empty the list and re-point the header at itself ----
-   The std::list clear() shape: free the nodes, then make the sentinel's
-   next and prev both the sentinel. */
-void func_0c038628(void)
-{
-    Node38 *end = *(Node38 **)0x0C465674;
-
-    func_0c14a720(end);
-    end->next = end;
-    end->prev = end;
-}
+bool func_0c03816a(Task *t, u32 r);
+void func_0c03826a(Task *t, u32 r);
+bool func_0c0383dc(Task *t);
+bool func_0c0385a0(Task *t);
+void func_0c038c6c(Task *t, const char *name);
 
 /* ---- empty function (stage-6 slot) ---- */
 void func_0c0380a8(void)
 {
 }
+
+/* ---- per-frame hooks: vf5 / vf6 while the task is live ---- */
+void func_0c0380b4(Task *t)
+{
+    if ((t->status == 1 || t->status == 2) && t->state != 1 && t->state != 3)
+        t->vf5();
+}
+
+void func_0c0380e0(Task *t)
+{
+    if ((t->status == 1 || t->status == 2) && t->state != 1 && t->state != 3)
+        t->vf6();
+}
+
+void  func_0c03810c(Task *t, s32 layer) { t->layer = layer; }
+s32   func_0c03811a(Task *t) { return t->layer; }
+bool  func_0c038128(Task *t, s32 layer) { return t->layer == layer; }
+void  func_0c03813a(Task *t, u8 v) { t->f21 = v; }
+u8    func_0c03814a(Task *t) { return t->f21; }
+Task *func_0c03815c(Task *t) { return t->parent; }
+
+/* ---- may request r be applied now? ---- */
+bool func_0c03816a(Task *t, u32 r)
+{
+    bool ok;
+
+    if (g_0C465674->busy)
+        return false;
+    switch (r) {
+    case 1:
+        return true;
+    case 2:
+        return t->status != 0;
+    case 3:
+        ok = t->status != 1 && t->status != 3;
+        return !ok;
+    case 4:
+        return t->status == 1 || t->status == 2;
+    case 5:
+        return t->status == 2 || t->status == 3;
+    default:
+        return false;
+    }
+}
+
+/* ---- apply the pending request, then latch next_state / next_status ---- */
+void func_0c0381e6(Task *t)
+{
+    if (t->state != 1 && t->state != 3) {
+        u32 r = t->request;
+
+        if (func_0c03816a(t, r)) {
+            switch (r) {
+            case 1: t->next_state = 1; t->next_status = 1; break;
+            case 2: t->next_state = 3; t->next_status = 1; break;
+            case 3: t->next_status = 2; break;
+            case 4: t->next_status = 3; break;
+            case 5: t->next_status = 1; break;
+            }
+            t->request = 0;
+        }
+    }
+    t->state = t->next_state;
+    t->status = t->next_status;
+}
+
+/* ---- post a request; requests above 1 also go to every child ---- */
+void func_0c03826a(Task *t, u32 r)
+{
+    std::list<Task *> &l = g_0C465674->tasks;
+
+    if (r > 1) {
+        for (std::list<Task *>::iterator it = l.begin(); it != l.end(); it++) {
+            Task *c = *it;
+            if (func_0c03815c(c) == t)
+                func_0c03826a(c, r);
+        }
+    }
+    t->request = r;
+}
+
+/* ---- one update step of the state machine ---- */
+void func_0c0382d8(Task *t)
+{
+    if (t->status == 1) {
+        if (t->state == 1) {
+            if (t->vf2())
+                t->state = t->next_state = 2;
+        }
+        if (t->state == 2) {
+            if (t->vf3())
+                t->state = t->next_state = 3;
+        }
+        if (t->state == 3) {
+            if (t->vf4()) {
+                if (t->restart) {
+                    t->state = 0;
+                    t->status = 0;
+                    t->next_state = 0;
+                    t->next_status = 0;
+                    func_0c03826a(t, 1);
+                    func_0c0381e6(t);
+                    t->restart = 0;
+                } else {
+                    t->next_status = 0;
+                    t->request = 0;
+                    t->next_state = 4;
+                }
+            }
+        }
+    }
+}
+
+void func_0c038388(Task *t, s32 v) { t->cost = v; }
+void func_0c038398(Task *t, s32 v) { t->cost += v; }
+s32  func_0c0383ac(Task *t) { return t->cost; }
+void func_0c0383bc(Task *t, s32 v) { t->f48 = v; }
+s32  func_0c0383cc(Task *t) { return t->f48; }
+
+/* ---- is the task registered? ---- */
+bool func_0c0383dc(Task *t)
+{
+    std::list<Task *> &l = g_0C465674->tasks;
+
+    return std::find(l.begin(), l.end(), t) != l.end();
+}
+
+bool func_0c038420(Task *t) { return func_0c0383dc(t) && t->state == 3; }
+bool func_0c03844c(Task *t) { return func_0c0383dc(t) && t->status == 1 && t->state == 2; }
+bool func_0c038484(Task *t) { return func_0c0383dc(t) && (t->state == 0 || t->status != 0); }
+
+/* ---- post request 5 / 4 / 3 / 2 to a registered task, if allowed ---- */
+bool func_0c0384bc(Task *t)
+{
+    if (func_0c0383dc(t) && func_0c03816a(t, 5)) {
+        func_0c03826a(t, 5);
+        return true;
+    }
+    return false;
+}
+
+bool func_0c038508(Task *t)
+{
+    if (func_0c0383dc(t) && func_0c03816a(t, 4)) {
+        func_0c03826a(t, 4);
+        return true;
+    }
+    return false;
+}
+
+bool func_0c038554(Task *t)
+{
+    if (func_0c0383dc(t) && func_0c03816a(t, 3)) {
+        func_0c03826a(t, 3);
+        return true;
+    }
+    return false;
+}
+
+bool func_0c0385a0(Task *t)
+{
+    if (func_0c0383dc(t) && func_0c03816a(t, 2)) {
+        func_0c03826a(t, 2);
+        return true;
+    }
+    return false;
+}
+
+/* ---- request 2, and restart once it has ended ---- */
+void func_0c0385ec(Task *t)
+{
+    if (func_0c0385a0(t))
+        t->restart = 1;
+}
+
+char *func_0c038618(Task *t) { return t->name; }
+
+/* ---- teardown: empty the list ---- */
+void func_0c038628(void)
+{
+    g_0C465674->tasks.clear();
+}
+
+/* ---- create the manager on the first include's static init ---- */
+void func_0c03867c(void)
+{
+    if (g_0C46566C == 0) {
+        g_0C465674 = new TaskManager;
+    }
+    g_0C46566C++;
+}
+
+/* ---- the per-TU static object's constructor (two identical clones) ---- */
+void func_0c0386cc(void *self)
+{
+    func_0c03867c();
+}
+
+void func_0c0386e8(void *self)
+{
+    func_0c03867c();
+}
+
+}   /* extern "C" */
+
+TaskManager::TaskManager()
+    : current(0), busy(false)
+{
+}
+
+TaskManager::~TaskManager()
+{
+}
+
+TaskInterface::~TaskInterface()
+{
+}
+
+Task::~Task()
+{
+}
+
+extern "C" {
+
+void func_0c038c6c(Task *t, const char *name);
+
+/* ---- the update pass run for each layer by func_0c038b38's caller ---- */
+void func_0c0387cc(s32 a, u8 b)
+{
+    TaskManager *m = g_0C465674;
+
+    for (s32 pass = 0; pass != 3; pass++)
+        for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); it++) {
+            Task *o = *it;
+            if (func_0c038128(o, pass) && !func_0c038420(o)) {
+                if (func_0c03814a(*it)) {
+                    if (a <= 0)
+                        continue;
+                } else if (b != 0)
+                    continue;
+                {
+                    s32 t0 = func_0c037d00();
+                    Task *&cur = *it;
+                    m->current = cur;
+                    func_0c0382d8(cur);
+                    m->current = 0;
+                    o = *it;
+                    func_0c038398(o, func_0c037ca8(t0));
+                }
+            }
+        }
+}
+
+/* ---- the idx-th task over the three passes, or 0 ---- */
+Task *func_0c0388b4(s32 idx)
+{
+    TaskManager *m = g_0C465674;
+    s32 n = 0;
+
+    for (s32 pass = 0; pass != 3; pass++)
+        for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it) {
+            Task *o = *it;
+            if (func_0c038128(o, pass)) {
+                if (n == idx) {
+                    if (o)
+                        return o;
+                    break;
+                }
+                n++;
+            }
+        }
+    return 0;
+}
+
+/* ---- has any task reached state 3? ---- */
+bool func_0c038938(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it)
+        if (func_0c038420(*it))
+            return true;
+    return false;
+}
+
+/* ---- a walk that does nothing: whatever it reported is compiled out ---- */
+void func_0c038984(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it)
+        ;
+}
+
+/* ---- post request 2 to every task ---- */
+void func_0c0389a4(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it)
+        func_0c0385a0(*it);
+}
+
+/* ---- stage 6 callee: vf6 for every live task, layer by layer ---- */
+void func_0c0389e4(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (s32 pass = 0; pass != 3; pass++)
+        for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); it++) {
+            Task *o = *it;
+            if (func_0c038128(o, pass))
+                func_0c0380e0(o);
+        }
+}
+
+/* ---- stage 6 callee: vf5 for every live task, timed ----
+   Each task's time goes to +0x48.  The tick is parked in fr12 across the
+   calls (register allocation, not arithmetic).  Does not reproduce yet: the
+   two loop-exit compares have their operands the other way round. */
+void func_0c038a58(void)
+{
+    TaskManager *m = g_0C465674;
+
+    m->busy = true;
+    for (s32 pass = 0; pass != 3; pass++)
+        for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); it++)
+            if (func_0c038128(*it, pass)) {
+                s32 t0 = func_0c037d00();
+                func_0c0380b4(*it);
+                Task *o = *it;
+                func_0c0383bc(o, func_0c037ca8(t0));
+            }
+    m->busy = false;
+}
+
+/* ---- a second walk that does nothing ---- */
+void func_0c038b00(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it)
+        ;
+}
+
+/* ---- stage 6 callee: the list's full per-frame sweep ----
+
+     1. forward: apply each task's pending request, zero its update time.
+     2. backward (reverse_iterator), for layers 2, 1, 0: each task in the
+        layer that has not reached state 3 gets one state-machine step,
+        timed, with the manager's `current` pointing at it meanwhile.
+     3. forward, removing every task func_0c038484 no longer vouches for.
+
+   Then func_0c0387cc(1, 0). */
+void func_0c038b38(void)
+{
+    TaskManager *m = g_0C465674;
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ++it) {
+        func_0c0381e6(*it);
+        func_0c038388(*it, 0);
+    }
+
+    for (s32 pass = 2; pass != -1; pass--)
+        for (std::list<Task *>::reverse_iterator it = m->tasks.rbegin(); it != m->tasks.rend(); it++) {
+            Task *o = *it;
+            if (func_0c038128(o, pass) && func_0c038420(o)) {
+                s32 t0 = func_0c037d00();
+                Task *&cur = *it;
+                m->current = cur;
+                func_0c0382d8(cur);
+                m->current = 0;
+                o = *it;
+                func_0c038398(o, func_0c037ca8(t0));
+            }
+        }
+
+    for (std::list<Task *>::iterator it = m->tasks.begin(); it != m->tasks.end(); ) {
+        if (func_0c038484(*it))
+            ++it;
+        else
+            it = m->tasks.erase(it);
+    }
+
+    func_0c0387cc(1, 0);
+}
+
+/* ---- set the task's name (31 characters at most) ---- */
+void func_0c038c6c(Task *t, const char *name)
+{
+    copy_str<31>(name, t->name);
+}
+
+/* ---- register a task under a parent, in a layer ----
+   Refuses a task that is already registered or may not be started; else
+   resets its state, names it, posts the start request, applies it and
+   appends it to the list. */
+bool func_0c038d04(Task *t, Task *parent, const char *name, s32 layer)
+{
+    TaskManager *m = g_0C465674;
+
+    func_0c03826a(t, 0);
+    if (func_0c0383dc(t))
+        return false;
+    if (!func_0c03816a(t, 1))
+        return false;
+    func_0c03810c(t, layer);
+    t->parent = parent;
+    t->state = 0;
+    t->status = 0;
+    t->next_state = 0;
+    t->next_status = 0;
+    func_0c038c6c(t, name);
+    func_0c03826a(t, 1);
+    func_0c0381e6(t);
+    m->tasks.push_back(t);
+    return true;
+}
+
+bool func_0c038ddc(Task *t, Task *parent, const char *name)
+{
+    return func_0c038d04(t, parent, name, 1);
+}
+
+/* ---- register as a child of the task being updated ---- */
+bool func_0c038df8(Task *t, const char *name, s32 layer)
+{
+    return func_0c038d04(t, g_0C465674->current, name, layer);
+}
+
+bool func_0c038e24(Task *t, const char *name)
+{
+    return func_0c038d04(t, g_0C465674->current, name, 1);
+}
+
+}   /* extern "C" */
+
+/* ---- Task's constructor (two identical clones) ---- */
+Task::Task()
+{
+    name[0] = 0;
+    layer = 1;
+    parent = 0;
+    state = 0;
+    status = 0;
+    request = 0;
+    next_state = 0;
+    next_status = 0;
+    restart = 0;
+    f21 = 0;
+    func_0c038c6c(this, "unknown");
+}
+
+extern "C" {
+
+extern u8 g_0C465670;                   /* this TU's static object */
+
+/* ---- destroy the manager when the last static object goes ---- */
+void func_0c038f0c(void)
+{
+    if (--g_0C46566C == 0) {
+        delete g_0C465674;
+        g_0C465674 = 0;
+    }
+}
+
+/* ---- the per-TU static object's destructor ---- */
+void func_0c038f5c(void *self)
+{
+    func_0c038f0c();
+}
+
+/* ---- GCC's __static_initialization_and_destruction_0 for this TU, and its
+   _GLOBAL__D / _GLOBAL__I stubs, written out: the static object behind them
+   is declared by the task header, which is not reconstructed. ---- */
+void func_0c038f78(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c0386cc(&g_0C465670);
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF)
+            func_0c038f5c(&g_0C465670);
+    }
+}
+
+void func_0c038fc4(void)
+{
+    func_0c038f78(0, 0xFFFF);
+}
+
+void func_0c038fe8(void)
+{
+    func_0c038f78(1, 0xFFFF);
+}
+
+}   /* extern "C" */

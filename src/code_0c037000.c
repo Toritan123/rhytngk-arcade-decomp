@@ -49,18 +49,6 @@ extern s32 g_0C4655F8[];
      +0x6C f32 next +0x0C           +0x70 u8   next +0x18
    ================================================================== */
 
-extern void func_0c0378e8(s32 which, u32 mask);
-
-void func_0c037934(void)
-{
-    func_0c0378e8(0, 0xFFFF);
-}
-
-void func_0c037958(void)
-{
-    func_0c0378e8(1, 0xFFFF);
-}
-
 /* Values above 2 are stored as 0. */
 void func_0c037996(s32 sel)
 {
