@@ -40,34 +40,7 @@
 #include <algorithm>
 #include "rt_types.h"
 
-class TaskInterface {
-public:
-    virtual ~TaskInterface() = 0;
-    virtual bool vf2() { return true; }
-    virtual bool vf3() { return false; }
-    virtual bool vf4() { return true; }
-    virtual void vf5() {}
-    virtual void vf6() {}
-};
-
-class Task : public TaskInterface {
-public:
-    Task();
-    virtual ~Task();
-
-    s32   layer;            /* +0x04: which of the three passes runs it */
-    Task *parent;           /* +0x08 */
-    s32   state;            /* +0x0C: 1 -> 2 -> 3, 4 when finished */
-    s32   status;           /* +0x10 */
-    u32   request;          /* +0x14: pending request, applied by func_0c0381e6 */
-    s32   next_state;       /* +0x18 */
-    s32   next_status;      /* +0x1C */
-    u8    restart;          /* +0x20 */
-    u8    f21;              /* +0x21 */
-    char  name[32];         /* +0x22 */
-    s32   cost;             /* +0x44: accumulated update time */
-    s32   f48;              /* +0x48: last draw time */
-};
+#include "task.h"
 
 /* The class name is ours: the manager has no vtable, hence no RTTI. */
 struct TaskManager {

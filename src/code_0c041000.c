@@ -28,12 +28,6 @@ int func_0c0410ea(void) { return 1; }
 int func_0c0410f8(void) { return 0; }
 int func_0c041106(void) { return 1; }
 
-/* ---- empty function ---- */
-
-void func_0c041974(void)
-{
-}
-
 /* ---- end of a source file: GCC's __static_initialization_and_destruction_0
    and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
 extern void func_0c0386cc(void *);
