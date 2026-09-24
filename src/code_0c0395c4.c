@@ -775,3 +775,34 @@ extern s32 func_0c039c08(void *obj, float v, s32 flag);
 /* ================================================================== */
 /* Same SH-4 varargs register-save-area / __va_list ABI wall.            */
 // INCLUDE_ASM("asm/code_0c0395c4/func_0c039b10")
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__D / _GLOBAL__I stubs, written out.
+   Static objects of class TaskDataInit (vptr from RTTI) are
+   built with Task's base constructor and torn down with its D2. ---- */
+extern void func_0c030b28(void *);
+extern void func_0c031108(void *);
+extern void func_0c0386cc(void *);
+extern void func_0c0387a8(void *);
+extern void func_0c038e98(void *);
+extern void func_0c038f5c(void *);
+extern u8 _ZTV12TaskDataInit[];
+
+void func_0c0397a8(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF) {
+            func_0c0386cc((void *)0x0C466184);
+            func_0c030b28((void *)0x0C466185);
+            func_0c038e98((void *)0x0C466188);
+            *(u32 *)0x0C466188 = (u32)&_ZTV12TaskDataInit + 8;
+        }
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF) {
+            *(u32 *)0x0C466188 = (u32)&_ZTV12TaskDataInit + 8;
+            func_0c0387a8((void *)0x0C466188);
+            func_0c031108((void *)0x0C466185);
+            func_0c038f5c((void *)0x0C466184);
+        }
+    }
+}

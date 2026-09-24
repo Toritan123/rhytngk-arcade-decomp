@@ -33,3 +33,29 @@ int func_0c041106(void) { return 1; }
 void func_0c041974(void)
 {
 }
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
+extern void func_0c0386cc(void *);
+extern void func_0c038f5c(void *);
+
+void func_0c041114(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c0386cc((void *)0x0C467444);
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF)
+            func_0c038f5c((void *)0x0C467444);
+    }
+}
+
+void func_0c041160(void)
+{
+    func_0c041114(0, 0xFFFF);
+}
+
+void func_0c041184(void)
+{
+    func_0c041114(1, 0xFFFF);
+}

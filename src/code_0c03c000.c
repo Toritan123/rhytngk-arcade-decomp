@@ -283,3 +283,24 @@ void func_0c03c1c8(SoundBank *bank)
 #ifdef __cplusplus
 }
 #endif
+
+extern "C" {
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__I stub, written out (initialisation only: nothing here is
+   destroyed at exit). ---- */
+
+void func_0c03c520(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c03c468((ScreenMode *)0x0C467208, 13);  /* a global ScreenMode, mode 13 */
+    }
+}
+
+void func_0c03c554(void)
+{
+    func_0c03c520(1, 0xFFFF);
+}
+
+}   /* extern "C" */

@@ -26,3 +26,26 @@ void func_0c032148(void)
 void func_0c032154(void)
 {
 }
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__I stub, written out (initialisation only: nothing here is
+   destroyed at exit). ---- */
+extern void func_0c0321f4(void *);
+
+void func_0c03266e(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c0321f4((void *)0x0C46433C);
+    }
+}
+
+void func_0c0326a0(void)
+{
+    func_0c03266e(1, 0xFFFF);
+}
+
+void func_0c0326c4(void)
+{
+    func_0c03266e(0, 0xFFFF);
+}

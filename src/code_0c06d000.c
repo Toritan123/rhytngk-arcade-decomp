@@ -37,3 +37,94 @@ void *func_0c06d504(void *p) { return p; }
 void func_0c06d376(void)
 {
 }
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
+extern void func_0c0386cc(void *);
+extern void func_0c0387a8(void *);
+extern void func_0c038e98(void *);
+extern void func_0c038f5c(void *);
+extern u8 _ZTVN3dtm6SpriteE[];
+
+void func_0c06d0bc(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF) {
+            func_0c0386cc((void *)0x0C4EACEC);
+            func_0c038e98((void *)0x0C4EACF0);
+            *(u32 *)0x0C4EACF0 = (u32)&_ZTVN3dtm6SpriteE + 8;
+        }
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF) {
+            *(u32 *)0x0C4EACF0 = (u32)&_ZTVN3dtm6SpriteE + 8;
+            func_0c0387a8((void *)0x0C4EACF0);
+            func_0c038f5c((void *)0x0C4EACEC);
+        }
+    }
+}
+
+void func_0c06d134(void)
+{
+    func_0c06d0bc(0, 0xFFFF);
+}
+
+void func_0c06d158(void)
+{
+    func_0c06d0bc(1, 0xFFFF);
+}
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
+extern void func_0c030b28(void *);
+extern void func_0c031108(void *);
+
+void func_0c06d390(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF) {
+            func_0c0386cc((void *)0x0C4EADFC);
+            func_0c030b28((void *)0x0C4EADFD);
+        }
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF) {
+            func_0c031108((void *)0x0C4EADFD);
+            func_0c038f5c((void *)0x0C4EADFC);
+        }
+    }
+}
+
+void func_0c06d3f8(void)
+{
+    func_0c06d390(0, 0xFFFF);
+}
+
+void func_0c06d41c(void)
+{
+    func_0c06d390(1, 0xFFFF);
+}
+
+/* ---- end of a source file: GCC's __static_initialization_and_destruction_0
+   and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
+extern void func_0c111e40(void *);
+extern void func_0c111f80(void *);
+
+void func_0c06d440(s32 initialize, s32 priority)
+{
+    if (initialize == 1) {
+        if (priority == 0xFFFF)
+            func_0c111f80((void *)0x0C4EADFE);
+    } else if (initialize == 0) {
+        if (priority == 0xFFFF)
+            func_0c111e40((void *)0x0C4EADFE);
+    }
+}
+
+void func_0c06d48c(void)
+{
+    func_0c06d440(0, 0xFFFF);
+}
+
+void func_0c06d4b0(void)
+{
+    func_0c06d440(1, 0xFFFF);
+}
