@@ -97,7 +97,7 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C (game code) | 1631 functions translated, 1,573 rebuild byte-exactly (3.28% of code bytes) |
+| SH-4 → C (game code) | 1,631 functions translated, 1,573 rebuild byte-exactly (3.28% of code bytes) |
 | SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 25.80% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
