@@ -9,7 +9,8 @@
  * after 1200 frames; any scene ends when the callback registered while it
  * plays has fired (+0x54).  [what the three scenes are is not traced]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

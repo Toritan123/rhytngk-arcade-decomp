@@ -4,7 +4,8 @@
  * Matrices are 4-wide (stride 16 bytes per row) even where only the 3x3
  * block is used, which is how the ROM's `add #16` row steps decode [scanner].
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c143000.c`.
  */
 

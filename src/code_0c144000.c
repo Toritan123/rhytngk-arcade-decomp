@@ -5,7 +5,8 @@
  * transposed; the transpose variant of each was identified by byte-match
  * against the ROM, not guessed.  Matrices are row-major, stride 4.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c144000.c`.
  */
 

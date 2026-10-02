@@ -6,7 +6,8 @@
  * element type and count are byte-verified rather than read off the
  * disassembly.  The roles are unknown and deliberately left unnamed.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c076000.c`.
  *
  * NOTE on the empty functions: a 12-byte empty body is identical whatever the

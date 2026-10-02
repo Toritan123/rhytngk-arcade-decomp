@@ -1,7 +1,8 @@
 /*
  * code_0c02e000.c - backup (save) data load on page 0x0C02Exxx.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `make status`.
  */
 

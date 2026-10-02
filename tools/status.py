@@ -45,7 +45,11 @@ REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 CODE_LO, CODE_HI = 0x0C020000, 0x0C1BFB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
-DEFAULT_CFLAGS = ("-O1 -ml -m4-single-only -fno-delayed-branch "
+# -fstrict-aliasing is not part of -O1 in GCC 4.1.2, but the ROM's -O1 code
+# was built with it: adding it makes six more functions reproduce (inline
+# std::string checks and std::list walks whose loads it lets GCC reuse) and
+# costs one, whose loop-exit compare then joins the operand-order residue.
+DEFAULT_CFLAGS = ("-O1 -ml -m4-single-only -fno-delayed-branch -fstrict-aliasing "
                   "-ffunction-sections -Iinclude")
 # ---- named symbols -------------------------------------------------------
 # Functions are normally called func_0cXXXXXX so the name carries the address.
@@ -323,7 +327,7 @@ def classify(addr, b, rels):
 
 
 RECIPES = {
-    "-O1 nodelay": "-O1 -ml -m4-single-only -fno-delayed-branch",
+    "-O1 nodelay": "-O1 -ml -m4-single-only -fno-delayed-branch -fstrict-aliasing",
     "-O1 delay":   "-O1 -ml -m4-single-only",
     "-O2":         "-O2 -ml -m4-single-only",
     "-O2 nodelay": "-O2 -ml -m4-single-only -fno-delayed-branch",

@@ -12,7 +12,8 @@
  * files reproduces.  [hypothesis: some file-global compiler state the
  * original file arrived at differently]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

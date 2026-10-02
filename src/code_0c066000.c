@@ -36,7 +36,8 @@
  * it; GCC coalesces that too.  It looks like a register-allocator difference
  * between this GCC 4.1.2 and the vendor's, not a flag.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `make status`.
  */
 

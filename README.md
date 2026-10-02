@@ -97,8 +97,8 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C (game code) | 1,698 functions translated, 1,635 rebuild byte-exactly (3.61% of code bytes) |
-| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 26.13% is rebuilt from source) |
+| SH-4 → C (game code) | 1,706 functions translated, 1,646 rebuild byte-exactly (3.86% of code bytes) |
+| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 26.39% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -122,9 +122,12 @@ across all uses), and records the result in `lib/map.txt`. `make status` and
 `make rebuild` then check those functions exactly like the game's own.
 
 The ROM was built with **GCC 4.1.2**, and not with one set of flags. Three
-recipes are known so far: `-O1 -ml -m4-single-only -fno-delayed-branch` for
-most of it, `-O2 -ml -m4-single-only` for one region, and the same -O1 recipe
-*with* delayed branches for another. Each `.c` records its own in a
+recipes are known so far: `-O1 -ml -m4-single-only -fno-delayed-branch
+-fstrict-aliasing` for most of it, `-O2 -ml -m4-single-only` for one region,
+and -O1 *with* delayed branches for another. `-fstrict-aliasing` is not part
+of GCC 4.1.2's -O1; the main recipe needs it because it lets GCC reuse loads
+across the inline libstdc++ code (string bounds checks, list walks, vector
+teardown), which the ROM does. Each `.c` records its own in a
 `/* CFLAGS: ... */` line that the build reads.
 
 The program is C++, but the same source does not always come out of the C

@@ -10,7 +10,8 @@
  * the ROM computes ((i << 6) + i) << 2, which is 260*i, and adds 8.  So the
  * slots start at +0x08 and are 260 bytes each; the bank is 2088 bytes.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c03a520.c`.
  */
 

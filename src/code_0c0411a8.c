@@ -21,7 +21,8 @@
  * The handle is a one-word object: -1 when empty, else whatever
  * func_0c0676e4 returned.  Its class name is not known (no vtable).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

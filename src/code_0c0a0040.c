@@ -9,7 +9,8 @@
  *   +26 intrusive free-list next-link, +40 frame count, +44/+48 res/palette,
  *   +64 scale (0x0100 = 8.8 unity).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c0a0040.c`
  * — a function is byte-verified when it prints EXACT (or MATCH*, i.e. exact
  * modulo unlinked extern-call addresses).  Keep bodies instruction-faithful;

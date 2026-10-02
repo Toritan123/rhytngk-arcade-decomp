@@ -10,7 +10,8 @@
  * bit positions are decoded from the ROM shift/mask constants; the field
  * *meanings* are unknown and deliberately not named.]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c148260.c`.
  *
  * The C bit-field form below is what reproduces the ROM byte-for-byte: plain

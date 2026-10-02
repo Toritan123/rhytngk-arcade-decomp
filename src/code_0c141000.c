@@ -13,7 +13,8 @@
  * fmul where the ROM reuses fr4, and func_0c141988 / func_0c1419be CSE the
  * second `&d[1]` that the ROM recomputes (4 bytes short each).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c141000.c`.
  */
 

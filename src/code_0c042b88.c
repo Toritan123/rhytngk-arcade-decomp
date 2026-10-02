@@ -12,7 +12,8 @@
  * Not translated yet: vf3 (0x0C042F9C, 2168 bytes) and vf5 (0x0C043814,
  * 2460 bytes), the screen's animation and drawing.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

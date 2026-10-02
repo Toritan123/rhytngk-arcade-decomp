@@ -15,7 +15,8 @@
  * func_0c142840 expand the final "T -> 0/1" as `mov #-1; negc` where the ROM
  * uses `subc r0,r0; add #1` (same value, same length, different idiom).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c142000.c`.
  */
 

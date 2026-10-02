@@ -7,7 +7,8 @@
  *   obj[+64 ..]  per-voice play state (e.g. obj[+76] state word)
  * Reaches the AICA param encoder func_0c0e9590 via the play state machine.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c0395c4.c`
  * — a function is byte-verified when it prints EXACT (or MATCH*, i.e. exact
  * modulo unlinked extern-call addresses).  Keep bodies instruction-faithful;

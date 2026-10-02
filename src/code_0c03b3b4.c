@@ -7,7 +7,8 @@
  *   landing pad that goes with it.  Compiled as C++ inside an extern "C"
  *   block, like the other LANG c++ TUs.
  *
- * Matching build: sh-elf-g++ 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-g++ 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `make status`.
  */
 
@@ -52,14 +53,11 @@ extern s32 func_0c0e97dc(void);
    allocator), clear the slot, and finish with func_0c0e97dc.  main passes
    the bank at 0x0C4669D8, the same one the frame's sound pump uses.
 
-   MISMATCH, same length, three spots, all inside libstdc++'s inline code:
-   the destroy loop compares `cmp/eq r8,r10` where this build emits
-   `cmp/eq r10,r8`, and the vector's storage release loads start before
-   end_of_storage where this build loads them the other way round (twice:
-   normal path and landing pad).  The same kind of header-level ordering
-   difference as main's init 1 (the vector's three pointers zeroed in a
-   different order); the pool allocator functions these call reproduce
-   exactly, so the allocator configuration is not the cause. */
+   This used to stop short of matching at three spots inside libstdc++'s
+   inline code (a loop-exit compare's operand order and the order of the
+   two loads that release the vector's storage).  That was put down to a
+   header-level difference; it was the recipe -- the ROM's -O1 code is built
+   with -fstrict-aliasing, and with it this reproduces as written. */
 void func_0c03b3d4(SoundBank *bank)
 {
     bank->active = 0;

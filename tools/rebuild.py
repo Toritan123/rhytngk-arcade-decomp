@@ -35,7 +35,7 @@ REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 CODE_LO, CODE_HI = 0x0C020000, 0x0C1BFB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
-DEFAULT_CFLAGS = ("-O1 -ml -m4-single-only -fno-delayed-branch "
+DEFAULT_CFLAGS = ("-O1 -ml -m4-single-only -fno-delayed-branch -fstrict-aliasing "
                   "-ffunction-sections -Iinclude")
 OUT = "build/rebuild"
 

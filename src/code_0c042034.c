@@ -12,7 +12,8 @@
  * plays "fade_out" and waits for it.  [the meaning of a and b -- set and
  * game, presumably -- is not established]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

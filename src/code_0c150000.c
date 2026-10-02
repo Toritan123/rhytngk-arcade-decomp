@@ -11,7 +11,8 @@
  * the page as part of the -O1 region (the -O2 region schedules it before the
  * frame setup -- see src/code_0c17b000.c).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c150000.c`.
  *
  * NOTE on the empty functions: a 12-byte empty body is identical whatever the

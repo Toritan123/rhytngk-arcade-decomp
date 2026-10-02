@@ -3,7 +3,8 @@
 byte-compare each function against the ROM.
 
 Compiles with the reproducible GCC 4.1.2 image (`make toolchain`, see
-./Dockerfile) at the proven `-O1 -ml -m4-single-only -fno-delayed-branch`. Fast
+./Dockerfile) at the proven
+`-O1 -ml -m4-single-only -fno-delayed-branch -fstrict-aliasing`. Fast
 mode compiles -ffunction-sections and extracts each function's exact bytes
 with objcopy (objdump -d elides trailing zero pool words with `...`) plus its
 relocation offsets with objdump -r. Functions that call externs load the
@@ -34,7 +35,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 BASE = 0x0C01FB00
 IMAGE = os.environ.get("SH4_IMAGE", "rhytngk-sh4")
-DEFAULT_CFLAGS = "-O1 -ml -m4-single-only -fno-delayed-branch -Iinclude"
+DEFAULT_CFLAGS = "-O1 -ml -m4-single-only -fno-delayed-branch -fstrict-aliasing -Iinclude"
 CFLAGS = os.environ.get("SH4_CFLAGS", DEFAULT_CFLAGS)
 ENV_CFLAGS = "SH4_CFLAGS" in os.environ
 

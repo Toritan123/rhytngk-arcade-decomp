@@ -7,7 +7,8 @@
  * src/code_0c038000.c for the pattern).  Each also marks where an original
  * source file ends.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).
  */
 

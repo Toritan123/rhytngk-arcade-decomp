@@ -30,7 +30,8 @@
  * backward walk is a reverse_iterator (its `*` reads node->prev).  Written
  * over hand-rolled nodes they came out shorter than the ROM.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 
@@ -377,7 +378,12 @@ void func_0c0389a4(void)
         func_0c0385a0(*it);
 }
 
-/* ---- stage 6 callee: vf6 for every live task, layer by layer ---- */
+/* ---- stage 6 callee: vf6 for every live task, layer by layer ----
+   Does not reproduce yet: the inner loop-exit compare has its operands the
+   other way round (`cmp/eq r11,r4` for the ROM's `cmp/eq r4,r11`).  This
+   one matched under the old recipe without -fstrict-aliasing; compiled on
+   its own, without the rest of this file, it matches under the current one
+   too, so what decides the order is outside the function. */
 void func_0c0389e4(void)
 {
     TaskManager *m = g_0C465674;
@@ -392,8 +398,7 @@ void func_0c0389e4(void)
 
 /* ---- stage 6 callee: vf5 for every live task, timed ----
    Each task's time goes to +0x48.  The tick is parked in fr12 across the
-   calls (register allocation, not arithmetic).  Does not reproduce yet: the
-   two loop-exit compares have their operands the other way round. */
+   calls (register allocation, not arithmetic). */
 void func_0c038a58(void)
 {
     TaskManager *m = g_0C465674;

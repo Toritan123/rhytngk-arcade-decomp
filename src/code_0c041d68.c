@@ -10,7 +10,8 @@
  * record.  After two of those the cycle starts over.  [the demo kinds are
  * read off the calls; what each shows is not traced yet]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 

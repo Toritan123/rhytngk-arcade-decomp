@@ -6,7 +6,8 @@
  * type (C++ inline members).  Grouped here by body; every address in a group
  * has byte-identical ROM code.  [scanner: grouping is by exact ROM bytes.]
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c145000.c`.
  */
 

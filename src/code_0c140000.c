@@ -6,7 +6,8 @@
  * identified by compiling candidate C forms and byte-matching against the ROM,
  * not by guessing from the disassembly.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c140000.c`.
  */
 

@@ -5,7 +5,8 @@
  * mirror at 0x0C3D5328 and the neighbouring slot arrays at 0x0C3D532C /
  * 0x0C3D5334 (per docs/hub_functions.md, local).
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single -fno-delayed-branch
+ * -fstrict-aliasing`
  * (see ./Dockerfile).  Verify with `python3 tools/verify_c.py src/code_0c097460.c`
  * — byte-verified when it prints EXACT or MATCH*.
  *

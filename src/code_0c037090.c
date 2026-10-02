@@ -20,35 +20,87 @@
  * derived from BackupRamBase.  The object's own class has no vtable, so no
  * RTTI and no known name; it is carried as bytes here.
  *
- * The constructors and destructors are not translated yet.  Their bodies are
- * reproduced up to two residues of the kind already seen elsewhere (which of
- * two equal-cost address forms CSE keeps, and the order of the two loads that
- * free a vector's storage), so they are left out rather than committed as
- * near misses.
+ * The destructor is translated: the class below, with the two Backup RAM
+ * members' implicit destructors, generates both bodies.  (It was held back
+ * over the order of the two loads that free a vector's storage; that was
+ * the missing -fstrict-aliasing in the recipe, not the source.)  The
+ * constructor is not: it still differs in which of two equal-cost address
+ * forms CSE keeps, so __static_initialization_and_destruction_0 is still
+ * written out by hand below instead of generated from a static object.
  *
- * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch`
+ * Matching build: sh-elf-gcc 4.1.2 `-O1 -ml -m4-single-only -fno-delayed-branch
+ * -fstrict-aliasing`
  * as C++ (see ./Dockerfile).
  */
 
 #include <string.h>
 #include <algorithm>
+#include <string>
+#include <vector>
 #include "rt_types.h"
 
-extern "C" {
+/* The Backup RAM classes (names from RTTI).  Only what the destructor
+   needs: the vector and the string a BackupRamBase owns.  The virtuals are
+   placeholders for the vtable's slots (their bodies are elsewhere); the
+   field names are ours. */
+class BackupRamBase {
+public:
+    virtual ~BackupRamBase() = 0;
+    virtual void v2();
+    virtual void v3();
+    virtual void v4() = 0;
+    virtual void v5() = 0;
+    virtual void v6();
+    virtual void v7() = 0;
+    std::vector<unsigned char> buf;     /* +0x04 */
+    u32 f10;                            /* +0x10 */
+    std::string name;                   /* +0x14 */
+    u8 rest[12];                        /* +0x18 */
+};
+inline BackupRamBase::~BackupRamBase() {}
 
-/* The fields func_0c037090 touches.  +0xBC and +0xCD are 17-byte string
-   fields: 16 characters and a terminator. */
-typedef struct BackupObj {
+class BackupRamUserEEPROM : public BackupRamBase {
+public:
+    ~BackupRamUserEEPROM() {}
+    void v2(); void v3(); void v4(); void v5(); void v7();
+};
+
+class BackupRamUserBackup : public BackupRamBase {
+public:
+    ~BackupRamUserBackup() {}
+    void v2(); void v3(); void v4(); void v5(); void v7();
+};
+
+/* The object (no vtable, so no RTTI name; ours).  +0xBC and +0xCD are
+   17-byte string fields: 16 characters and a terminator. */
+struct BackupObj {
+    ~BackupObj();
+
     u8   ready;                 /* +0x00 */
     u8   _01[15];
     u8   f10;                   /* +0x10: set to 1 by the init */
-    u8   _11[0xB9 - 0x11];
+    u8   _11[0xB0 - 0x11];
+    std::string s0;             /* +0xB0 */
+    std::string s1;             /* +0xB4 */
+    u8   _b8;
     u8   fb9;                   /* +0xB9 */
     u8   fba;                   /* +0xBA */
     u8   _bb;
     char id_a[17];              /* +0xBC */
     char id_b[17];              /* +0xCD */
-} BackupObj;
+    u8   _de[2];
+    BackupRamUserEEPROM eeprom; /* +0xE0 */
+    BackupRamUserBackup backup; /* +0x104 */
+};
+
+/* GCC emits the destructor twice (D2, then D1):
+   ADDR: _ZN9BackupObjD2Ev 0x0C0372D8
+   ADDR: _ZN9BackupObjD1Ev 0x0C037590 */
+BackupObj::~BackupObj()
+{
+}
+
+extern "C" {
 
 /* SR transfers; the masking is C (see src/code_0c0ef608.c). */
 static __inline__ u32 sr_get(void)
@@ -125,8 +177,8 @@ s32 func_0c037218(void)
 
 /* ---- GCC's __static_initialization_and_destruction_0 for the object, and
    its _GLOBAL__D / _GLOBAL__I stubs, written out: the object's constructor
-   (C1 at 0x0C037848) and destructor (D1 at 0x0C037590) are not translated,
-   so the definition that would generate these cannot be given yet. ---- */
+   (C1 at 0x0C037848) is not translated, so the definition that would
+   generate these cannot be given yet. ---- */
 extern void func_0c037848(BackupObj *);
 extern void func_0c037590(BackupObj *);
 
