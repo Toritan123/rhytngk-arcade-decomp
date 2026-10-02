@@ -553,3 +553,13 @@
 0x0C251148  "rom/ad_rank.bin"       # [V] ROM data, DTPK package
 0x0C042C84  _ZN3adv11TaskRankingC1Ev  # [T] called by the static initialisation
 0x0C042CB4  _ZN3adv11TaskRankingC2Ev  # [T] its identical clone
+0x0C12CA8C  snprintf                # [T] called as (buf, 16, fmt, ...) next to sprintf
+0x0C24E98C  "%d"                    # [V] ROM data
+0x0C250BB8  "%d/%d"                 # [V] ROM data
+0x0C250BC0  "%d %d/%d"              # [V] ROM data
+0x0C250BCC  "%s%s"                  # [V] ROM data
+0x0C250BD4  "\x02"                  # [V] ROM data, a control prefix for the text renderer
+0x0C250BD8  "\x03"                  # [V] ROM data, likewise
+0x0C250BDC  "INSERT COIN(S)"        # [V] ROM data
+0x0C250BEC  "INSERT MORE COIN(S)"   # [V] ROM data
+0x0C250C00  "PRESS START BUTTON"    # [V] ROM data

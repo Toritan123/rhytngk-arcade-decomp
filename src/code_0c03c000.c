@@ -3,8 +3,7 @@
  *
  * LANG: c++
  *   Compiled as C++ (the ROM is a C++ program), inside an extern "C"
- *   block.  func_0c03c86c reproduces only through the C++ front end, and
- *   nothing else in this TU changes; see tu_lang() in tools/status.py.
+ *   block; see tu_lang() in tools/status.py.
  *
  * Trivial constant / identity / one-load / one-store leaves, recovered
  * mechanically: each is a 14-byte function whose whole body is one
@@ -38,7 +37,6 @@ int func_0c03c66c(void) { return 1; }
 int func_0c03c6d8(const int *p) { return p[1]; }
 
 /* ---- constant stub ---- */
-int func_0c03cc70(void) { return 1; }
 
 /* ---- store int at *p ---- */
 void func_0c03c6bc(int *p, int v) { *p = v; }
@@ -174,33 +172,6 @@ void func_0c03c4cc(s32 id)
 void func_0c03c6f8(u8 *rec, u8 v) { rec[8] = v; }
 u8   func_0c03c708(const u8 *rec) { return rec[9]; }
 void func_0c03c71a(u8 *rec, u8 v) { rec[9] = v; }
-
-extern u8   g_0C467240[2][12];
-extern u32  g_0C467268;
-extern void func_0c0ecfac(u32 *p);
-
-/* ---- main's init 4 callee: reset both channels ----
-
-   The ROM recomputes base + i*12 every iteration.  Compiled as C this GCC's
-   tree loop optimiser strength-reduces it to a pointer stepped by 12 (12
-   bytes shorter); compiled as C++ it does not, and the function is exact --
-   the reason this TU is LANG c++.  CORRECTION: an earlier note here offered
-   -fno-tree-loop-optimize as a possible ROM-wide recipe flag; the language,
-   not a flag, is the explanation. */
-s32 func_0c03c86c(void)
-{
-    s32 i;
-
-    for (i = 0; i != 2; i++) {
-        u8 *rec = g_0C467240[i];
-
-        func_0c03c6bc((int *)rec, i);
-        func_0c03c6f8(rec, 0);
-        func_0c03c71a(rec, 0);
-    }
-    func_0c0ecfac(&g_0C467268);
-    return 1;
-}
 
 /* ---- the sound bank: load the ARM7 driver, then number the voice slots ----
 
