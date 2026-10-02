@@ -40,6 +40,24 @@ public:
 };
 
 extern "C" {
+void func_0c038f0c(void);               /* drop the manager with the last user */
+}
+
+/* The header's nifty-counter object: every file that includes this header
+   gets its own, and the first to be constructed creates the task manager
+   (func_0c03867c), the last destroyed frees it.  Constructor and
+   destructor are out of line in src/code_0c038000.c (C1 / C2 at
+   0x0C0386CC / 0x0C0386E8, D1 / D2 at 0x0C038F5C / 0x0C03900C).  The class
+   name is ours (no vtable, so no RTTI). */
+struct TaskInit {
+    TaskInit();
+    ~TaskInit();
+};
+#ifndef TASK_NO_INIT_OBJECT
+static TaskInit s_taskInit;
+#endif
+
+extern "C" {
 /* task API, src/code_0c038000.c */
 bool func_0c038484(Task *t);            /* still registered and alive */
 bool func_0c0385a0(Task *t);            /* post request 2 (stop) */

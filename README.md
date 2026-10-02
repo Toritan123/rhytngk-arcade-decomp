@@ -97,8 +97,8 @@ are not tracked; `make` regenerates them.
 | DTPK sound packages | rebuildable, 89/89 byte-exact |
 | STX textures | rebuildable, 165/165 byte-exact |
 | Data ROMs (SFFS → FArC → gzip) | rebuildable, 3/3 byte-exact — an edited texture reaches the ROM |
-| SH-4 → C (game code) | 1,631 functions translated, 1,573 rebuild byte-exactly (3.28% of code bytes) |
-| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 25.80% is rebuilt from source) |
+| SH-4 → C (game code) | 1,657 functions translated, 1,597 rebuild byte-exactly (3.41% of code bytes) |
+| SH-4 runtime libraries | 1,996 libstdc++/libsupc++/libgcc/newlib/zlib functions rebuilt from upstream source (22.69% of code bytes; with the game code, 25.93% is rebuilt from source) |
 
 `make status` prints the current C figures and names every function that does
 not reproduce. Each round-trip claim above is a `make` target that fails if it
@@ -132,6 +132,13 @@ and C++ front ends identically: some functions reproduce only as C, a few
 only as C++. A `.c` that must be compiled as C++ says so with a
 `/* LANG: c++ */` line (it is wrapped in `extern "C"` so names stay
 unmangled).
+
+Static objects are written as static objects, and GCC generates their
+construction and destruction itself. The functions it generates for that
+(`__static_initialization_and_destruction_0`, `_GLOBAL__I_…`) and the
+header-level objects behind them are local to a file and repeat from file
+to file, so a `.c` places them with `/* ADDR: <name> <address> */` lines
+instead of `symbols.txt`.
 
 Functions are normally named `func_0cXXXXXX` so the name carries the address —
 that is how relocations resolve without a linker script. `symbols.txt` maps

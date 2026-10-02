@@ -27,6 +27,7 @@
 
 #include <string>
 #include "task.h"
+#include "nifty464174.h"
 
 /* A one-word handle; the name is ours. */
 struct Handle {
@@ -113,12 +114,22 @@ class TaskRating : public Task {
 
 using namespace adv;
 
+/* The four screens, as static objects; GCC generates their construction and
+   destruction (and the header objects') into this file's static
+   initialisation, whose local names are placed here:
+   ADDR: s_taskInit 0x0C467448
+   ADDR: s_nifty464174 0x0C467449
+   ADDR: _Z41__static_initialization_and_destruction_0ii 0x0C041C2C
+   ADDR: _GLOBAL__D_g_0C46744C 0x0C041D20
+   ADDR: _GLOBAL__I_g_0C46744C 0x0C041D44 */
 extern "C" {
+TaskWarning g_0C46744C;
+TaskLogo    g_0C4674A0;
+TaskRating  g_0C4674F8;
+TaskTitle   g_0C467544;
+}
 
-extern TaskWarning g_0C46744C;
-extern TaskLogo    g_0C4674A0;
-extern TaskRating  g_0C4674F8;
-extern TaskTitle   g_0C467544;
+extern "C" {
 
 extern u8  g_0C4EA7C6;
 extern s32 g_0C1CB144;
@@ -467,64 +478,6 @@ void func_0c041b64(TaskLogo *t)
             func_0c033c9c("MAIN BD ID %s", id);
         }
     }
-}
-
-/* ---- end of file: GCC's __static_initialization_and_destruction_0 and its
-   _GLOBAL__D / _GLOBAL__I stubs, written out.  They build the two headers'
-   static objects (0x0C467448 is the task header's) and the four screens --
-   Task's base constructor, then the class's vptr -- and tear them down in
-   reverse with Task's D2. ---- */
-extern void func_0c0386cc(void *);
-extern void func_0c038f5c(void *);
-extern void func_0c030b28(void *);
-extern void func_0c031108(void *);
-extern void func_0c038e98(Task *);      /* Task::Task(), base-object clone */
-extern void func_0c0387a8(Task *);      /* Task::~Task(), D2 */
-extern u8 g_0C467448, g_0C467449;
-extern u8 _ZTVN3adv11TaskWarningE[], _ZTVN3adv8TaskLogoE[];
-extern u8 _ZTVN3adv10TaskRatingE[], _ZTVN3adv9TaskTitleE[];
-
-#define SET_VPTR(obj, vt)  (*(u32 *)&(obj) = (u32)(vt) + 8)
-
-void func_0c041c2c(s32 initialize, s32 priority)
-{
-    if (initialize == 1) {
-        if (priority == 0xFFFF) {
-            func_0c0386cc(&g_0C467448);
-            func_0c030b28(&g_0C467449);
-            func_0c038e98(&g_0C46744C);
-            SET_VPTR(g_0C46744C, _ZTVN3adv11TaskWarningE);
-            func_0c038e98(&g_0C4674A0);
-            SET_VPTR(g_0C4674A0, _ZTVN3adv8TaskLogoE);
-            func_0c038e98(&g_0C4674F8);
-            SET_VPTR(g_0C4674F8, _ZTVN3adv10TaskRatingE);
-            func_0c038e98(&g_0C467544);
-            SET_VPTR(g_0C467544, _ZTVN3adv9TaskTitleE);
-        }
-    } else if (initialize == 0) {
-        if (priority == 0xFFFF) {
-            SET_VPTR(g_0C467544, _ZTVN3adv9TaskTitleE);
-            func_0c0387a8(&g_0C467544);
-            SET_VPTR(g_0C4674F8, _ZTVN3adv10TaskRatingE);
-            func_0c0387a8(&g_0C4674F8);
-            SET_VPTR(g_0C4674A0, _ZTVN3adv8TaskLogoE);
-            func_0c0387a8(&g_0C4674A0);
-            SET_VPTR(g_0C46744C, _ZTVN3adv11TaskWarningE);
-            func_0c0387a8(&g_0C46744C);
-            func_0c031108(&g_0C467449);
-            func_0c038f5c(&g_0C467448);
-        }
-    }
-}
-
-void func_0c041d20(void)
-{
-    func_0c041c2c(0, 0xFFFF);
-}
-
-void func_0c041d44(void)
-{
-    func_0c041c2c(1, 0xFFFF);
 }
 
 }   /* extern "C" */

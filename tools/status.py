@@ -156,9 +156,24 @@ def shifted(name):
     return a is not None and a % 4 == 2
 
 
+def tu_local(tu):
+    """{name: addr} from `/* ADDR: <name> 0x0CXXXXXX */` lines in TU `tu`.
+
+    For names GCC gives functions it generates itself and that are local to
+    the translation unit -- `__static_initialization_and_destruction_0`, the
+    `_GLOBAL__I_` / `_GLOBAL__D_` stubs -- which repeat from file to file
+    (and in the runtime libraries), so symbols.txt cannot hold them."""
+    out = {}
+    for m in re.finditer(r"ADDR:\s*([A-Za-z_][A-Za-z_0-9]*)\s+(0x[0-9A-Fa-f]+)",
+                         (REPO / tu).read_text()):
+        out[m.group(1)] = int(m.group(2), 16)
+    return out
+
+
 def compile_cmd(cflags, t):
     """Shell to compile TU `t` to /tmp/o.o with 2-mod-4 functions placed."""
-    names = " ".join(n for n, a in SYMS.items() if a % 4 == 2)
+    names = " ".join([n for n, a in SYMS.items() if a % 4 == 2] +
+                     [n for n, a in tu_local(t).items() if a % 4 == 2])
     # The filler goes immediately before the function's label, after any
     # `.align` the compiler emitted (the -O2 recipe emits `.align 5`), so it
     # shifts the function itself and not just the padding in front of it.
@@ -181,9 +196,9 @@ def compile_cmd(cflags, t):
             f"sh-elf-gcc {cflags.replace(' -x c++', '')} -c /tmp/p.s -o /tmp/o.o 2>>/tmp/e")
 
 
-def unshift(name, b, rels):
+def unshift(name, b, rels, addr=None):
     """Drop the placement filler from a shifted function's bytes and relocs."""
-    if not shifted(name):
+    if not (shifted(name) if addr is None else addr % 4 == 2):
         return b, rels
     assert b[:2] == b"\0\0", name
     return b[2:], {off - 2: sym for off, sym in rels.items()}
@@ -195,6 +210,7 @@ def compile_group(cflags, tus):
         f'echo "===TU=== {t}"\n'
         f"{compile_cmd(cflags, t)} || {{ echo ===ERR===; cat /tmp/e; }}\n"
         "echo ===R===; sh-elf-objdump -r /tmp/o.o 2>/dev/null\n"
+        "echo ===T===; sh-elf-objdump -t /tmp/o.o 2>/dev/null\n"
         "echo ===B===\n"
         "for s in $(sh-elf-objdump -h /tmp/o.o 2>/dev/null "
         "| grep -oE '[.](text[.][A-Za-z_][A-Za-z_0-9]*|rodata[.A-Za-z_0-9]*)' | sort -u); do "
@@ -208,9 +224,10 @@ def compile_group(cflags, tus):
                        capture_output=True, text=True)
     out, errs, rodata = defaultdict(dict), {}, {}
     tu, phase, relocs, cur = None, "", {}, None
+    secbase = {}
     for ln in r.stdout.splitlines():
         if ln.startswith("===TU==="):
-            tu = ln.split()[1]; phase = ""; relocs = {}; continue
+            tu = ln.split()[1]; phase = ""; relocs = {}; secbase = {}; continue
         if ln.startswith("==="):
             phase = ln; continue
         if "ERR" in phase:
@@ -227,15 +244,34 @@ def compile_group(cflags, tus):
             rm = re.match(r"^([0-9a-f]+)\s+R_SH_DIR32\s+(\S+)", ln)
             if rm and cur:
                 relocs[cur][int(rm.group(1), 16)] = re.sub(r"^_", "", rm.group(2))   # the ABI adds exactly one "_"
+        elif "T===" in phase:
+            # a file-local object placed by an ADDR line fixes where its
+            # section starts, for relocations made against the section
+            tm = re.match(r"^([0-9a-f]+)\s+l\s+O\s+(\S+)\s+[0-9a-f]+\s+_(\S+)$", ln)
+            if tm and tm.group(3) in tu_local(tu):
+                secbase[tm.group(2)] = tu_local(tu)[tm.group(3)] - int(tm.group(1), 16)
         elif "B===" in phase:
             p = ln.split()
             if len(p) == 2 and p[0].startswith(".rodata"):
                 rodata.setdefault(tu, {})[p[0]] = bytes.fromhex(p[1])
             elif len(p) == 2 and p[0].startswith(".text."):
                 name = p[0][6:]
-                a = sym_addr(name)
+                local = tu_local(tu)
+                generated = name.startswith(("_GLOBAL__", "_Z41__static_initialization_and_destruction_0"))
+                a = local.get(name) if (name in local or generated) else sym_addr(name)
                 if a is not None:
-                    b, rl = unshift(name, bytearray.fromhex(p[1]), relocs.get(name, {}))
+                    # TU-local names resolve through this TU's ADDR lines;
+                    # rename them to the address-carrying form
+                    def loc(sym):
+                        if sym.startswith(".text.") and sym[6:] in local:
+                            sym = sym[6:]
+                        if sym in local:
+                            return f"func_{local[sym]:08x}"
+                        if sym in secbase:
+                            return f"func_{secbase[sym]:08x}"
+                        return sym
+                    rl = {off: loc(sym) for off, sym in relocs.get(name, {}).items()}
+                    b, rl = unshift(name, bytearray.fromhex(p[1]), rl, a)
                     out[tu][a] = (b, rl)
     for tu, fns in out.items():
         for a, (b, rl) in fns.items():
@@ -341,13 +377,17 @@ def main():
                     for a, (b, rels) in sorted(built.get(tu, {}).items())}
             per_tu[tu] = (cflags.replace(" -ffunction-sections -Iinclude", ""), rows)
 
-    total = Counter()
-    exact_bytes = 0
+    # An inline function (an implicit destructor, a header object's
+    # constructor) comes out of every translation unit that uses it, as in
+    # the original build; count each address once, as EXACT if any copy is.
+    best = {}
     for tu, (cf, rows) in per_tu.items():
         for a, (kind, _) in rows.items():
-            total[kind] += 1
-            if kind == "EXACT":
-                exact_bytes += FUNCS[a] - a
+            if best.get(a) != "EXACT":
+                best[a] = kind
+    total = Counter(best.values())
+    exact_bytes = sum(FUNCS[a] - a for a, k in best.items() if k == "EXACT")
+    multi = sum(len(rows) for cf, rows in per_tu.values()) - len(best)
     known = sum(FUNCS[a] - a for a in FUNCS if CODE_LO <= a < CODE_HI)
     ndef = sum(total.values())
 
@@ -389,7 +429,8 @@ def main():
             if k != "EXACT":
                 print(f"    func_0c{a & 0xffffff:06x}  {k:10} {d}")
     print("-" * 68)
-    print(f"  translated to C        : {ndef} functions")
+    print(f"  translated to C        : {ndef} functions"
+          + (f" ({multi} more copies of shared inline ones)" if multi else ""))
     print(f"  EXACT                  : {total['EXACT']} "
           f"({exact_bytes} B = {100.0 * exact_bytes / known:.2f}% of the {known} B "
           f"in known functions)")

@@ -53,13 +53,8 @@ void func_0c0398a2(void)
 {
 }
 
-/* ================================================================== */
-/* func_0c03900c @ 0x0C03900C, size 0x1C — forward to func_0c038f0c.    */
-/* ================================================================== */
-void func_0c03900c(void)
-{
-    func_0c038f0c();
-}
+/* (0x0C03900C, formerly here as a "forward to func_0c038f0c", is the task
+   header object's destructor -- its D2 clone -- now in src/code_0c038000.c.) */
 
 /* ================================================================== */
 /* func_0c0394c6 @ 0x0C0394C6, size 0x14 — voice-state predicate:       */
