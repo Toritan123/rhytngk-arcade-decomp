@@ -549,3 +549,7 @@
 0x0C25108C  "DEMO PLAY"             # [V] ROM data, task name
 0x0C251098  "fade_out"              # [V] ROM data
 0x0C2510EC  "DEMO SCENE"            # [V] ROM data, task name
+0x0C251140  "RANKING"               # [V] ROM data, task name
+0x0C251148  "rom/ad_rank.bin"       # [V] ROM data, DTPK package
+0x0C042C84  _ZN3adv11TaskRankingC1Ev  # [T] called by the static initialisation
+0x0C042CB4  _ZN3adv11TaskRankingC2Ev  # [T] its identical clone
