@@ -78,7 +78,7 @@ extern s32  func_0c037ca8(s32 since);   /* ticks elapsed since */
 bool func_0c03816a(Task *t, u32 r);
 void func_0c03826a(Task *t, u32 r);
 bool func_0c0383dc(Task *t);
-bool func_0c0385a0(Task *t);
+s32 func_0c0385a0(Task *t);
 void func_0c038c6c(Task *t, const char *name);
 
 /* ---- empty function (stage-6 slot) ---- */
@@ -214,7 +214,7 @@ bool func_0c0383dc(Task *t)
 
 bool func_0c038420(Task *t) { return func_0c0383dc(t) && t->state == 3; }
 bool func_0c03844c(Task *t) { return func_0c0383dc(t) && t->status == 1 && t->state == 2; }
-bool func_0c038484(Task *t) { return func_0c0383dc(t) && (t->state == 0 || t->status != 0); }
+s32 func_0c038484(Task *t) { return func_0c0383dc(t) && (t->state == 0 || t->status != 0); }
 
 /* ---- post request 5 / 4 / 3 / 2 to a registered task, if allowed ---- */
 bool func_0c0384bc(Task *t)
@@ -244,7 +244,7 @@ bool func_0c038554(Task *t)
     return false;
 }
 
-bool func_0c0385a0(Task *t)
+s32 func_0c0385a0(Task *t)
 {
     if (func_0c0383dc(t) && func_0c03816a(t, 2)) {
         func_0c03826a(t, 2);
@@ -504,7 +504,7 @@ bool func_0c038df8(Task *t, const char *name, s32 layer)
     return func_0c038d04(t, g_0C465674->current, name, layer);
 }
 
-bool func_0c038e24(Task *t, const char *name)
+s32 func_0c038e24(Task *t, const char *name)
 {
     return func_0c038d04(t, g_0C465674->current, name, 1);
 }

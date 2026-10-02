@@ -237,42 +237,42 @@ bool func_0c041450(TaskWarning *t)
 }
 
 /* ---- start: reset the phase and register under the running task ---- */
-bool func_0c041488(TaskTitle *t, const char *name)
+s32 func_0c041488(TaskTitle *t, const char *name)
 {
     t->phase = TaskTitle::P0;
     return func_0c038e24(t, name);
 }
 
-bool func_0c0414ac(void) { return func_0c041488(&g_0C467544, "TITLE"); }
-bool func_0c0414d4(void) { return func_0c038e24(&g_0C4674F8, "RATING"); }
+s32 func_0c0414ac(void) { return func_0c041488(&g_0C467544, "TITLE"); }
+s32 func_0c0414d4(void) { return func_0c038e24(&g_0C4674F8, "RATING"); }
 
-bool func_0c0414fc(TaskLogo *t, const char *name)
+s32 func_0c0414fc(TaskLogo *t, const char *name)
 {
     t->phase = TaskLogo::P0;
     return func_0c038e24(t, name);
 }
 
-bool func_0c041520(void) { return func_0c0414fc(&g_0C4674A0, "LOGO"); }
+s32 func_0c041520(void) { return func_0c0414fc(&g_0C4674A0, "LOGO"); }
 
-bool func_0c041548(TaskWarning *t, const char *name)
+s32 func_0c041548(TaskWarning *t, const char *name)
 {
     t->phase = TaskWarning::P0;
     return func_0c038e24(t, name);
 }
 
-bool func_0c04156c(void) { return func_0c041548(&g_0C46744C, "WARNING"); }
+s32 func_0c04156c(void) { return func_0c041548(&g_0C46744C, "WARNING"); }
 
 /* ---- is it still running? ---- */
-bool func_0c041594(void) { return func_0c038484(&g_0C467544); }
-bool func_0c0415b4(void) { return func_0c038484(&g_0C4674F8); }
-bool func_0c0415d4(void) { return func_0c038484(&g_0C4674A0); }
-bool func_0c0415f4(void) { return func_0c038484(&g_0C46744C); }
+s32 func_0c041594(void) { return func_0c038484(&g_0C467544); }
+s32 func_0c0415b4(void) { return func_0c038484(&g_0C4674F8); }
+s32 func_0c0415d4(void) { return func_0c038484(&g_0C4674A0); }
+s32 func_0c0415f4(void) { return func_0c038484(&g_0C46744C); }
 
 /* ---- stop ---- */
-bool func_0c041614(void) { return func_0c0385a0(&g_0C467544); }
-bool func_0c041634(void) { return func_0c0385a0(&g_0C4674F8); }
-bool func_0c041654(void) { return func_0c0385a0(&g_0C4674A0); }
-bool func_0c041674(void) { return func_0c0385a0(&g_0C46744C); }
+s32 func_0c041614(void) { return func_0c0385a0(&g_0C467544); }
+s32 func_0c041634(void) { return func_0c0385a0(&g_0C4674F8); }
+s32 func_0c041654(void) { return func_0c0385a0(&g_0C4674A0); }
+s32 func_0c041674(void) { return func_0c0385a0(&g_0C46744C); }
 
 /* ---- TaskLogo vf2: load ---- */
 bool func_0c041694(TaskLogo *t)

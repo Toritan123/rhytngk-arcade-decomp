@@ -58,10 +58,13 @@ static TaskInit s_taskInit;
 #endif
 
 extern "C" {
-/* task API, src/code_0c038000.c */
-bool func_0c038484(Task *t);            /* still registered and alive */
-bool func_0c0385a0(Task *t);            /* post request 2 (stop) */
-bool func_0c038e24(Task *t, const char *name);  /* register under the running task */
+/* task API, src/code_0c038000.c.  These return int, not bool: a caller that
+   returns their result as an unsigned char (func_0c042944) truncates it
+   with extu.b, which a bool result would not need, and callers passing it
+   straight through then return int as well. */
+s32 func_0c038484(Task *t);            /* still registered and alive */
+s32 func_0c0385a0(Task *t);            /* post request 2 (stop) */
+s32 func_0c038e24(Task *t, const char *name);  /* register under the running task */
 }
 
 #endif

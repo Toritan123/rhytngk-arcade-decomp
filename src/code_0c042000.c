@@ -21,33 +21,6 @@ extern void func_0c038e98(void *);
 extern void func_0c038f5c(void *);
 extern u8 _ZTVN3adv13TaskDemoSceneE[];
 
-void func_0c042974(s32 initialize, s32 priority)
-{
-    if (initialize == 1) {
-        if (priority == 0xFFFF) {
-            func_0c0386cc((void *)0x0C46766C);
-            func_0c038e98((void *)0x0C467670);
-            *(u32 *)0x0C467670 = (u32)&_ZTVN3adv13TaskDemoSceneE + 8;
-        }
-    } else if (initialize == 0) {
-        if (priority == 0xFFFF) {
-            *(u32 *)0x0C467670 = (u32)&_ZTVN3adv13TaskDemoSceneE + 8;
-            func_0c0387a8((void *)0x0C467670);
-            func_0c038f5c((void *)0x0C46766C);
-        }
-    }
-}
-
-void func_0c0429ec(void)
-{
-    func_0c042974(0, 0xFFFF);
-}
-
-void func_0c042a10(void)
-{
-    func_0c042974(1, 0xFFFF);
-}
-
 /* ---- end of a source file: GCC's __static_initialization_and_destruction_0
    and its _GLOBAL__D / _GLOBAL__I stubs, written out. ---- */
 extern void func_0c030b28(void *);

@@ -277,9 +277,9 @@ bool func_0c042400(TaskDemoPlay *t)
     return true;
 }
 
-bool func_0c04245c(void) { return func_0c038484(&g_0C4675F8); }
-bool func_0c04247c(void) { return func_0c0385a0(&g_0C4675F8); }
-bool func_0c04249c(void) { return func_0c038e24(&g_0C4675F8, "DEMO PLAY"); }
+s32 func_0c04245c(void) { return func_0c038484(&g_0C4675F8); }
+s32 func_0c04247c(void) { return func_0c0385a0(&g_0C4675F8); }
+s32 func_0c04249c(void) { return func_0c038e24(&g_0C4675F8, "DEMO PLAY"); }
 
 /* ---- vf3: run ---- */
 bool func_0c0424c4(TaskDemoPlay *t)

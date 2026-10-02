@@ -66,9 +66,9 @@ bool func_0c041d68(TaskDemo *t)
     return true;
 }
 
-bool func_0c041d90(void) { return func_0c038484(&g_0C46759C); }
-bool func_0c041db0(void) { return func_0c0385a0(&g_0C46759C); }
-bool func_0c041dd0(void) { return func_0c038e24(&g_0C46759C, "DEMO"); }
+s32 func_0c041d90(void) { return func_0c038484(&g_0C46759C); }
+s32 func_0c041db0(void) { return func_0c0385a0(&g_0C46759C); }
+s32 func_0c041dd0(void) { return func_0c038e24(&g_0C46759C, "DEMO"); }
 
 /* ---- vf2: load (nothing to load) ---- */
 bool func_0c041df8(TaskDemo *t)
