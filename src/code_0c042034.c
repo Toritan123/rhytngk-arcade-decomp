@@ -63,24 +63,7 @@ using namespace adv;
    ADDR: _GLOBAL__D_func_0c042034 0x0C042640
    ADDR: _GLOBAL__I_func_0c042034 0x0C042664 */
 
-/* The demo-state block.  Field names are ours. */
-struct DemoSub {
-    u8  b0;
-    u8  b1;
-    s32 f4;
-};
-
-struct DemoItem {
-    DemoSub sub[6];
-};
-
-struct DemoState {
-    s32      f00, f04, f08, f0c, f10, f14;
-    u8       b18, b19, b1a, b1b, b1c, b1d, b1e, b1f;
-    f32      f20, f24;
-    DemoItem item[9];
-    u8       b1d8, b1d9;
-};
+#include "demostate.h"
 
 extern "C" {
 
@@ -212,8 +195,8 @@ void func_0c042248(TaskDemoPlay *t)
         memset(s, 0, 0x1DA);
         g_0C467A24 = s;
         s->f00 = 0;
-        s->f04 = -1;
-        s->f08 = -1;
+        s->player[0] = -1;
+        s->player[1] = -1;
         s->f0c = 0;
         s->f10 = 0;
         s->f14 = 0;
@@ -243,11 +226,11 @@ void func_0c042248(TaskDemoPlay *t)
     s32 w = t->which;
     s->f00 = 0;
     if (w == 0) {
-        s->f04 = 0;
-        s->f08 = -1;
+        s->player[0] = 0;
+        s->player[1] = -1;
     } else {
-        s->f04 = 0;
-        s->f08 = 1;
+        s->player[0] = 0;
+        s->player[1] = 1;
     }
     s->f0c = w;
     switch (w) {
